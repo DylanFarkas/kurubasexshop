@@ -1,8 +1,10 @@
 ---
+import { Icon } from "astro-icon/components";
+
 const tiles = [
   // Kuruba - arriba en columna 1
   {
-    label: "KURUBA",
+    label: "",
     slug: "kuruba",
     type: "brand",
     col: "col-span-2 lg:col-span-3",
@@ -19,9 +21,8 @@ const tiles = [
     type: "big",
     col: "col-span-1 lg:col-span-3",
     row: "row-span-3 lg:row-span-6",
-    position:
-      "col-start-1 lg:col-start-1 row-start-3 lg:row-start-3",
-    bg: "bg-pink-600",
+    position: "col-start-1 lg:col-start-1 row-start-3 lg:row-start-3",
+    bg: "bg-[#fa0644]",
     text: "text-white",
   },
 
@@ -33,7 +34,7 @@ const tiles = [
     col: "col-span-1 lg:col-span-3",
     row: "row-span-3 lg:row-span-4",
     position: "col-start-2 lg:col-start-4 row-start-3 lg:row-start-1",
-    bg: "bg-orange-500",
+    bg: "bg-[#fa5300]",
     text: "text-white",
   },
 
@@ -44,8 +45,7 @@ const tiles = [
     type: "category",
     col: "col-span-1 lg:col-span-3",
     row: "row-span-2 lg:row-span-4",
-    position:
-      "col-start-1 lg:col-start-4 row-start-6 lg:row-start-5",
+    position: "col-start-1 lg:col-start-4 row-start-6 lg:row-start-5",
     bg: "bg-neutral-200",
     text: "text-black",
   },
@@ -69,8 +69,7 @@ const tiles = [
     type: "category",
     col: "col-span-2 lg:col-span-3",
     row: "row-span-2 lg:row-span-4",
-    position:
-      "col-start-1 lg:col-start-7 row-start-8 lg:row-start-5",
+    position: "col-start-1 lg:col-start-7 row-start-8 lg:row-start-5",
     bg: "bg-purple-600",
     text: "text-white",
   },
@@ -83,7 +82,7 @@ const tiles = [
     col: "col-span-2 lg:col-span-3",
     row: "row-span-2 lg:row-span-2",
     position: "col-start-1 lg:col-start-10 row-start-10 lg:row-start-1",
-    bg: "bg-pink-600",
+    bg: "bg-[#fa0644]",
     text: "text-white",
   },
 
@@ -94,8 +93,7 @@ const tiles = [
     type: "image",
     col: "col-span-2 lg:col-span-3",
     row: "row-span-3 lg:row-span-6",
-    position:
-      "col-start-1 lg:col-start-10 row-start-12 lg:row-start-3",
+    position: "col-start-1 lg:col-start-10 row-start-12 lg:row-start-3",
     bg: "bg-neutral-200",
     text: "text-white",
   },
@@ -104,60 +102,112 @@ const tiles = [
 
 <section class="w-full bg-white min-h-screen lg:h-screen">
   <div class="w-full h-full px-4 sm:px-8 lg:px-20 py-6 sm:py-10 lg:py-20">
-    <!-- Grid responsivo: 2 cols móvil/tablet, 12 cols desktop -->
-    <div class="grid grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-3 lg:gap-4 h-full
+    <div
+      class="grid grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-3 lg:gap-4 h-full
       auto-rows-fr lg:grid-rows-8 lg:auto-rows-fr min-h-0"
-      >
-
+    >
       {
         tiles.map((t) => (
           <a
             href={`/categoria/${t.slug}`}
-            class={`group relative overflow-hidden rounded-2xl sm:rounded-3xl
+            class={`group relative rounded-2xl sm:rounded-3xl
+              ${t.type === "brand" ? "overflow-visible" : "overflow-hidden"}
               ${t.bg} ${t.col} ${t.row} ${t.position}
               min-h-35 sm:min-h-40
               lg:min-h-0 lg:h-full
+              transition-all duration-300 ease-out
+              hover:scale-[1.03] hover:shadow-2xl hover:z-10
             `}
           >
             {/* Icono + (esquina superior derecha) */}
-            <div class="absolute right-2 top-2 sm:right-4 sm:top-4 grid h-6 w-6 sm:h-7 sm:w-7 place-items-center rounded-full bg-white/90 text-black/80 shadow-sm">
-              <span class="text-base sm:text-lg leading-none">+</span>
-            </div>
-            {/* Contenido */}
-            <div class="absolute inset-0 flex items-end p-3 sm:p-4 lg:p-6">
+            {t.type !== "brand" && (
               <div
-                class={`${t.text} whitespace-pre-line text-sm sm:text-base lg:text-lg font-medium tracking-wide`}
+                class="absolute right-2 top-2 sm:right-4 sm:top-4 z-30
+                          grid h-6 w-6 sm:h-7 sm:w-7 place-items-center
+                          rounded-full bg-white/90 text-black/80 shadow-sm"
+              >
+                <span class="text-base sm:text-lg leading-none">
+                  <Icon name="plus" />
+                </span>
+              </div>
+            )}
+
+            {/* Contenido */}
+            <div class="absolute inset-0 z-30 flex items-end p-3 sm:p-4 lg:p-6">
+              <div
+                class={`${t.text} whitespace-pre-line text-sm sm:text-base lg:text-lg font-medium tracking-widest
+                  transition-all duration-300 ease-out
+                  group-hover:translate-x-2 group-hover:scale-110`}
               >
                 {t.label}
               </div>
             </div>
-            {/* Caso especial: Kuruba tile con logo arriba */}
+
+            {/* Kuruba tile con logo arriba */}
             {t.type === "brand" && (
-              <div class="absolute left-3 top-3 sm:left-4 sm:top-4 lg:left-6 lg:top-6 flex items-center gap-2 sm:gap-3">
-                <div class="grid h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10 place-items-center rounded-full bg-pink-600 text-white font-semibold text-sm sm:text-base">
-                  K
+              <>
+                {/* Logo circular centrado, flotando */}
+                <div
+                  class="absolute left-1/2 top-0 z-40 -translate-x-1/2 -translate-y-1/2
+                            transition-all duration-300 ease-out
+                            group-hover:scale-110"
+                >
+                  <div class="h-14 w-14 sm:h-16 sm:w-16 lg:h-18 lg:w-18 rounded-full bg-white p-0.75 shadow-lg">
+                    <div class="h-full w-full rounded-full bg-[#fa0644] grid place-items-center overflow-hidden">
+                      <img
+                        src="/imgs/brand/logo-kuruba.png"
+                        alt="Kuruba"
+                        class="h-full w-full object-contain p-5"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+
+                {/* Texto centrado (no abajo) */}
+                <div class="absolute inset-0 z-30 grid place-items-center pt-5 sm:pt-6 lg:pt-8">
+                  <div class="text-[#fa0644] text-xl sm:text-2xl lg:text-2xl font-semibold tracking-widest">
+                    KURUBA
+                  </div>
+                </div>
+              </>
             )}
-            {/* Caso especial: Juguetes con flecha */}
+
+            {/* Juguetes con flecha */}
             {t.type === "big" && (
-              <div class="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 lg:left-6 lg:bottom-6">
-                <div class="grid h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 place-items-center rounded-full border border-white/80 text-white transition group-hover:scale-105">
-                  <span class="text-lg sm:text-xl">→</span>
+              <div class="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 lg:left-6 lg:bottom-6 mb-10">
+                <div
+                  class="grid h-10 w-10 sm:h-11 sm:w-11 lg:h-15 lg:w-15 place-items-center rounded-full border-2 border-white/80 text-white 
+                  transition-all duration-300 ease-out
+                  group-hover:scale-125 group-hover:border-white group-hover:translate-x-2"
+                >
+                  <span class="text-lg sm:text-xl">
+                    <Icon name="arrow" />
+                  </span>
                 </div>
               </div>
             )}
-            {/* Caso especial: Ofertas con "imagen" (placeholder) */}
+
+            {/* Ofertas con "imagen" (placeholder) */}
             {t.type === "image" && (
-              <div class="absolute inset-0">
-                {/* Cambia esto luego por tu imagen real */}
-                <div class="h-full w-full bg-[radial-gradient(circle_at_20%_20%,#ff7aa6,transparent_55%),radial-gradient(circle_at_70%_60%,#ffb347,transparent_50%),radial-gradient(circle_at_40%_90%,#ff3f63,transparent_55%)] opacity-95" />
-                <div class="absolute inset-0 bg-black/10" />
+              <div class="absolute inset-0 z-0">
+                {/* Imagen de fondo */}
+                <img
+                  src="/imgs/brand/fondo-ofertas.jpg"
+                  alt="Ofertas"
+                  class="h-full w-full object-cover"
+                  loading="lazy"
+                />
+
+                <div class="absolute inset-0 z-10 bg-black/20" />
+
+                <div class="absolute inset-x-0 bottom-0 h-24 z-10 bg-linear-to-t from-black/25 to-transparent" />
               </div>
             )}
+
             {/* Hover suave */}
-            <div class="absolute inset-0 opacity-0 transition group-hover:opacity-100">
-              <div class="absolute inset-0 bg-black/5" />
+            <div class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
+              <div class="absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
             </div>
           </a>
         ))
