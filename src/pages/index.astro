@@ -1,19 +1,8 @@
 ---
-
+import Hero from "../components/sections/Hero.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-		<link rel="stylesheet" href="/src/styles/global.css" />
-	</head>
-	<body>
-		<h1>Kuruba Sex Shop</h1>
-	
-		
-	</body>
-</html>
+<BaseLayout title="Kuruba Sexshop - Inicio" description="Bienvenido a Kuruba Sexshop, tu tienda online de productos para adultos. Descubre nuestra amplia gama de juguetes, lencería y accesorios para una vida íntima más emocionante.">
+	<Hero />
+</BaseLayout>
