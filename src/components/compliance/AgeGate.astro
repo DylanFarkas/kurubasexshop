@@ -1,0 +1,46 @@
+<div id="agegate" class="fixed inset-0 z-100 grid place-items-center bg-black/60 p-4 backdrop-blur">
+  <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+    <h2 class="text-xl font-semibold">Confirmación de edad</h2>
+    <p class="mt-2 text-sm text-black/70">
+      Este sitio es solo para mayores de edad. ¿Confirmas que tienes 18+?
+    </p>
+
+    <div class="mt-6 grid gap-3">
+      <button id="age-yes" class="rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white hover:opacity-90">
+        Sí, soy mayor de edad
+      </button>
+
+      <button id="age-no" class="rounded-2xl border px-4 py-3 text-sm font-semibold hover:bg-black/5">
+        No
+      </button>
+
+      <p id="age-msg" class="hidden text-sm text-red-600">
+        No puedes acceder al sitio.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const key = "kuruba_age_ok_v1";
+  const gate = document.getElementById("agegate");
+  const yes = document.getElementById("age-yes");
+  const no = document.getElementById("age-no");
+  const msg = document.getElementById("age-msg");
+
+  function allow() {
+    localStorage.setItem(key, "1");
+    gate?.remove();
+  }
+
+  function deny() {
+    msg?.classList.remove("hidden");
+  }
+
+  try {
+    if (localStorage.getItem(key) === "1") gate?.remove();
+  } catch {}
+
+  yes?.addEventListener("click", allow);
+  no?.addEventListener("click", deny);
+</script>

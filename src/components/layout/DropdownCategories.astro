@@ -1,0 +1,23 @@
+---
+import { CATEGORIES } from "../../data/categories";
+---
+
+<div class="relative group">
+  <button class="text-sm font-medium tracking-wide hover:opacity-70">
+    Categorías
+  </button>
+
+  <div class="invisible absolute left-0 top-full mt-3 w-56 overflow-hidden rounded-2xl border bg-white opacity-0 shadow-xl transition
+              group-hover:visible group-hover:opacity-100">
+    <div class="p-2">
+      {CATEGORIES.map((c) => (
+        <a
+          href={`/categoria/${c.slug}`}
+          class="block rounded-xl px-3 py-2 text-sm hover:bg-black/5"
+        >
+          {c.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</div>
