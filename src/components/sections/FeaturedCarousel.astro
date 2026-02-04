@@ -1,0 +1,34 @@
+---
+import ProductCarousel from "./ProductCarousel.astro";
+import { featuredByCategory } from "../../data/featuredProducts";
+
+const blocks = [
+  { key: "Juguetes", href: "/categoria/juguetes" },
+  { key: "Lubricantes", href: "/categoria/lubricantes" },
+  { key: "Lencería", href: "/categoria/lenceria" },
+  // Aquí se agregan más
+];
+---
+
+<section class="w-full py-10 md:py-14">
+  <div class="w-ful mx-20 px-4">
+    <div class="mb-8">
+      <h2 class="text-2xl md:text-3xl font-semibold text-neutral-900">Lo más pedido</h2>
+      <!-- <p class="mt-2 text-neutral-600">
+        Selección corta. Sin relleno. Aquí está lo que realmente rota.
+      </p> -->
+    </div>
+
+    <div class="space-y-10">
+      {blocks.map((b, i) => (
+        <ProductCarousel
+          id={`carousel-${i}-${b.key.toLowerCase().replace(/\s+/g, "-")}`}
+          title={b.key}
+          subtitle="Destacados"
+          href={b.href}
+          products={featuredByCategory[b.key] ?? []}
+        />
+      ))}
+    </div>
+  </div>
+</section>
