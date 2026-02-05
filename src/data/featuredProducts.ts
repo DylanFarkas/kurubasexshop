@@ -34,6 +34,18 @@ export const featuredByCategory: Record<string, Product[]> = {
       featured: true,
       active: true,
     },
+    {
+      id: "j4",
+      name: "Masturbador Masculino Turbo",
+      category: "Juguetes",
+      price: 99000,
+      final_price: 85000,
+      discount_pct: 14,
+      image: "/products/juguete-4.jpg",
+      slug: "masturbador-turbo",
+      featured: true,
+      active: true,
+    }
   ],
   Lubricantes: [
     {
