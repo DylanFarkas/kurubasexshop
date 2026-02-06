@@ -9,7 +9,7 @@ export const featuredByCategory: Record<string, Product[]> = {
       price: 129000,
       final_price: 109000,
       discount_pct: 16,
-      image: "/products/juguete-1.jpg",
+      image: "/imgs/products/jueguete.png",
       slug: "vibrador-compact-pro",
       featured: true,
       active: true,
@@ -34,6 +34,18 @@ export const featuredByCategory: Record<string, Product[]> = {
       featured: true,
       active: true,
     },
+    {
+      id: "j4",
+      name: "Masturbador Masculino Turbo",
+      category: "Juguetes",
+      price: 99000,
+      final_price: 85000,
+      discount_pct: 14,
+      image: "/products/juguete-4.jpg",
+      slug: "masturbador-turbo",
+      featured: true,
+      active: true,
+    }
   ],
   Lubricantes: [
     {
@@ -41,20 +53,32 @@ export const featuredByCategory: Record<string, Product[]> = {
       name: "Lubricante Base Agua 100ml",
       category: "Lubricantes",
       price: 35000,
-      image: "/products/lub-1.jpg",
+      image: "imgs/products/mango.png",
       slug: "lub-agua-100",
       featured: true,
       active: true,
+      cardVariant: {
+        cardClass: "border-[#FF6B57] border-1 hover:border[#FF6B57]",
+        buttonClass: "bg-[#FF6B57] hover:bg-[#FF6B57]",
+        iconClass: "text-white",
+        mediaClass: "bg-[#FADCDC]",
+      }
     },
     {
       id: "l2",
       name: "Lubricante Efecto Calor",
       category: "Lubricantes",
       price: 42000,
-      image: "/products/lub-2.jpg",
+      image: "imgs/products/lyche.png",
       slug: "lub-calor",
       featured: true,
       active: true,
+      cardVariant: {
+        cardClass: "border-[#FDB3FD] border-1 hover:border-[#FDB3FD]",
+        buttonClass: "bg-[#FDB3FD] hover:bg-[#FDB3FD]",
+        iconClass: "text-white",
+        mediaClass: "bg-[#FEF3FE]",      
+      }
     },
     {
       id: "l3",
@@ -63,10 +87,16 @@ export const featuredByCategory: Record<string, Product[]> = {
       price: 69000,
       final_price: 62000,
       discount_pct: 10,
-      image: "/products/lub-3.jpg",
+      image: "imgs/products/caramelo.png",
       slug: "lub-premium-250",
       featured: true,
       active: true,
+      cardVariant: {
+        cardClass: "border-[#FFA857] border-1 hover:border-[#FFA857]",
+        buttonClass: "bg-[#FFA857] hover:bg-[#FFA857]",
+        iconClass: "text-white",
+        mediaClass: "bg-[#FCEDDD]",      
+      }
     },
   ],
   Lencería: [
