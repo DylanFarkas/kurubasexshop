@@ -1,4 +1,4 @@
-<div id="agegate" class="fixed inset-0 z-100 grid place-items-center bg-black/60 p-4 backdrop-blur">
+<div id="agegate" class="fixed inset-0 z-100 hidden place-items-center bg-black/60 p-4 backdrop-blur">
   <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
     <h2 class="text-xl font-semibold">Confirmación de edad</h2>
     <p class="mt-2 text-sm text-black/70">
@@ -21,26 +21,39 @@
   </div>
 </div>
 
-<script>
-  const key = "kuruba_age_ok_v1";
-  const gate = document.getElementById("agegate");
-  const yes = document.getElementById("age-yes");
-  const no = document.getElementById("age-no");
-  const msg = document.getElementById("age-msg");
+<script is:inline>
+  (function() {
+    const key = "kuruba_age_ok_v1";
+    const gate = document.getElementById("agegate");
+    
+    // Verificar inmediatamente si ya fue aprobado
+    let approved = false;
+    try {
+      approved = localStorage.getItem(key) === "1";
+    } catch {}
 
-  function allow() {
-    localStorage.setItem(key, "1");
-    gate?.remove();
-  }
+    // Si no está aprobado, mostrar el modal
+    if (!approved) {
+      gate?.classList.remove("hidden");
+      gate?.classList.add("grid");
+    }
 
-  function deny() {
-    msg?.classList.remove("hidden");
-  }
+    const yes = document.getElementById("age-yes");
+    const no = document.getElementById("age-no");
+    const msg = document.getElementById("age-msg");
 
-  try {
-    if (localStorage.getItem(key) === "1") gate?.remove();
-  } catch {}
+    function allow() {
+      try {
+        localStorage.setItem(key, "1");
+      } catch {}
+      gate?.remove();
+    }
 
-  yes?.addEventListener("click", allow);
-  no?.addEventListener("click", deny);
+    function deny() {
+      msg?.classList.remove("hidden");
+    }
+
+    yes?.addEventListener("click", allow);
+    no?.addEventListener("click", deny);
+  })();
 </script>
