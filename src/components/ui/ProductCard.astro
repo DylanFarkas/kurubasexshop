@@ -33,7 +33,7 @@ const v: Required<ProductCardVariant> = {
   <div class:list={["aspect-4/5", v.mediaClass]}>
     {
     <img
-      src={product.image ?? "/placeholder.png"}
+      src={product.image ?? product.images?.[0] ?? "/placeholder.png"}
       alt={product.name}
       class="h-full w-full object-cover"
       loading="lazy"

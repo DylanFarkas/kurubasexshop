@@ -54,6 +54,9 @@ export const featuredByCategory: Record<string, Product[]> = {
       category: "Lubricantes",
       price: 35000,
       image: "/imgs/products/mango.png",
+      images: [
+        "/imgs/products/mango.png", 
+        "/imgs/products/mango-2.png"],
       slug: "lub-mango",
       featured: true,
       active: true,

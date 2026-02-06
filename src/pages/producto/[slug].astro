@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { product } = Astro.props as { product: Product };
-
+const productImages = product.images ?? (product.image ? [product.image] : []);
 const hasDiscount = product.final_price && product.discount_pct;
 const displayPrice = product.final_price || product.price;
 ---
@@ -22,37 +22,57 @@ const displayPrice = product.final_price || product.price;
 <BaseLayout title={`${product.name} - Kuruba`} description={product.description || product.name}>
   <section class="max-w-7xl mx-auto px-4 py-8 md:py-12 my-10">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-      <!-- Imagen del producto -->
-      <div class="w-full">
-        <div class="aspect-square bg-neutral-100 rounded-2xl overflow-hidden">
+      <!-- Galería de imágenes -->
+      <div class="w-full space-y-4">
+        <!-- Imagen principal -->
+        <div id="main-image-container" class="aspect-square max-w-lg bg-neutral-100 rounded-2xl overflow-hidden">
           <img
-            src={product.image ?? "/placeholder.png"}
+            id="main-image"
+            src={productImages[0] ?? "/placeholder.png"}
             alt={product.name}
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover object-[50%_40%]"
           />
         </div>
+        
+        <!-- Thumbnails -->
+        {productImages.length > 1 && (
+          <div class="grid grid-cols-4 gap-4 w-full">
+            {productImages.map((img, i) => (
+              <button
+                type="button"
+                data-image={img}
+                class={`aspect-square rounded-lg overflow-hidden border transition hover:border-neutral-900 cursor-pointer ${
+                  i === 0 ? 'border-neutral-900' : 'border-neutral-200'
+                }`}
+                aria-label={`Ver imagen ${i + 1} de ${product.name}`}
+              >
+                <img
+                  src={img}
+                  alt={`${product.name} ${i + 1}`}
+                  class="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <!-- Información del producto -->
-      <div class="flex flex-col justify-center">
-        <!-- Categoría -->
+      <div class="flex flex-col">
         <span class="text-sm font-medium text-neutral-500 uppercase tracking-wider mb-2">
           {product.category}
         </span>
 
-        <!-- Nombre -->
         <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-900 mb-4">
           {product.name}
         </h1>
 
-        <!-- Descripción -->
         {product.description && (
           <p class="text-lg text-neutral-600 mb-6 leading-relaxed">
             {product.description}
           </p>
         )}
 
-        <!-- Precio -->
         <div class="mb-8">
           {hasDiscount ? (
             <div class="flex items-center gap-3 flex-wrap">
@@ -73,7 +93,6 @@ const displayPrice = product.final_price || product.price;
           )}
         </div>
 
-        <!-- Botones de acción -->
         <div class="flex flex-col sm:flex-row gap-4">
           <button
             class="bg-black text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-neutral-800 transition flex items-center justify-center gap-2"
@@ -91,7 +110,6 @@ const displayPrice = product.final_price || product.price;
           </a>
         </div>
 
-        <!-- Información adicional -->
         <div class="mt-8 pt-8 border-t border-neutral-200">
           <h3 class="font-semibold text-lg mb-4">Información del producto</h3>
           <ul class="space-y-2 text-neutral-600">
@@ -113,3 +131,45 @@ const displayPrice = product.final_price || product.price;
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const thumbnails = document.querySelectorAll('[data-image]');
+  const mainImage = document.getElementById('main-image') as HTMLImageElement;
+
+  thumbnails.forEach((thumbnail) => {
+    thumbnail.addEventListener('click', () => {
+      const newSrc = thumbnail.getAttribute('data-image');
+      if (newSrc && mainImage) {
+        mainImage.src = newSrc;
+        
+        thumbnails.forEach(t => {
+          t.classList.remove('border-neutral-900');
+          t.classList.add('border-neutral-200');
+        });
+        thumbnail.classList.remove('border-neutral-200');
+        thumbnail.classList.add('border-neutral-900');
+      }
+    });
+  });
+</script>
+
+<script>
+  const thumbnails = document.querySelectorAll('[data-image]');
+  const mainImage = document.getElementById('main-image') as HTMLImageElement;
+
+  thumbnails.forEach((thumbnail) => {
+    thumbnail.addEventListener('click', () => {
+      const newSrc = thumbnail.getAttribute('data-image');
+      if (newSrc && mainImage) {
+        mainImage.src = newSrc;
+
+        thumbnails.forEach(t => {
+          t.classList.remove('border-neutral-900');
+          t.classList.add('border-neutral-200');
+        });
+        thumbnail.classList.remove('border-neutral-200');
+        thumbnail.classList.add('border-neutral-900');
+      }
+    });
+  });
+</script>
