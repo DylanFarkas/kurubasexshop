@@ -1,3 +1,5 @@
+import type { ProductCardVariant } from "./productCard";
+
 export type Product = {
     id: string;
     name: string;
@@ -10,4 +12,5 @@ export type Product = {
     slug?: string;
     featured?: boolean;
     active?: boolean;
+    cardVariant?: ProductCardVariant;
 }
