@@ -9,6 +9,7 @@ export type Product = {
     final_price?: number;
     discount_pct?: number;
     image?: string;
+    images?: string[];
     slug?: string;
     featured?: boolean;
     active?: boolean;
