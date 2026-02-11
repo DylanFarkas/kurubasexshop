@@ -19,7 +19,7 @@ export const allProducts: Product[] = [
     image: "/imgs/products/jueguete.png",
     slug: "vibrador-compact-pro",
     featured: true, // ✅ Aparece en carousel destacado
-    active: true, // ✅ Disponible para venta
+    active: false, // ✅ Disponible para venta
   },
   {
     id: "j2",
@@ -29,7 +29,7 @@ export const allProducts: Product[] = [
     image: "/products/juguete-2.jpg",
     slug: "anillo-vibrador",
     featured: true,
-    active: true,
+    active: false,
   },
   {
     id: "j3",
@@ -39,7 +39,7 @@ export const allProducts: Product[] = [
     image: "/products/juguete-3.jpg",
     slug: "bala-vibradora",
     featured: true,
-    active: true,
+    active: false,
   },
   {
     id: "j4",
@@ -51,7 +51,7 @@ export const allProducts: Product[] = [
     image: "/products/juguete-4.jpg",
     slug: "masturbador-turbo",
     featured: true,
-    active: true,
+    active: false,
   },
   {
     id: "j5",
@@ -61,7 +61,7 @@ export const allProducts: Product[] = [
     image: "/products/juguete-5.jpg",
     slug: "consolador-realista",
     featured: false, // ❌ NO aparece en carousel
-    active: true, // ✅ Pero sí está disponible en tienda
+    active: false, // ✅ Pero sí está disponible en tienda
   },
 
   // ==================== LUBRICANTES ====================
@@ -124,7 +124,7 @@ export const allProducts: Product[] = [
     image: "/products/lubricante-4.jpg",
     slug: "lub-siliconado",
     featured: false,
-    active: true,
+    active: false,
   },
 
   // ==================== LENCERÍA ====================
@@ -136,7 +136,7 @@ export const allProducts: Product[] = [
     image: "/products/lenceria-1.jpg",
     slug: "body-encaje-noir",
     featured: true,
-    active: true,
+    active: false,
   },
   {
     id: "le2",
@@ -146,7 +146,7 @@ export const allProducts: Product[] = [
     image: "/products/lenceria-2.jpg",
     slug: "conjunto-rojo",
     featured: true,
-    active: true,
+    active: false,
   },
   {
     id: "le3",
@@ -156,7 +156,7 @@ export const allProducts: Product[] = [
     image: "/products/lenceria-3.jpg",
     slug: "baby-doll-rosa",
     featured: false,
-    active: true,
+    active: false,
   },
 ];
 
