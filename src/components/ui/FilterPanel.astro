@@ -1,0 +1,229 @@
+---
+import { Icon } from "astro-icon/components";
+import { CATEGORIES } from "../../data/categories";
+
+interface Props {
+    totalProducts: number;
+}
+
+const { totalProducts } = Astro.props;
+const categories = CATEGORIES.map((cat) => cat.label);
+---
+
+<div 
+    id="filters-panel"
+    class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50"
+>
+    <div class="h-full flex flex-col">
+        <!-- Header del panel -->
+        <div class="flex items-center justify-between p-6 border-b border-neutral-200">
+            <h2 class="text-2xl font-bold text-neutral-900">Filtros</h2>
+            <button 
+                id="close-filters"
+                class="text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+            >
+            <Icon name="close" size={25}/>
+            </button>
+        </div>
+
+        <!-- Contenido del panel -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Filtro de Categoría -->
+            <div>
+                <label 
+                    for="category-filter" 
+                    class="block text-sm font-semibold text-neutral-900 mb-3"
+                >
+                    Categoría
+                </label>
+                <select
+                    id="category-filter"
+                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-pointer"
+                >
+                    <option value="">Todas las categorías</option>
+                    {categories.map((cat) => (
+                        <option value={cat}>{cat}</option>
+                    ))}
+                </select>
+            </div>
+
+            <!-- Filtro de Ordenamiento -->
+            <div>
+                <label 
+                    for="price-filter" 
+                    class="block text-sm font-semibold text-neutral-900 mb-3"
+                >
+                    Ordenar por
+                </label>
+                <select
+                    id="price-filter"
+                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-pointer"
+                >
+                    <option value="">Más relevantes</option>
+                    <option value="price-asc">Precio: Menor a Mayor</option>
+                    <option value="price-desc">Precio: Mayor a Menor</option>
+                    <option value="name-asc">Nombre: A-Z</option>
+                    <option value="name-desc">Nombre: Z-A</option>
+                </select>
+            </div>
+
+            <!-- Contador de productos -->
+            <div class="pt-4 border-t border-neutral-200">
+                <p class="text-sm text-neutral-600">
+                    <span id="product-count" class="font-semibold text-neutral-900">{totalProducts}</span> productos encontrados
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer del panel -->
+        <div class="p-6 border-t border-neutral-200 space-y-3">
+            <!-- <button 
+                id="apply-filters"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer"
+            >
+                Aplicar Filtros
+            </button> -->
+            <button 
+                id="clear-filters"
+                class="w-full bg-white hover:bg-neutral-100 border border-neutral-300 text-neutral-700 font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer"
+            >
+                Limpiar Filtros
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div 
+    id="filters-overlay"
+    class="fixed inset-0 bg-black/50 opacity-0 invisible transition-opacity duration-300 z-40 pointer-events-none"
+></div>
+
+<script>
+    // Elementos del DOM
+    const openFiltersBtn = document.getElementById("open-filters") as HTMLButtonElement;
+    const closeFiltersBtn = document.getElementById("close-filters") as HTMLButtonElement;
+    const applyFiltersBtn = document.getElementById("apply-filters") as HTMLButtonElement;
+    const clearFiltersBtn = document.getElementById("clear-filters") as HTMLButtonElement;
+    const filtersPanel = document.getElementById("filters-panel") as HTMLElement;
+    const filtersOverlay = document.getElementById("filters-overlay") as HTMLElement;
+    
+    const categoryFilter = document.getElementById("category-filter") as HTMLSelectElement;
+    const priceFilter = document.getElementById("price-filter") as HTMLSelectElement;
+    const productsGrid = document.getElementById("products-grid") as HTMLElement;
+    const productCount = document.getElementById("product-count") as HTMLElement;
+    const noProductsMsg = document.getElementById("no-products") as HTMLElement;
+
+    // Funciones para abrir/cerrar el panel
+    function openFiltersPanel() {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        
+        filtersPanel.classList.remove("translate-x-full");
+        filtersOverlay.classList.remove("opacity-0", "invisible");
+        filtersOverlay.classList.add("pointer-events-auto");
+        
+        document.body.style.overflow = "hidden";
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+        
+        const header = document.querySelector("header");
+        if (header) {
+            header.style.paddingRight = `${scrollbarWidth}px`;
+        }
+    }
+
+    function closeFiltersPanel() {
+        filtersPanel.classList.add("translate-x-full");
+        filtersOverlay.classList.add("opacity-0", "invisible");
+        filtersOverlay.classList.remove("pointer-events-auto");
+        
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+        
+        const header = document.querySelector("header");
+        if (header) {
+            header.style.paddingRight = "";
+        }
+    }
+
+    // Lógica de filtrado
+    function filterAndSortProducts() {
+        const selectedCategory = categoryFilter.value;
+        const selectedSort = priceFilter.value;
+
+        const productCards = Array.from(
+            document.querySelectorAll(".product-card")
+        ) as HTMLElement[];
+
+        let visibleProducts = productCards.filter((card) => {
+            const category = card.dataset.category || "";
+            if (!selectedCategory) return true;
+            return category === selectedCategory;
+        });
+
+        if (selectedSort) {
+            visibleProducts.sort((a, b) => {
+                const priceA = parseFloat(a.dataset.price || "0");
+                const priceB = parseFloat(b.dataset.price || "0");
+                const nameA = a.dataset.name || "";
+                const nameB = b.dataset.name || "";
+
+                switch (selectedSort) {
+                    case "price-asc":
+                        return priceA - priceB;
+                    case "price-desc":
+                        return priceB - priceA;
+                    case "name-asc":
+                        return nameA.localeCompare(nameB);
+                    case "name-desc":
+                        return nameB.localeCompare(nameA);
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        productCards.forEach((card) => {
+            card.style.display = "none";
+        });
+
+        visibleProducts.forEach((card) => {
+            card.style.display = "block";
+            productsGrid.appendChild(card);
+        });
+
+        productCount.textContent = visibleProducts.length.toString();
+
+        if (visibleProducts.length === 0) {
+            productsGrid.classList.add("hidden");
+            noProductsMsg.classList.remove("hidden");
+        } else {
+            productsGrid.classList.remove("hidden");
+            noProductsMsg.classList.add("hidden");
+        }
+    }
+
+    function clearFilters() {
+        categoryFilter.value = "";
+        priceFilter.value = "";
+        filterAndSortProducts();
+    }
+
+    // Event listeners
+    openFiltersBtn?.addEventListener("click", openFiltersPanel);
+    closeFiltersBtn?.addEventListener("click", closeFiltersPanel);
+    filtersOverlay?.addEventListener("click", closeFiltersPanel);
+    applyFiltersBtn?.addEventListener("click", () => {
+        filterAndSortProducts();
+        closeFiltersPanel();
+    });
+    clearFiltersBtn?.addEventListener("click", clearFilters);
+    
+    categoryFilter?.addEventListener("change", filterAndSortProducts);
+    priceFilter?.addEventListener("change", filterAndSortProducts);
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeFiltersPanel();
+        }
+    });
+</script>
