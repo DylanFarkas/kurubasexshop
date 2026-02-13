@@ -44,10 +44,10 @@ const mappedProduct: Product = {
 const galleryImages = [
   mappedProduct.image,
   ...(mappedProduct.images || [])
-].filter(Boolean); // Filtrar undefined/null
+].filter(Boolean);
 
 const displayPrice = mappedProduct.final_price || mappedProduct.price;
-const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < mappedProduct.price;
+const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct > 0;
 ---
 
 <BaseLayout 
@@ -55,10 +55,10 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
   description={mappedProduct.description || `Compra ${mappedProduct.name} en Kuruba Sexshop`}
 >
   <main class="container mx-auto px-4 pt-20 pb-16">
-    <div class="grid md:grid-cols-2 gap-8 lg:gap-16">
+    <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
       <div class="space-y-4">
-        <div class="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100">
           <img
             id="main-image"
             src={mappedProduct.image || '/placeholder.png'}
@@ -68,13 +68,13 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
         </div>
         
         {galleryImages.length > 1 && (
-          <div class="grid grid-cols-4 gap-2">
+          <div class="grid grid-cols-4 w-full gap-4">
             {galleryImages.map((img, i) => (
               <button
-                class="aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-pink-500 transition thumbnail-btn"
+                class="aspect-square rounded-lg overflow-hidden border border-transparent hover:border-pink-500 transition thumbnail-btn"
                 data-image={img}
               >
-                <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full object-cover" />
+                <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full rounded-lg object-cover" />
               </button>
             ))}
           </div>
@@ -82,7 +82,7 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
       </div>
 
       <!-- Información del producto -->
-      <div class="space-y-6">
+      <div class="space-y-4">
         {mappedProduct.categoryLabel && (
           <a
             href={`/categoria/${mappedProduct.categorySlug}`}
@@ -118,10 +118,10 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
               name: mappedProduct.name,
               slug: mappedProduct.slug,
               price: mappedProduct.price,
-              finalPrice: mappedProduct.final_price,
+              ...(mappedProduct.final_price && { finalPrice: mappedProduct.final_price }),
               image: mappedProduct.image,
             })}
-            class="w-full py-4 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition"
+            class="w-full py-4 bg-white text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
           >
             Añadir al carrito
           </button>
@@ -135,7 +135,8 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
         </div>
         
         <!-- Info adicional -->
-        <div class="space-y-2 text-sm text-gray-600 pt-4 border-t">
+        <div class="space-y-2 text-sm text-gray-800 pt-8">
+          <div class="flex justify-center items-center border-t w-full border-gray-400 mb-6"></div>
           <p>✓ Producto bajo pedido (sin límite de stock)</p>
           <p>✓ Envío discreto</p>
           <p>✓ Pago seguro</p>

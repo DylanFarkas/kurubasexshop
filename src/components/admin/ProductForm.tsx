@@ -46,8 +46,8 @@ export default function ProductForm({
       description: initialData?.description || '',
       category_id: initialData?.category_id || '',
       price: initialData?.price || 0,
-      final_price: initialData?.final_price || undefined,
-      discount_pct: initialData?.discount_pct || undefined,
+      final_price: initialData?.final_price || null,
+      discount_pct: initialData?.discount_pct || null,
       image: initialData?.image || '',
       images: initialData?.images || [],
       featured: initialData?.featured || false,
@@ -63,18 +63,18 @@ export default function ProductForm({
     }
   }, [name, setValue, initialData]);
 
-  // Auto-calcular porcentaje de descuento
+  // Auto-calcular precio final desde el porcentaje de descuento
   const price = watch('price');
-  const finalPrice = watch('final_price');
+  const discountPct = watch('discount_pct');
   
   useEffect(() => {
-    if (price && finalPrice && finalPrice > 0 && finalPrice < price) {
-      const discount = Math.round(((price - finalPrice) / price) * 100);
-      setValue('discount_pct', discount);
+    if (price && discountPct && discountPct > 0 && discountPct <= 100) {
+      const finalPrice = price - (price * discountPct / 100);
+      setValue('final_price', Math.round(finalPrice * 100) / 100);
     } else {
-      setValue('discount_pct', undefined);
+      setValue('final_price', null);
     }
-  }, [price, finalPrice, setValue]);
+  }, [price, discountPct, setValue]);
 
   const handleFormSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
@@ -246,7 +246,33 @@ export default function ProductForm({
             )}
           </div>
 
-          {/* Precio Final */}
+          {/* Descuento % (editable) */}
+          <div>
+            <label htmlFor="discount_pct" className="block text-sm font-medium text-gray-700 mb-1">
+              Descuento %
+            </label>
+            <div className="relative">
+              <input
+                {...register('discount_pct', { valueAsNumber: true })}
+                type="number"
+                id="discount_pct"
+                min="0"
+                max="100"
+                step="1"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                placeholder="0"
+              />
+              <span className="absolute right-3 top-2 text-gray-500">%</span>
+            </div>
+            {errors.discount_pct && (
+              <p className="mt-1 text-sm text-red-600">{errors.discount_pct.message}</p>
+            )}
+            <p className="mt-1 text-xs text-gray-500">
+              Ingresa el porcentaje de descuento
+            </p>
+          </div>
+
+          {/* Precio Final (readonly - calculado) */}
           <div>
             <label htmlFor="final_price" className="block text-sm font-medium text-gray-700 mb-1">
               Precio con Descuento
@@ -258,30 +284,10 @@ export default function ProductForm({
                 type="number"
                 id="final_price"
                 step="0.01"
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                readOnly
+                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
                 placeholder="0.00"
               />
-            </div>
-            {errors.final_price && (
-              <p className="mt-1 text-sm text-red-600">{errors.final_price.message}</p>
-            )}
-          </div>
-
-          {/* Descuento % (readonly) */}
-          <div>
-            <label htmlFor="discount_pct" className="block text-sm font-medium text-gray-700 mb-1">
-              Descuento %
-            </label>
-            <div className="relative">
-              <input
-                {...register('discount_pct', { valueAsNumber: true })}
-                type="number"
-                id="discount_pct"
-                readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
-                placeholder="0"
-              />
-              <span className="absolute right-3 top-2 text-gray-500">%</span>
             </div>
             <p className="mt-1 text-xs text-gray-500">
               Se calcula automáticamente

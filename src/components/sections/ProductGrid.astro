@@ -16,7 +16,7 @@ const { products } = Astro.props;
         >
             {products.map((product) => {
                 const displayPrice = (product.final_price && product.final_price > 0) ? product.final_price : product.price;
-                const hasDiscount = product.discount_pct && product.discount_pct > 0;
+                const hasDiscount = !!product.discount_pct && product.discount_pct > 0;
 
                 return (
                     <article
@@ -78,7 +78,7 @@ const { products } = Astro.props;
 
                             <a
                                 href={`/producto/${product.slug}`}
-                                class="block w-full bg-white hover:bg-gray-600 hover:text-white border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center"
+                                class="block w-full bg-white hover:bg-pink-200 border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center"
                             >
                                 Ver producto
                             </a>
