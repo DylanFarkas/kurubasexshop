@@ -20,10 +20,10 @@ export const categoryThemes: Record<string, ProductCardVariant> = {
     iconClass: "text-rose-900",
   },
   Masculino: {
-    cardClass: "border-blue-200 hover:border-blue-300",
-    mediaClass: "bg-blue-50",
-    buttonClass: "bg-blue-200 hover:bg-blue-300",
-    iconClass: "text-blue-900",
+    cardClass: "border-green-200 hover:border-green-300",
+    mediaClass: "bg-green-50",
+    buttonClass: "bg-green-200 hover:bg-green-300",
+    iconClass: "text-green-900",
   },
   Bondaje: {
     cardClass: "border-purple-200 hover:border-purple-300",

@@ -5,12 +5,78 @@ import CheckoutForm from '../components/cart/CheckoutForm';
 
 <BaseLayout title="Checkout - Kuruba Sexshop">
   <main class="container mx-auto px-4 pt-20 pb-16">
-    <div class="max-w-2xl mx-auto">
+    <div class="max-w-5xl mx-auto">
       <h1 class="text-4xl font-bold mb-8">Finalizar Pedido</h1>
       
-      <div class="bg-white rounded-2xl shadow-lg p-8">
-        <CheckoutForm client:load />
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Formulario -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+          <h2 class="text-2xl font-bold mb-6">Datos de contacto</h2>
+          <CheckoutForm client:load />
+        </div>
+
+        <!-- Resumen del pedido -->
+        <div class="bg-gray-50 rounded-2xl p-8 h-fit sticky top-24">
+          <h2 class="text-2xl font-bold mb-6">Resumen del pedido</h2>
+          <div id="cart-summary" class="space-y-4">
+            <p class="text-gray-500">Cargando...</p>
+          </div>
+        </div>
       </div>
     </div>
   </main>
+
+  <script>
+    import { useCartStore } from '../stores/cartStore';
+    import { formatPrice } from '../utils/formatters';
+
+    function renderCartSummary() {
+      const items = useCartStore.getState().items;
+      const total = useCartStore.getState().getTotal();
+      const container = document.getElementById('cart-summary');
+
+      if (!container) return;
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8">
+            <p class="text-gray-500 mb-4">Tu carrito está vacío</p>
+            <a href="/tienda" class="text-pink-600 hover:underline">Ir a la tienda</a>
+          </div>
+        `;
+        return;
+      }
+
+      const itemsHtml = items.map(item => {
+        const price = item.finalPrice ?? item.price;
+        const subtotal = price * item.quantity;
+        return `
+          <div class="flex gap-3 pb-4 border-b">
+            <img src="${item.image || '/placeholder.png'}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg" />
+            <div class="flex-1">
+              <p class="font-semibold text-sm line-clamp-2">${item.name}</p>
+              <p class="text-gray-600 text-sm">Cantidad: ${item.quantity}</p>
+              <p class="text-gray-900 font-semibold">${formatPrice(subtotal)}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        ${itemsHtml}
+        <div class="pt-4 border-t-2 border-gray-300">
+          <div class="flex justify-between text-2xl font-bold">
+            <span>Total:</span>
+            <span class="text-pink-600">${formatPrice(total)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Renderizar al cargar
+    renderCartSummary();
+
+    // Actualizar si cambia el carrito
+    useCartStore.subscribe(renderCartSummary);
+  </script>
 </BaseLayout>

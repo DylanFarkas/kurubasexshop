@@ -7,18 +7,21 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
   const total = useCartStore(state => state.getTotal());
   const itemCount = useCartStore(state => state.getItemCount());
 
-  if (!isOpen) return null;
-
   return (
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+          isOpen ? 'z-50 opacity-100' : 'opacity-0 pointer-events-none -z-10'
+        }`}
         onClick={onClose}
       />
       
       {/* Drawer */}
-      <div className="fixed right-0 top-0 h-full w-full max-w-md bg-white z-50 shadow-2xl flex flex-col">
+      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col transition-transform duration-300 ${
+          isOpen ? 'z-50 translate-x-0' : 'z-50 translate-x-full'
+        }`}
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-2xl font-bold">

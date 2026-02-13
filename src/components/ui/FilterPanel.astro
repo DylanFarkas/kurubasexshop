@@ -41,7 +41,7 @@ const { categories } = Astro.props;
                 >
                     <option value="">Todas las categorías</option>
                     {categories.map((cat) => (
-                        <option value={cat}>{cat}</option>
+                        <option value={cat.label}>{cat.label}</option>
                     ))}
                 </select>
             </div>

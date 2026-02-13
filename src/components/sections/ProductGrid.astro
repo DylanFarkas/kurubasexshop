@@ -15,13 +15,13 @@ const { products } = Astro.props;
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10"
         >
             {products.map((product) => {
-                const displayPrice = product.final_price ?? product.price;
+                const displayPrice = (product.final_price && product.final_price > 0) ? product.final_price : product.price;
                 const hasDiscount = product.discount_pct && product.discount_pct > 0;
 
                 return (
                     <article
                         class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                        data-category={product.category}
+                        data-category={product.categoryLabel}
                         data-price={displayPrice}
                         data-name={product.name}
                     >
@@ -57,7 +57,7 @@ const { products } = Astro.props;
                         <div class="p-4">
                             <div class="mb-2">
                                 <span class="text-xs text-neutral-500 uppercase tracking-wide">
-                                    {product.category}
+                                    {product.categoryLabel}
                                 </span>
                             </div>
 
@@ -77,10 +77,15 @@ const { products } = Astro.props;
                             </div>
 
                             <button
-                                class="w-full bg-white hover:bg-gray-600 hover:text-white border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 cursor-pointer"
+                                class="add-to-cart-btn w-full bg-white hover:bg-gray-600 hover:text-white border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 cursor-pointer"
                                 data-product-id={product.id}
+                                data-product-name={product.name}
+                                data-product-slug={product.slug}
+                                data-product-price={product.price}
+                                data-product-final-price={product.final_price || ''}
+                                data-product-image={product.image}
                             >
-                                Ver Producto
+                                Añadir al carrito
                             </button>
                         </div>
                     </article>
@@ -95,3 +100,37 @@ const { products } = Astro.props;
         </div>
     </div>
 </div>
+
+<script>
+    import { useCartStore } from '../../stores/cartStore';
+
+    // Manejar clicks en "Añadir al carrito"
+    document.addEventListener('click', (e) => {
+        const button = (e.target as HTMLElement).closest('.add-to-cart-btn');
+        if (!button) return;
+
+        const productData = {
+            productId: button.getAttribute('data-product-id') || '',
+            name: button.getAttribute('data-product-name') || '',
+            slug: button.getAttribute('data-product-slug') || '',
+            price: parseFloat(button.getAttribute('data-product-price') || '0'),
+            finalPrice: button.getAttribute('data-product-final-price') 
+                ? parseFloat(button.getAttribute('data-product-final-price') || '0')
+                : undefined,
+            image: button.getAttribute('data-product-image') || undefined,
+            quantity: 1,
+        };
+
+        useCartStore.getState().addItem(productData);
+
+        // Feedback visual
+        const originalText = button.textContent;
+        button.textContent = '✓ Añadido';
+        button.classList.add('bg-green-600', 'text-white');
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('bg-green-600', 'text-white');
+        }, 1500);
+    });
+</script>

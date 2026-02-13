@@ -146,6 +146,8 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
   </main>
 
   <script>
+    import { useCartStore } from '../../stores/cartStore';
+
     // Cambio de imagen en galería
     const mainImage = document.getElementById('main-image') as HTMLImageElement;
     const thumbnails = document.querySelectorAll('.thumbnail-btn');
@@ -159,15 +161,27 @@ const hasDiscount = !!mappedProduct.final_price && mappedProduct.final_price < m
       });
     });
     
-    // Añadir al carrito (se conectará con Zustand en siguiente fase)
+    // Añadir al carrito
     const addToCartBtn = document.getElementById('add-to-cart');
     addToCartBtn?.addEventListener('click', () => {
       const productData = addToCartBtn.dataset.product;
       if (productData) {
         const product = JSON.parse(productData);
-        // TODO: Conectar con useCartStore en Fase 4
-        console.log('Añadir producto:', product);
-        alert('Producto añadido al carrito!');
+        useCartStore.getState().addItem({
+          ...product,
+          quantity: 1,
+        });
+        
+        // Feedback visual
+        const originalText = addToCartBtn.textContent;
+        addToCartBtn.textContent = '✓ Añadido al carrito';
+        addToCartBtn.classList.add('bg-green-600');
+        
+        setTimeout(() => {
+          addToCartBtn.textContent = originalText;
+          addToCartBtn.classList.remove('bg-green-600');
+          addToCartBtn.classList.add('bg-pink-600');
+        }, 2000);
       }
     });
   </script>
