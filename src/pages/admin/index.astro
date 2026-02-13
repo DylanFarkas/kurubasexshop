@@ -1,0 +1,136 @@
+---
+import BaseAdminLayout from '../../layouts/BaseAdminLayout.astro';
+import { supabase } from '../../lib/supabase';
+
+export const prerender = false;
+
+// Obtener estadísticas
+const { count: totalProducts } = await supabase
+  .from('products')
+  .select('*', { count: 'exact', head: true });
+
+const { count: activeProducts } = await supabase
+  .from('products')
+  .select('*', { count: 'exact', head: true })
+  .eq('active', true);
+
+const { count: pendingOrders } = await supabase
+  .from('orders')
+  .select('*', { count: 'exact', head: true })
+  .eq('status', 'pending');
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const { count: todayOrders } = await supabase
+  .from('orders')
+  .select('*', { count: 'exact', head: true })
+  .gte('created_at', today.toISOString());
+
+const { count: totalCategories } = await supabase
+  .from('categories')
+  .select('*', { count: 'exact', head: true });
+---
+
+<BaseAdminLayout title="Dashboard">
+  <h1 class="text-4xl font-bold mb-8">Dashboard</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-600 text-sm">Total Productos</p>
+          <p class="text-3xl font-bold mt-2">{totalProducts || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-600 text-sm">Productos Activos</p>
+          <p class="text-3xl font-bold mt-2">{activeProducts || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-600 text-sm">Pedidos Pendientes</p>
+          <p class="text-3xl font-bold mt-2">{pendingOrders || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-600 text-sm">Pedidos Hoy</p>
+          <p class="text-3xl font-bold mt-2">{todayOrders || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-gray-600 text-sm">Total Categorías</p>
+          <p class="text-3xl font-bold mt-2">{totalCategories || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Accesos Rápidos</h2>
+      <div class="space-y-3">
+        <a href="/admin/productos/nuevo" class="block px-4 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition text-center">
+          + Nuevo Producto
+        </a>
+        <a href="/admin/pedidos" class="block px-4 py-3 border-2 border-pink-600 text-pink-600 rounded-lg hover:bg-pink-50 transition text-center">
+          Ver Pedidos
+        </a>
+        <a href="/" target="_blank" class="block px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-center">
+          Ver Sitio Público
+        </a>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-xl font-bold mb-4">Información</h2>
+      <div class="space-y-2 text-sm text-gray-600">
+        <p>• Los productos deben estar activos para ser visibles en la tienda</p>
+        <p>• Las categorías inactivas no se muestran en el sitio público</p>
+        <p>• Los pedidos se envían automáticamente por WhatsApp</p>
+        <p>• Todos los productos se venden bajo pedido sin límite de stock</p>
+      </div>
+    </div>
+  </div>
+</BaseAdminLayout>

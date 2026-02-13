@@ -1,0 +1,84 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{title} - Admin Kuruba</title>
+</head>
+<body class="bg-gray-50">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white shadow-lg">
+      <div class="p-6 border-b">
+        <h1 class="text-2xl font-bold text-pink-600">Kuruba Admin</h1>
+      </div>
+      
+      <nav class="p-4 space-y-2">
+        <a href="/admin" class="block px-4 py-2 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition">
+          Dashboard
+        </a>
+        <a href="/admin/productos" class="block px-4 py-2 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition">
+          Productos
+        </a>
+        <a href="/admin/categorias" class="block px-4 py-2 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition">
+          Categorías
+        </a>
+        <a href="/admin/pedidos" class="block px-4 py-2 rounded-lg hover:bg-pink-50 hover:text-pink-600 transition">
+          Pedidos
+        </a>
+      </nav>
+      
+      <div class="absolute bottom-0 w-64 p-4 border-t">
+        <form id="logout-form" action="/api/auth/signout" method="POST">
+          <button 
+            type="submit" 
+            class="w-full px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition flex items-center justify-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span>Cerrar Sesión</span>
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto">
+      <div class="p-8">
+        <slot />
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Mejorar UX del logout
+    const logoutForm = document.getElementById('logout-form') as HTMLFormElement;
+    
+    logoutForm?.addEventListener('submit', (e) => {
+      const button = logoutForm.querySelector('button[type="submit"]');
+      if (button) {
+        button.innerHTML = `
+          <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>Cerrando sesión...</span>
+        `;
+        button.setAttribute('disabled', 'true');
+      }
+    });
+  </script>
+</body>
+</html>

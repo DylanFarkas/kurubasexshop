@@ -2,12 +2,11 @@
 import { Icon } from "astro-icon/components";
 import { CATEGORIES } from "../../data/categories";
 
-interface Props {
-    totalProducts: number;
+export interface Props {
+    categories: any[];
 }
 
-const { totalProducts } = Astro.props;
-const categories = CATEGORIES.map((cat) => cat.label);
+const { categories } = Astro.props;
 ---
 
 <div 
@@ -68,11 +67,7 @@ const categories = CATEGORIES.map((cat) => cat.label);
             </div>
 
             <!-- Contador de productos -->
-            <div class="pt-4 border-t border-neutral-200">
-                <p class="text-sm text-neutral-600">
-                    <span id="product-count" class="font-semibold text-neutral-900">{totalProducts}</span> productos encontrados
-                </p>
-            </div>
+
         </div>
 
         <!-- Footer del panel -->

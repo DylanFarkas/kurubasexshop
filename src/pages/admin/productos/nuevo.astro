@@ -1,0 +1,65 @@
+---
+import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
+import ProductForm from '../../../components/admin/ProductForm';
+import { supabase } from '../../../lib/supabase';
+
+export const prerender = false;
+
+// Obtener categorías activas
+const { data: categories, error: categoriesError } = await supabase
+  .from('categories')
+  .select('id, label, slug')
+  .eq('active', true)
+  .order('order_position');
+
+if (categoriesError) {
+  console.error('Error fetching categories:', categoriesError);
+}
+---
+
+<BaseAdminLayout title="Nuevo Producto">
+  <div class="max-w-4xl">
+    <div class="mb-6">
+      <a 
+        href="/admin/productos" 
+        class="text-pink-600 hover:text-pink-700 flex items-center gap-2 mb-4"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Volver a Productos
+      </a>
+      
+      <h1 class="text-4xl font-bold text-gray-900">Nuevo Producto</h1>
+      <p class="text-gray-600 mt-2">
+        Crea un nuevo producto para tu tienda
+      </p>
+    </div>
+
+    <ProductForm 
+      client:load
+      categories={categories || []}
+      submitLabel="Crear Producto"
+    />
+  </div>
+</BaseAdminLayout>
+
+<script>
+  // Mensaje de confirmación al salir sin guardar
+  let formDirty = false;
+  
+  document.addEventListener('input', () => {
+    formDirty = true;
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (formDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  document.querySelector('form')?.addEventListener('submit', () => {
+    formDirty = false;
+  });
+</script>

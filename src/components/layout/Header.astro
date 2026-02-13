@@ -10,18 +10,81 @@ import { Icon } from 'astro-icon/components';
     </div>
 
     <div class="absolute right-4 top-1/2 flex -translate-y-1/2 items-center gap-2">
-      <button class="p-1 opacity-70 transition hover:opacity-100" aria-label="Buscar">
+      <button id="search-btn" class="p-1 opacity-70 transition hover:opacity-100" aria-label="Buscar">
         <Icon name="search" size={30} />
       </button>
   
       </button>
-      <button class="p-1 opacity-70 transition hover:opacity-100" aria-label="Favoritos">
+      <button id="favorites-btn" class="p-1 opacity-70 transition hover:opacity-100" aria-label="Favoritos">
         <Icon name="heart" size={30} />
       </button>
-      <a class="p-1 opacity-70 transition hover:opacity-100" href="/tienda" aria-label="Carrito">
+      <a id="cart-btn" class="p-1 opacity-70 transition hover:opacity-100" href="/tienda" aria-label="Carrito">
         <Icon name="cart" size={30} />
+          <span id="cart-badge" class="hidden absolute -top-1 -right-1 bg-pink-600 text-white text-xs rounded-full w-5 h-5 items-center justify-center">
+          0
+        </span>
       </a>
     </div>
 
   </div>
 </header>
+
+<div id="cart-root"></div>
+
+<script>
+  import { createRoot } from 'react-dom/client';
+  import { createElement } from 'react';
+  import CartDrawer from '../cart/CartDrawer';
+  import { useCartStore } from '../../stores/cartStore';
+
+  let isCartOpen = false;
+  let cartRoot: any = null;
+
+  function renderCart() {
+    const container = document.getElementById('cart-root');
+    if (!container) return;
+
+    if (!cartRoot) {
+      cartRoot = createRoot(container);
+    }
+
+    cartRoot.render(
+      createElement(CartDrawer, {
+        isOpen: isCartOpen,
+        onClose: () => {
+          isCartOpen = false;
+          renderCart();
+        },
+      })
+    );
+  }
+
+  // Inicializar
+  renderCart();
+
+  // Abrir carrito
+  const cartBtn = document.getElementById('cart-btn');
+  cartBtn?.addEventListener('click', () => {
+    isCartOpen = true;
+    renderCart();
+  });
+
+  // Actualizar badge
+  function updateBadge() {
+    const itemCount = useCartStore.getState().getItemCount();
+    const badge = document.getElementById('cart-badge');
+    
+    if (badge) {
+      if (itemCount > 0) {
+        badge.textContent = itemCount.toString();
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+  }
+
+  // Suscribirse a cambios del store
+  useCartStore.subscribe(updateBadge);
+  updateBadge();
+</script>

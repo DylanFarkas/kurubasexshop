@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { createServerClient } from '../../lib/supabaseServer';
+
+export const prerender = false;
+
+// Si ya está autenticado, redirigir
+const supabase = createServerClient(Astro.cookies);
+const { data: { session } } = await supabase.auth.getSession();
+
+if (session) {
+  return Astro.redirect('/admin');
+}
+
+// Obtener mensajes de error de la URL
+const errorParam = Astro.url.searchParams.get('error');
+const errorMessages: Record<string, string> = {
+  'auth_failed': 'Error al autenticar. Por favor, intenta nuevamente.',
+  'not_authorized': 'No tienes permisos de administrador.',
+  'session_expired': 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+};
+const errorMessage = errorParam ? errorMessages[errorParam] : null;
+---
+
+<BaseLayout title="Admin Login - Kuruba">
+  <main class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div class="max-w-md w-full">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold mb-2">Kuruba Admin</h1>
+        <p class="text-gray-600">Accede al panel de administración</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        {errorMessage && (
+          <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+            {errorMessage}
+          </div>
+        )}
+        
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Email</label>
+            <input
+              type="email"
+              name="email"
+              required
+              class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              placeholder="admin@kuruba.com"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition"
+          >
+            Enviar Magic Link
+          </button>
+        </form>
+
+        <div id="message" class="mt-4 text-center text-sm hidden"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    import { supabase } from '../../lib/supabase';
+
+    const form = document.getElementById('login-form') as HTMLFormElement;
+    const messageEl = document.getElementById('message');
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      const email = formData.get('email') as string;
+
+      try {
+        const { error } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+
+        if (error) throw error;
+
+        if (messageEl) {
+          messageEl.textContent = '✓ Revisa tu email para el link de acceso';
+          messageEl.classList.remove('hidden', 'text-red-500');
+          messageEl.classList.add('text-green-600');
+        }
+
+        form.reset();
+      } catch (error: any) {
+        if (messageEl) {
+          messageEl.textContent = `Error: ${error.message}`;
+          messageEl.classList.remove('hidden', 'text-green-600');
+          messageEl.classList.add('text-red-500');
+        }
+      }
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,186 @@
+---
+import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
+import ProductForm from '../../../components/admin/ProductForm';
+import { supabase } from '../../../lib/supabase';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/admin/productos');
+}
+
+// Obtener el producto
+const { data: product, error: productError } = await supabase
+  .from('products')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+if (productError || !product) {
+  console.error('Error fetching product:', productError);
+  return Astro.redirect('/admin/productos');
+}
+
+// Obtener categorías activas
+const { data: categories, error: categoriesError } = await supabase
+  .from('categories')
+  .select('id, label, slug')
+  .eq('active', true)
+  .order('order_position');
+
+if (categoriesError) {
+  console.error('Error fetching categories:', categoriesError);
+}
+---
+
+<BaseAdminLayout title="Editar Producto">
+  <div class="max-w-4xl">
+    <div class="mb-6">
+      <a 
+        href="/admin/productos" 
+        class="text-pink-600 hover:text-pink-700 flex items-center gap-2 mb-4"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Volver a Productos
+      </a>
+      
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-4xl font-bold text-gray-900">Editar Producto</h1>
+          <p class="text-gray-600 mt-2">
+            Actualiza la información del producto
+          </p>
+        </div>
+        
+        <button
+          id="deleteButton"
+          type="button"
+          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          Eliminar Producto
+        </button>
+      </div>
+    </div>
+
+    <ProductForm 
+      client:load
+      categories={categories || []}
+      initialData={{
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        description: product.description,
+        category_id: product.category_id,
+        price: product.price,
+        final_price: product.final_price,
+        discount_pct: product.discount_pct,
+        image: product.image,
+        images: product.images || [],
+        featured: product.featured,
+        active: product.active,
+      }}
+      submitLabel="Actualizar Producto"
+      isEdit={true}
+    />
+    
+    <!-- Modal de confirmación para eliminar -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+      <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+        <h3 class="text-xl font-bold text-gray-900 mb-4">¿Eliminar producto?</h3>
+        <p class="text-gray-600 mb-6">
+          Esta acción no se puede deshacer. El producto será eliminado permanentemente.
+        </p>
+        <div class="flex gap-3 justify-end">
+          <button
+            id="cancelDelete"
+            type="button"
+            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            id="confirmDelete"
+            type="button"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseAdminLayout>
+
+<script define:vars={{ productId: id }}>
+  // Mensaje de confirmación al salir sin guardar
+  let formDirty = false;
+  
+  document.addEventListener('input', () => {
+    formDirty = true;
+  });
+
+  window.addEventListener('beforeunload', (e) => {
+    if (formDirty) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  document.querySelector('form')?.addEventListener('submit', () => {
+    formDirty = false;
+  });
+
+  // Lógica de eliminación
+  const deleteButton = document.getElementById('deleteButton');
+  const deleteModal = document.getElementById('deleteModal');
+  const cancelDelete = document.getElementById('cancelDelete');
+  const confirmDelete = document.getElementById('confirmDelete');
+
+  deleteButton?.addEventListener('click', () => {
+    deleteModal?.classList.remove('hidden');
+  });
+
+  cancelDelete?.addEventListener('click', () => {
+    deleteModal?.classList.add('hidden');
+  });
+
+  confirmDelete?.addEventListener('click', async () => {
+    try {
+      confirmDelete.disabled = true;
+      confirmDelete.textContent = 'Eliminando...';
+      
+      const response = await fetch('/api/products/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ id: productId })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Producto eliminado exitosamente');
+        formDirty = false;
+        window.location.href = '/admin/productos';
+      } else {
+        alert('Error al eliminar: ' + data.message);
+        confirmDelete.disabled = false;
+        confirmDelete.textContent = 'Eliminar';
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error al eliminar el producto');
+      confirmDelete.disabled = false;
+      confirmDelete.textContent = 'Eliminar';
+    }
+  });
+</script>

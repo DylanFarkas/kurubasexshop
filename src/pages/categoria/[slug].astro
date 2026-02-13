@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProductGrid from '../../components/sections/ProductGrid.astro';
+import { supabase } from '../../lib/supabase';
+import type { Product } from '../../types/product';
+
+export async function getStaticPaths() {
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('slug, label, active')
+    .eq('active', true);
+  
+  return (categories || []).map(category => ({
+    params: { slug: category.slug },
+    props: { categoryLabel: category.label },
+  }));
+}
+
+const { slug } = Astro.params;
+const { categoryLabel } = Astro.props;
+
+// Fetch categoría
+const { data: category } = await supabase
+  .from('categories')
+  .select('*')
+  .eq('slug', slug)
+  .single();
+
+if (!category) {
+  return Astro.redirect('/404');
+}
+
+// Fetch productos de la categoría
+const { data: products } = await supabase
+  .from('products')
+  .select(`
+    *,
+    categories (
+      label,
+      slug
+    )
+  `)
+  .eq('category_id', category.id)
+  .eq('active', true)
+  .order('created_at', { ascending: false });
+
+const mappedProducts: Product[] = (products || []).map(p => ({
+  ...p,
+  categoryLabel: p.categories?.label,
+  categorySlug: p.categories?.slug,
+}));
+---
+
+<BaseLayout 
+  title={`${categoryLabel} - Kuruba Sexshop`}
+  description={`Explora nuestra selección de ${categoryLabel.toLowerCase()}`}
+>
+  <main class="container mx-auto px-4 pt-20 pb-16">
+    <h1 class="text-4xl font-bold mb-8">{categoryLabel}</h1>
+    
+    {mappedProducts.length > 0 ? (
+      <ProductGrid products={mappedProducts} />
+    ) : (
+      <div class="text-center py-16 text-gray-500">
+        <p>No hay productos disponibles en esta categoría</p>
+        <a href="/tienda" class="text-pink-600 hover:underline mt-4 inline-block">
+          Ver todos los productos
+        </a>
+      </div>
+    )}
+  </main>
+</BaseLayout>

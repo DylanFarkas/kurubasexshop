@@ -56,9 +56,8 @@ const {
     style="scrollbar-width: none;"
   >
     <div class="flex gap-10 snap-x snap-mandatory">
-      {products.filter((p) => p.featured).map((p) => (
-      <ProductCard product={p} variant={getVariant ? getVariant(p) : {}} />
-      
+      {products.map((p) => (
+        <ProductCard product={p} variant={getVariant ? getVariant(p) : {}} />
       ))}
     </div>
   </div>
