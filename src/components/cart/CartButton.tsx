@@ -11,11 +11,11 @@ export default function CartButton() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="relative p-1 opacity-70 transition hover:opacity-100"
+        className="relative p-1 opacity-70 transition hover:opacity-100 cursor-pointer"
         aria-label="Carrito"
       >
         <svg
-          className="w-[30px] h-[30px]"
+          className="w-7.5 h-7.5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -28,7 +28,7 @@ export default function CartButton() {
           />
         </svg>
         {itemCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-pink-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <span className="absolute top-1 -right-1 bg-pink-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
             {itemCount}
           </span>
         )}

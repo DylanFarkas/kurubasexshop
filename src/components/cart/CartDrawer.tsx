@@ -11,7 +11,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/10 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? 'z-50 opacity-100' : 'opacity-0 pointer-events-none -z-10'
         }`}
         onClick={onClose}
@@ -23,13 +23,13 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-2xl font-bold">
-            Carrito ({itemCount})
+        <div className="flex items-center justify-between p-6 ">
+          <h2 className="text-2xl tracking-wider font-bold">
+            CARRITO ({itemCount})
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition"
+            className="p-2 rounded-full transition hover:text-red-500 cursor-pointer"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -38,16 +38,17 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
         </div>
 
         {/* Items */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {items.length === 0 ? (
             <div className="text-center py-16 text-gray-500">
               <p className="mb-4">Tu carrito está vacío</p>
-              <button
+              <a
+                href='/tienda'
                 onClick={onClose}
-                className="text-pink-600 hover:underline"
+                className="text-pink-600 cursor-pointer hover:underline"
               >
                 Ir a la tienda
-              </button>
+              </a>
             </div>
           ) : (
             items.map(item => (
@@ -58,9 +59,9 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
 
         {/* Footer */}
         {items.length > 0 && (
-          <div className="border-t p-6 space-y-4">
-            <div className="flex justify-between text-xl font-bold">
-              <span>Total:</span>
+          <div className="p-6 space-y-4">
+            <div className="flex justify-between text-xl tracking-wider font-bold">
+              <span>TOTAL:</span>
               <span>{formatPrice(total)}</span>
             </div>
             <a
