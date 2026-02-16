@@ -25,4 +25,4 @@ pnpm-debug.log*
 
 .agents/
 
-*.md
+docs/
