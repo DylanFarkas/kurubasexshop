@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { supabaseAdmin } from '../../../lib/supabaseAdmin';
 import { generateWhatsAppLink } from '../../../lib/whatsapp';
+import { sendOrderConfirmationToCustomer, sendOrderNotificationToAdmin } from '../../../lib/email';
 import { z } from 'zod';
 
 export const prerender = false;
@@ -65,6 +66,18 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Generar link de WhatsApp usando el helper
     const whatsappLink = generateWhatsAppLink(order);
+
+    // 📧 Enviar emails de forma asíncrona (no bloquea la respuesta)
+    console.log('📧 Enviando emails...');
+    Promise.all([
+      sendOrderConfirmationToCustomer(order),
+      sendOrderNotificationToAdmin(order)
+    ]).then(results => {
+      console.log('✅ Emails procesados:', results);
+    }).catch(err => {
+      console.error('❌ Error enviando emails (no crítico):', err);
+      // No fallar la orden si los emails fallan
+    });
 
     return new Response(
       JSON.stringify({ 
