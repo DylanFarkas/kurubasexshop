@@ -1,0 +1,270 @@
+---
+import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
+import { supabaseAdmin } from '../../../lib/supabaseAdmin';
+import { generateWhatsAppLink } from '../../../lib/whatsapp';
+import { formatPrice, formatDateTime } from '../../../utils/formatters';
+import type { Order, OrderStatus } from '../../../types/order';
+
+export const prerender = false;
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/admin/pedidos');
+}
+
+// Obtener la orden
+const { data: order, error } = await supabaseAdmin
+  .from('orders')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+if (error || !order) {
+  console.error('Error fetching order:', error);
+  return Astro.redirect('/admin/pedidos');
+}
+
+const orderData = order as Order;
+
+// Generar link de WhatsApp
+const whatsappLink = generateWhatsAppLink(orderData);
+
+// Colores de estado
+const statusColors: Record<OrderStatus, string> = {
+  pending: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-blue-100 text-blue-800',
+  processing: 'bg-purple-100 text-purple-800',
+  shipped: 'bg-indigo-100 text-indigo-800',
+  delivered: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+};
+
+const statusLabels: Record<OrderStatus, string> = {
+  pending: 'Pendiente',
+  confirmed: 'Confirmado',
+  processing: 'En proceso',
+  shipped: 'Enviado',
+  delivered: 'Entregado',
+  cancelled: 'Cancelado',
+};
+---
+
+<BaseAdminLayout title={`Pedido #${orderData.order_number}`}>
+  <div class="space-y-6">
+    <!-- Header con botón de volver -->
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a 
+          href="/admin/pedidos"
+          class="text-gray-600 hover:text-gray-900"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </a>
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Pedido #{orderData.order_number}</h1>
+          <p class="mt-1 text-sm text-gray-600">
+            Realizado el {formatDateTime(orderData.created_at)}
+          </p>
+        </div>
+      </div>
+      <div>
+        <span class={`px-4 py-2 rounded-full text-sm font-semibold ${statusColors[orderData.status]}`}>
+          {statusLabels[orderData.status]}
+        </span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Columna principal -->
+      <div class="lg:col-span-2 space-y-6">
+        <!-- Productos -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Productos</h2>
+          </div>
+          <div class="p-6">
+            <div class="space-y-4">
+              {orderData.items.map((item) => (
+                <div class="flex items-center gap-4 pb-4 border-b last:border-0">
+                  {item.image && (
+                    <img 
+                      src={item.image} 
+                      alt={item.name}
+                      class="w-16 h-16 object-cover rounded"
+                    />
+                  )}
+                  <div class="flex-1">
+                    <h3 class="font-medium text-gray-900">{item.name}</h3>
+                    <p class="text-sm text-gray-600">Cantidad: {item.quantity}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-semibold text-gray-900">
+                      {formatPrice(item.price * item.quantity)}
+                    </p>
+                    <p class="text-sm text-gray-600">
+                      {formatPrice(item.price)} c/u
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <!-- Totales -->
+            <div class="mt-6 pt-6 border-t space-y-2">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Subtotal</span>
+                <span class="text-gray-900">{formatPrice(orderData.subtotal)}</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Envío</span>
+                <span class="text-gray-900">
+                  {orderData.shipping_cost > 0 ? formatPrice(orderData.shipping_cost) : 'Gratis'}
+                </span>
+              </div>
+              <div class="flex justify-between text-lg font-bold pt-2 border-t">
+                <span class="text-gray-900">Total</span>
+                <span class="text-pink-600">{formatPrice(orderData.total)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notas del cliente -->
+        {orderData.notes && (
+          <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+              <h2 class="text-lg font-semibold text-gray-900">Notas del cliente</h2>
+            </div>
+            <div class="p-6">
+              <p class="text-gray-700">{orderData.notes}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <!-- Columna lateral -->
+      <div class="space-y-6">
+        <!-- Información del cliente -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Cliente</h2>
+          </div>
+          <div class="p-6 space-y-3">
+            <div>
+              <p class="text-sm text-gray-600">Nombre</p>
+              <p class="font-medium text-gray-900">{orderData.customer_name}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Teléfono</p>
+              <p class="font-medium text-gray-900">
+                <a href={`tel:${orderData.customer_phone}`} class="text-pink-600 hover:text-pink-700">
+                  {orderData.customer_phone}
+                </a>
+              </p>
+            </div>
+            {orderData.customer_email && (
+              <div>
+                <p class="text-sm text-gray-600">Email</p>
+                <p class="font-medium text-gray-900">
+                  <a href={`mailto:${orderData.customer_email}`} class="text-pink-600 hover:text-pink-700">
+                    {orderData.customer_email}
+                  </a>
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <!-- Cambiar estado -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Estado del pedido</h2>
+          </div>
+          <div class="p-6">
+            <form id="status-form" class="space-y-4">
+              <select
+                id="status-select"
+                name="status"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              >
+                <option value="pending" selected={orderData.status === 'pending'}>Pendiente</option>
+                <option value="confirmed" selected={orderData.status === 'confirmed'}>Confirmado</option>
+                <option value="processing" selected={orderData.status === 'processing'}>En proceso</option>
+                <option value="shipped" selected={orderData.status === 'shipped'}>Enviado</option>
+                <option value="delivered" selected={orderData.status === 'delivered'}>Entregado</option>
+                <option value="cancelled" selected={orderData.status === 'cancelled'}>Cancelado</option>
+              </select>
+              <button
+                type="submit"
+                class="w-full bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition font-medium"
+              >
+                Actualizar estado
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">WhatsApp</h2>
+          </div>
+          <div class="p-6">
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center justify-center gap-2 w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition font-medium"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Reenviar mensaje
+            </a>
+            {orderData.whatsapp_sent_at && (
+              <p class="mt-2 text-xs text-gray-500 text-center">
+                Último envío: {formatDateTime(orderData.whatsapp_sent_at)}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('status-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const form = e.target as HTMLFormElement;
+      const select = form.querySelector('#status-select') as HTMLSelectElement;
+      const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      
+      const orderId = window.location.pathname.split('/').pop();
+      const newStatus = select.value;
+      
+      button.disabled = true;
+      button.textContent = 'Actualizando...';
+      
+      try {
+        const response = await fetch(`/api/orders/update?id=${orderId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus }),
+        });
+        
+        if (!response.ok) throw new Error('Error al actualizar');
+        
+        window.location.reload();
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al actualizar el estado');
+        button.disabled = false;
+        button.textContent = 'Actualizar estado';
+      }
+    });
+  </script>
+</BaseAdminLayout>

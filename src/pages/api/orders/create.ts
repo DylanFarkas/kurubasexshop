@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { supabaseAdmin } from '../../../lib/supabaseAdmin';
+import { generateWhatsAppLink } from '../../../lib/whatsapp';
 import { z } from 'zod';
 
 export const prerender = false;
@@ -26,14 +27,24 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
     const validatedData = createOrderSchema.parse(body);
 
+    // Generar número de orden único
+    const { count } = await supabaseAdmin
+      .from('orders')
+      .select('*', { count: 'exact', head: true });
+    
+    const orderNumber = (count || 0) + 1;
+
     // Crear orden en base de datos
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
       .insert({
+        order_number: orderNumber,
         customer_name: validatedData.customer_name,
         customer_phone: validatedData.customer_phone,
         customer_email: validatedData.customer_email || null,
         notes: validatedData.notes || null,
+        subtotal: validatedData.total,
+        shipping_cost: 0,
         total: validatedData.total,
         status: 'pending',
         items: validatedData.items,
@@ -52,30 +63,8 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Generar mensaje de WhatsApp
-    const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER || '573001234567';
-    
-    let message = `¡Hola! 🛍️ Nuevo pedido #${order.id}\n\n`;
-    message += `👤 Cliente: ${validatedData.customer_name}\n`;
-    message += `📱 Teléfono: ${validatedData.customer_phone}\n`;
-    if (validatedData.customer_email) {
-      message += `📧 Email: ${validatedData.customer_email}\n`;
-    }
-    message += `\n📦 PRODUCTOS:\n`;
-    
-    validatedData.items.forEach((item, index) => {
-      message += `\n${index + 1}. ${item.name}\n`;
-      message += `   Cantidad: ${item.quantity}\n`;
-      message += `   Precio: $${item.price.toLocaleString()}\n`;
-    });
-    
-    message += `\n💰 TOTAL: $${validatedData.total.toLocaleString()}\n`;
-    
-    if (validatedData.notes) {
-      message += `\n📝 Notas: ${validatedData.notes}\n`;
-    }
-
-    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    // Generar link de WhatsApp usando el helper
+    const whatsappLink = generateWhatsAppLink(order);
 
     return new Response(
       JSON.stringify({ 
