@@ -31,24 +31,29 @@ export default function CartItem({ item }: { item: CartItemType }) {
         <p className="text-gray-600 text-sm mt-1">{formatPrice(price)}</p>
 
         <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center rounded-lg bg-gray-100 shadow-inner w-fit">
+          <div className="flex items-center bg-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
             <button
               onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-              className="w-8 h-8 flex items-center justify-center text-xl font-bold text-gray-600 bg-white rounded-l-lg border border-gray-300 hover:bg-pink-100 hover:text-pink-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-9 h-9 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={item.quantity <= 1}
               aria-label="Disminuir cantidad"
             >
-              −
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">
+                <line x1="6" y1="12" x2="18" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
             </button>
-            <span className="w-10 h-8 flex items-center justify-center text-lg font-semibold text-gray-800 bg-transparent">
+            <span className="w-10 h-9 flex items-center justify-center text-lg font-semibold text-gray-800 bg-transparent select-none">
               {item.quantity}
             </span>
             <button
               onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-              className="w-8 h-8 flex items-center justify-center text-xl font-bold text-gray-600 bg-white rounded-r-lg border border-gray-300 hover:bg-pink-100 hover:text-pink-600 transition"
+              className="w-9 h-9 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 focus:outline-none cursor-pointer"
               aria-label="Aumentar cantidad"
             >
-              +
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">
+                <line x1="12" y1="6" x2="12" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                <line x1="6" y1="12" x2="18" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
             </button>
           </div>
 

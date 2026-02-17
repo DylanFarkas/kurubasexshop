@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { supabase } from '../../lib/supabase';
 import { formatPrice } from '../../utils/formatters';
 import type { Product } from '../../types/product';
+import { Icon } from 'astro-icon/components';
 
 export async function getStaticPaths() {
   const { data: products } = await supabase
@@ -110,6 +111,37 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
           )}
         </div>
         
+        <!-- Selector de cantidad -->
+          <div class="flex items-center gap-5">
+            <label for="quantity" class="font-semibold text-gray-700">Cantidad:</label>
+            <div class="flex items-center bg-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
+              <button
+                id="decrease-qty"
+                type="button"
+                class="w-10 h-10 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 hover:from-pink-300 hover:to-pink-500 focus:outline-none cursor-pointer"
+                aria-label="Disminuir cantidad"
+                >
+                <Icon name="minus" size={20} />
+              </button>
+              <input
+                id="quantity"
+                type="number"
+                min="1"
+                value="1"
+                class="w-14 text-center py-2 mx-2 border-none bg-transparent text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
+                style="appearance: none;"
+              />
+              <button
+                id="increase-qty"
+                type="button"
+                class="w-10 h-10 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 hover:from-pink-300 hover:to-pink-500 focus:outline-none cursor-pointer"
+                aria-label="Aumentar cantidad"
+              >
+              <Icon name="plus" size={20} />
+              </button>
+            </div>
+          </div>
+        
         <div class="space-y-3">
           <button
             id="add-to-cart"
@@ -162,15 +194,42 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
       });
     });
     
+    // Control de cantidad
+    const quantityInput = document.getElementById('quantity') as HTMLInputElement;
+    const decreaseBtn = document.getElementById('decrease-qty');
+    const increaseBtn = document.getElementById('increase-qty');
+    
+    decreaseBtn?.addEventListener('click', () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      if (currentValue > 1) {
+        quantityInput.value = String(currentValue - 1);
+      }
+    });
+    
+    increaseBtn?.addEventListener('click', () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      quantityInput.value = String(currentValue + 1);
+    });
+    
+    // Validar que el input siempre sea >= 1
+    quantityInput?.addEventListener('change', () => {
+      const value = parseInt(quantityInput.value) || 1;
+      if (value < 1) {
+        quantityInput.value = '1';
+      }
+    });
+    
     // Añadir al carrito
     const addToCartBtn = document.getElementById('add-to-cart');
     addToCartBtn?.addEventListener('click', () => {
       const productData = addToCartBtn.dataset.product;
       if (productData) {
         const product = JSON.parse(productData);
+        const quantity = parseInt(quantityInput?.value || '1');
+        
         useCartStore.getState().addItem({
           ...product,
-          quantity: 1,
+          quantity: quantity,
         });
         
         // Feedback visual
