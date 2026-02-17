@@ -8,11 +8,11 @@ interface Props {
 const { products } = Astro.props;
 ---
 
-<div class="w-full px-4 md:px-25 pb-10">
-    <div class="max-w-7xl mx-auto">
+<div class="w-full px-4 md:px-5 pb-10">
+    <div class="max-w-full mx-auto">
         <div
             id="products-grid"
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
         >
             {products.map((product) => {
                 const displayPrice = (product.final_price && product.final_price > 0) ? product.final_price : product.price;
@@ -20,11 +20,12 @@ const { products } = Astro.props;
 
                 return (
                     <article
-                        class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                        class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col self-stretch"
                         data-category={product.categoryLabel}
                         data-price={displayPrice}
                         data-name={product.name}
                     >
+
                         <div class="relative aspect-square bg-neutral-100 overflow-hidden">
                             {product.image ? (
                                 <img
@@ -54,7 +55,7 @@ const { products } = Astro.props;
                             )}
                         </div>
 
-                        <div class="p-4">
+                        <div class="p-4 flex flex-col grow">
                             <div class="mb-2">
                                 <span class="text-xs text-neutral-500 uppercase tracking-wide">
                                     {product.categoryLabel}
@@ -78,7 +79,8 @@ const { products } = Astro.props;
 
                             <a
                                 href={`/producto/${product.slug}`}
-                                class="block w-full bg-white hover:bg-pink-200 border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center"
+                                class="mt-auto block w-full bg-white hover:bg-pink-200 border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center"
+
                             >
                                 Ver producto
                             </a>
