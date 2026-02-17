@@ -2,17 +2,21 @@
 import { NAV_ITEMS } from "../../data/navigation";
 import DropdownCategories from "./DropdownCategories.astro";
 
+interface Props {
+  categories: ReadonlyArray<{ label: string; slug: string }>;
+}
+
+const { categories } = Astro.props;
 const pathname = Astro.url.pathname;
 const isHome = pathname === "/";
 ---
 
 <nav class="hidden items-center gap-8 text-gray-900 md:flex">
   {NAV_ITEMS.map((item) => {
-    // if (item.type === "dropdown") {
-    //   return <DropdownCategories />;
-    // }
+    if (item.type === "dropdown") {
+      return <DropdownCategories categories={categories} />;
+    }
 
-    // anchors: si estás en home puedes usar "#id", si no, "/#id"
     const href =
       item.type === "anchor" && isHome ? item.href.replace("/","") : item.href;
 
