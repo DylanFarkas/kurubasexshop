@@ -41,6 +41,9 @@ const { data: categories } = await supabase
                     <p class="text-neutral-500 max-w-2xl text-lg leading-relaxed">
                         Explora nuestra colección premium de juguetes y accesorios íntimos. Calidad y placer garantizado en cada pedido
                     </p>
+                    <p class="text-sm text-neutral-400 mt-2">
+                        <span id="product-count">{mappedProducts.length}</span> productos disponibles
+                    </p>
                 </div>
                 
                 <button

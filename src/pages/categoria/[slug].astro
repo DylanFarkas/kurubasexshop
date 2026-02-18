@@ -4,6 +4,7 @@ import ProductGrid from '../../components/sections/ProductGrid.astro';
 import { supabase } from '../../lib/supabase';
 import FilterPanel from "../../components/ui/FilterPanel.astro";
 import type { Product } from '../../types/product';
+import { Icon } from "astro-icon/components";
 
 export async function getStaticPaths() {
   const { data: categories } = await supabase
@@ -56,20 +57,43 @@ const mappedProducts: Product[] = (products || []).map(p => ({
   title={`${categoryLabel} - Kuruba Sexshop`}
   description={`Explora nuestra selección de ${categoryLabel.toLowerCase()}`}
 >
-  <main class="container mx-auto px-4 pt-20 pb-16">
-    <h1 class="ml-5 text-4xl font-bold mb-8">{categoryLabel}</h1>
-    
-    <FilterPanel />
-    
-    {mappedProducts.length > 0 ? (
-      <ProductGrid products={mappedProducts} />
-    ) : (
-      <div class="text-center py-16 text-gray-500">
-        <p>No hay productos disponibles en esta categoría</p>
-        <a href="/tienda" class="text-pink-600 hover:underline mt-4 inline-block">
-          Ver todos los productos
-        </a>
+  <main class="pt-24 pb-16 min-h-screen bg-white">
+    <div class="container mx-auto px-4 md:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-neutral-200 pb-8">
+        <div>
+          <span class="text-rose-600 font-bold text-sm tracking-wider uppercase mb-2 block">{categoryLabel}</span>
+          <h1 class="text-3xl md:text-5xl font-bold text-neutral-900 mb-4 tracking-tight">
+            {categoryLabel}
+          </h1>
+          <p class="text-neutral-500 max-w-2xl text-lg leading-relaxed">
+            Descubre nuestra selección exclusiva de {categoryLabel.toLowerCase()}
+          </p>
+          <p class="text-sm text-neutral-400 mt-2">
+            <span id="product-count">{mappedProducts.length}</span> productos disponibles
+          </p>
+        </div>
+        
+        <button
+          id="open-filters"
+          class="group flex items-center justify-center gap-3 px-8 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap cursor-pointer"
+        >
+          <span class="mr-1">Filtros</span>
+          <Icon name="filter" />
+        </button>
       </div>
-    )}
+
+      {mappedProducts.length > 0 ? (
+        <ProductGrid products={mappedProducts} />
+      ) : (
+        <div class="text-center py-16 text-gray-500">
+          <p>No hay productos disponibles en esta categoría</p>
+          <a href="/tienda" class="text-pink-600 hover:underline mt-4 inline-block">
+            Ver todos los productos
+          </a>
+        </div>
+      )}
+    </div>
+    
+    <FilterPanel showCategoryFilter={false} />
   </main>
 </BaseLayout>

@@ -20,7 +20,7 @@ const { products } = Astro.props;
 
                 return (
                     <article
-                        class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col self-stretch"
+                        class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
                         data-category={product.categoryLabel}
                         data-price={displayPrice}
                         data-name={product.name}
@@ -55,7 +55,7 @@ const { products } = Astro.props;
                             )}
                         </div>
 
-                        <div class="p-4 flex flex-col grow">
+                        <div class="p-4 flex flex-col flex-1">
                             <div class="mb-2">
                                 <span class="text-xs text-neutral-500 uppercase tracking-wide">
                                     {product.categoryLabel}
@@ -80,7 +80,6 @@ const { products } = Astro.props;
                             <a
                                 href={`/producto/${product.slug}`}
                                 class="mt-auto block w-full bg-white hover:bg-pink-200 border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center"
-
                             >
                                 Ver producto
                             </a>
