@@ -6,23 +6,25 @@ import type { Product } from "../../types/product";
 
 // Obtener categorías activas de Supabase
 const { data: categories } = await supabase
-  .from('categories')
-  .select('id, label, slug')
-  .eq('active', true)
-  .order('order_position');
+  .from("categories")
+  .select("id, label, slug")
+  .eq("active", true)
+  .order("order_position");
 
 // Obtener productos destacados y activos con sus categorías
 const { data: featuredProducts } = await supabase
-  .from('products')
-  .select(`
+  .from("products")
+  .select(
+    `
     *,
     categories (
       label,
       slug
     )
-  `)
-  .eq('featured', true)
-  .eq('active', true);
+  `,
+  )
+  .eq("featured", true)
+  .eq("active", true);
 
 // Agrupar productos por categoría
 const featuredByCategory: Record<string, any[]> = {};
@@ -43,40 +45,47 @@ const featuredByCategory: Record<string, any[]> = {};
 
 // Construir bloques solo para categorías que tengan productos destacados
 const blocks = (categories || [])
-  .filter(cat => featuredByCategory[cat.label] && featuredByCategory[cat.label].length > 0)
-  .map(cat => ({
+  .filter(
+    (cat) =>
+      featuredByCategory[cat.label] && featuredByCategory[cat.label].length > 0,
+  )
+  .map((cat) => ({
     key: cat.label,
     href: `/categoria/${cat.slug}`,
   }));
 ---
 
 <section class="w-full py-10 md:py-10">
-    <div class="w-full px-25">
-        <div class="mb-8">
-            <h2 class="text-2xl md:text-3xl font-semibold text-neutral-900">
-                Lo más vendido
-            </h2>
-        </div>
-
-        {blocks.length > 0 ? (
-            <div class="space-y-20">
-                {blocks.map((b, i) => (
-                    <ProductCarousel
-                        id={`carousel-${i}-${b.key.toLowerCase().replace(/\s+/g, "-")}`}
-                        title={b.key}
-                        subtitle="Destacados"
-                        href={b.href}
-                        products={featuredByCategory[b.key] ?? []}
-                        getVariant={(p: Product) =>
-                            p.cardVariant ?? categoryThemes[p.categoryLabel || ''] ?? {}
-                        }
-                    />
-                ))}
-            </div>
-        ) : (
-            <div class="text-center py-12 text-gray-500">
-                <p>No hay productos destacados disponibles en este momento</p>
-            </div>
-        )}
+  <div class="w-full px-25">
+    <div class="mb-8 flex justify-center text-center">
+      <h2
+        class="text-rose-500 font-semibold tracking-[0.25rem] uppercase text-lg md:text-xl"
+      >
+        Lo más vendido
+      </h2>
     </div>
+
+    {
+      blocks.length > 0 ? (
+        <div class="space-y-20">
+          {blocks.map((b, i) => (
+            <ProductCarousel
+              id={`carousel-${i}-${b.key.toLowerCase().replace(/\s+/g, "-")}`}
+              title={b.key}
+              subtitle="Destacados"
+              href={b.href}
+              products={featuredByCategory[b.key] ?? []}
+              getVariant={(p: Product) =>
+                p.cardVariant ?? categoryThemes[p.categoryLabel || ""] ?? {}
+              }
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-12 text-gray-500">
+          <p>No hay productos destacados disponibles en este momento</p>
+        </div>
+      )
+    }
+  </div>
 </section>

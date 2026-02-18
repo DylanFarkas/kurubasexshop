@@ -1,0 +1,287 @@
+---
+// ReviewsSection.astro
+const reviews = [
+  {
+    name: "Juliana Silva",
+    handle: "@julianasilva",
+    rating: 5,
+    text:
+      "Me encantó la atención y la discreción. La calidad es top y llegó súper rápido. Ya tengo mis favoritos para repetir.",
+    product: "Lubricante a base de agua",
+    avatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=160&h=160&fit=crop&crop=faces",
+    verified: true,
+  },
+  {
+    name: "Camila Rojas",
+    handle: "@cami.rojas",
+    rating: 5,
+    text:
+      "La experiencia fue muy cómoda. Todo llega bien empacado y con una vibra cero juzgona. Gracias por hacerlo fácil.",
+    product: "Vibrador discreto",
+    avatar:
+      "https://images.unsplash.com/photo-1548142813-c348350df52b?w=160&h=160&fit=crop&crop=faces",
+    verified: true,
+  },
+  {
+    name: "Laura Méndez",
+    handle: "@lauram",
+    rating: 4,
+    text:
+      "Buenísimo. Me asesoraron rápido por WhatsApp y me recomendaron justo lo que necesitaba. Full recomendados.",
+    product: "Kit de bienestar íntimo",
+    avatar:
+      "https://images.unsplash.com/photo-1544723795-3fb6469f5b39?w=160&h=160&fit=crop&crop=faces",
+    verified: false,
+  },
+];
+
+const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
+---
+
+<section id="reviews" class="w-full bg-white">
+  <div class="mx-auto w-full max-w-7xl 2xl:max-w-425 px-6 md:px-10 lg:px-16 py-14 md:py-20">
+    <!-- Header -->
+    <div class="flex flex-col items-center text-center">
+      <p class="text-rose-500 font-semibold tracking-[0.25em] text-xs md:text-sm">
+        FEEDBACK
+      </p>
+
+      <h2 class="mt-4 text-3xl md:text-4xl xl:text-5xl font-semibold text-neutral-900">
+        Reseñas reales, experiencias reales
+      </h2>
+
+      <p class="mt-4 max-w-2xl text-neutral-600 text-base md:text-lg">
+        Lo más importante: que te sientas cómoda, segura y bien acompañada. Esto es lo que dicen quienes ya compraron.
+      </p>
+    </div>
+
+    <!-- Content -->
+    <div class="mt-10 md:mt-14 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 items-center">
+      <!-- Left: product / decoration -->
+      <div class="relative">
+        <div class="rounded-2xl border border-neutral-200 bg-neutral-50 p-8 md:p-10 overflow-hidden">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-neutral-900">Más vendidos</p>
+              <p class="mt-2 text-neutral-600 text-sm">
+                Selección curada para autocuidado e intimidad, con envío discreto.
+              </p>
+            </div>
+
+            <span class="inline-flex items-center rounded-full bg-rose-500/10 text-rose-600 px-3 py-1 text-xs font-semibold shrink-0">
+              +4.8 ★ promedio
+            </span>
+          </div>
+
+          <div class="mt-8 flex justify-center">
+            <!-- Si quieres volver a poner la imagen, descomenta -->
+            <!--
+            <img
+              src="/imgs/brand/sen-intimo.webp"
+              alt="Producto destacado"
+              class="h-24 md:h-28 w-auto object-contain opacity-90"
+              loading="lazy"
+            />
+            -->
+          </div>
+
+          <div class="mt-8 flex flex-col gap-3">
+            <a
+              href="/tienda"
+              class="inline-flex items-center justify-center rounded-full bg-rose-500 px-5 py-3 text-white font-semibold hover:bg-rose-600 transition"
+            >
+              Ver productos
+            </a>
+            <a
+              href="/contacto"
+              class="inline-flex items-center justify-center rounded-full border border-neutral-200 px-5 py-3 text-neutral-900 font-semibold hover:bg-neutral-50 transition"
+            >
+              Hablar con asesoría
+            </a>
+          </div>
+        </div>
+
+        <!-- soft glow -->
+        <div class="pointer-events-none absolute -inset-6 -z-10 bg-[radial-gradient(circle_at_30%_20%,rgba(244,63,94,0.18),transparent_55%)]"></div>
+      </div>
+
+      <!-- Right: reviews -->
+      <div class="relative">
+        <!-- Desktop grid -->
+        <div class="hidden md:grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {reviews.map((r) => (
+            <article class="group rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+              <div class="flex items-start justify-between gap-3">
+                <!-- Left (avatar + name) -->
+                <div class="flex items-center gap-3 min-w-0">
+                  <img
+                    src={r.avatar}
+                    alt={r.name}
+                    class="h-10 w-10 rounded-full object-cover ring-2 ring-white shadow shrink-0"
+                    loading="lazy"
+                  />
+                  <div class="leading-tight min-w-0">
+                    <p class="text-sm font-semibold text-neutral-900 flex items-center gap-2 min-w-0">
+                      <span class="truncate">{r.name}</span>
+                      {/* {r.verified && (
+                        <span class="inline-flex items-center rounded-full bg-emerald-500/10 text-emerald-700 px-2 py-0.5 text-[11px] font-semibold shrink-0">
+                          Verificada
+                        </span>
+                      )} */}
+                    </p>
+                    <p class="text-xs text-neutral-500 truncate">{r.handle}</p>
+                  </div>
+                </div>
+
+                <!-- Stars (fixed, never squish) -->
+                <div class="flex items-center gap-1 shrink-0 mt-0.5">
+                  {Stars(r.rating).map((on) => (
+                    <svg
+                      class:list={[
+                        "h-4 w-4",
+                        on ? "text-amber-400" : "text-neutral-200",
+                      ]}
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 17.27l5.18 3.07-1.64-5.81L20.5 9.24l-6.02-.52L12 3.5 9.52 8.72 3.5 9.24l4.96 5.29-1.64 5.81L12 17.27z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+
+              <p class="mt-4 text-sm text-neutral-700 leading-relaxed">
+                “{r.text}”
+              </p>
+
+              <div class="mt-5 flex items-center justify-between text-xs text-neutral-500">
+                <span class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1">
+                  {r.product}
+                </span>
+                <span class="opacity-0 group-hover:opacity-100 transition">
+                  ★ {r.rating}.0
+                </span>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <!-- Mobile carousel -->
+        <div class="md:hidden">
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-sm font-semibold text-neutral-900">Opiniones</p>
+
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                data-prev
+                class="h-10 w-10 rounded-full border border-neutral-200 grid place-items-center hover:bg-neutral-50 transition"
+                aria-label="Anterior"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                data-next
+                class="h-10 w-10 rounded-full border border-neutral-200 grid place-items-center hover:bg-neutral-50 transition"
+                aria-label="Siguiente"
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <div
+            data-carousel
+            class="mt-4 flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {reviews.map((r) => (
+              <article class="snap-start shrink-0 w-[85%] rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <div class="flex items-start justify-between gap-3">
+                  <div class="flex items-center gap-3 min-w-0">
+                    <img
+                      src={r.avatar}
+                      alt={r.name}
+                      class="h-10 w-10 rounded-full object-cover ring-2 ring-white shadow shrink-0"
+                      loading="lazy"
+                    />
+                    <div class="leading-tight min-w-0">
+                      <p class="text-sm font-semibold text-neutral-900 flex items-center gap-2 min-w-0">
+                        <span class="truncate">{r.name}</span>
+                        {r.verified && (
+                          <span class="inline-flex items-center rounded-full bg-emerald-500/10 text-emerald-700 px-2 py-0.5 text-[11px] font-semibold shrink-0">
+                            Verificada
+                          </span>
+                        )}
+                      </p>
+                      <p class="text-xs text-neutral-500 truncate">{r.handle}</p>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-1 shrink-0 mt-0.5">
+                    {Stars(r.rating).map((on) => (
+                      <svg
+                        class:list={[
+                          "h-4 w-4",
+                          on ? "text-amber-400" : "text-neutral-200",
+                        ]}
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path d="M12 17.27l5.18 3.07-1.64-5.81L20.5 9.24l-6.02-.52L12 3.5 9.52 8.72 3.5 9.24l4.96 5.29-1.64 5.81L12 17.27z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+
+                <p class="mt-4 text-sm text-neutral-700 leading-relaxed">
+                  “{r.text}”
+                </p>
+
+                <div class="mt-5 text-xs text-neutral-500">
+                  <span class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1">
+                    {r.product}
+                  </span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <!-- Script para navegación del carousel -->
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              const root = document.getElementById('reviews');
+              if (!root) return;
+
+              const scroller = root.querySelector('[data-carousel]');
+              const prev = root.querySelector('[data-prev]');
+              const next = root.querySelector('[data-next]');
+              if (!scroller || !prev || !next) return;
+
+              const step = () => {
+                const card = scroller.querySelector('article');
+                if (!card) return 320;
+
+                const styles = getComputedStyle(scroller);
+                const gap = parseFloat(styles.columnGap || styles.gap || '16') || 16;
+
+                return card.getBoundingClientRect().width + gap;
+              };
+
+              prev.addEventListener('click', () => {
+                scroller.scrollBy({ left: -step(), behavior: 'smooth' });
+              });
+
+              next.addEventListener('click', () => {
+                scroller.scrollBy({ left: step(), behavior: 'smooth' });
+              });
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
