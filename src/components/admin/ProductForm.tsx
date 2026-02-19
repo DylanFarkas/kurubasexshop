@@ -134,78 +134,78 @@ export default function ProductForm({
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       {submitError && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
           {submitError}
         </div>
       )}
 
       {/* Información Básica */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Información Básica</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4 transition-colors">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Información Básica</h2>
 
         {/* Nombre */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Nombre del Producto *
           </label>
           <input
             {...register('name')}
             type="text"
             id="name"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
             placeholder="Ej: Vibrador de lujo"
           />
           {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
           )}
         </div>
 
         {/* Slug */}
         <div>
-          <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="slug" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Slug (URL) *
           </label>
           <input
             {...register('slug')}
             type="text"
             id="slug"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
             placeholder="vibrador-de-lujo"
           />
           {errors.slug && (
-            <p className="mt-1 text-sm text-red-600">{errors.slug.message}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.slug.message}</p>
           )}
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
             Se genera automáticamente desde el nombre
           </p>
         </div>
 
         {/* Descripción */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Descripción
           </label>
           <textarea
             {...register('description')}
             id="description"
             rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
             placeholder="Describe las características del producto..."
           />
           {errors.description && (
-            <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
           )}
         </div>
 
         {/* Categoría */}
         <div>
-          <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Categoría *
           </label>
           <select
             {...register('category_id')}
             id="category_id"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors"
           >
             <option value="">Selecciona una categoría</option>
             {categories.map(category => (
@@ -215,40 +215,40 @@ export default function ProductForm({
             ))}
           </select>
           {errors.category_id && (
-            <p className="mt-1 text-sm text-red-600">{errors.category_id.message}</p>
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category_id.message}</p>
           )}
         </div>
       </div>
 
       {/* Precios */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Precios</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4 transition-colors">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Precios</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Precio */}
           <div>
-            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Precio Regular *
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500">$</span>
+              <span className="absolute left-3 top-2 text-gray-500 dark:text-gray-400">$</span>
               <input
                 {...register('price', { valueAsNumber: true })}
                 type="number"
                 id="price"
                 step="0.01"
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 placeholder="0.00"
               />
             </div>
             {errors.price && (
-              <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.price.message}</p>
             )}
           </div>
 
           {/* Descuento % (editable) */}
           <div>
-            <label htmlFor="discount_pct" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="discount_pct" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Descuento %
             </label>
             <div className="relative">
@@ -259,37 +259,37 @@ export default function ProductForm({
                 min="0"
                 max="100"
                 step="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 placeholder="0"
               />
-              <span className="absolute right-3 top-2 text-gray-500">%</span>
+              <span className="absolute right-3 top-2 text-gray-500 dark:text-gray-400">%</span>
             </div>
             {errors.discount_pct && (
-              <p className="mt-1 text-sm text-red-600">{errors.discount_pct.message}</p>
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.discount_pct.message}</p>
             )}
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Ingresa el porcentaje de descuento
             </p>
           </div>
 
           {/* Precio Final (readonly - calculado) */}
           <div>
-            <label htmlFor="final_price" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="final_price" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Precio con Descuento
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-2 text-gray-500">$</span>
+              <span className="absolute left-3 top-2 text-gray-500 dark:text-gray-400">$</span>
               <input
                 {...register('final_price', { valueAsNumber: true })}
                 type="number"
                 id="final_price"
                 step="0.01"
                 readOnly
-                className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                className="w-full pl-8 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900/50 text-gray-700 dark:text-gray-300 transition-colors"
                 placeholder="0.00"
               />
             </div>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Se calcula automáticamente
             </p>
           </div>
@@ -297,8 +297,8 @@ export default function ProductForm({
       </div>
 
       {/* Imágenes */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Imágenes</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4 transition-colors">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Imágenes</h2>
 
         {/* Imagen Principal */}
         <ImageUploader
@@ -307,12 +307,12 @@ export default function ProductForm({
           onImageUploaded={handleMainImageUploaded}
         />
         {errors.image && (
-          <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>
+          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.image.message}</p>
         )}
 
         {/* Galería */}
-        <div className="border-t pt-4 mt-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">Galería de Imágenes</h3>
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Galería de Imágenes</h3>
           
           {/* Imágenes actuales */}
           {imageUrls.length > 0 && (
@@ -322,12 +322,12 @@ export default function ProductForm({
                   <img
                     src={url}
                     alt={`Gallery ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                    className="w-full h-32 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-700"
                   />
                   <button
                     type="button"
                     onClick={() => removeGalleryImage(index)}
-                    className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+                    className="absolute top-1 right-1 bg-red-600 dark:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -343,15 +343,15 @@ export default function ProductForm({
             label="Añadir Imágenes a Galería"
             onImagesUploaded={handleGalleryImagesUploaded}
           />
-          <p className="mt-2 text-xs text-gray-500">
+          <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
             Puedes seleccionar y subir múltiples imágenes a la vez
           </p>
         </div>
       </div>
 
       {/* Opciones */}
-      <div className="bg-white rounded-lg shadow p-6 space-y-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Opciones</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4 transition-colors">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Opciones</h2>
 
         <div className="flex items-center gap-6">
           {/* Featured */}
@@ -359,9 +359,9 @@ export default function ProductForm({
             <input
               {...register('featured')}
               type="checkbox"
-              className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+              className="w-4 h-4 text-pink-600 dark:text-pink-500 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 rounded focus:ring-pink-500 dark:focus:ring-pink-400 transition-colors"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Producto Destacado
             </span>
           </label>
@@ -371,15 +371,15 @@ export default function ProductForm({
             <input
               {...register('active')}
               type="checkbox"
-              className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+              className="w-4 h-4 text-pink-600 dark:text-pink-500 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 rounded focus:ring-pink-500 dark:focus:ring-pink-400 transition-colors"
             />
-            <span className="text-sm font-medium text-gray-700">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Producto Activo
             </span>
           </label>
         </div>
 
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           Los productos inactivos no se mostrarán en la tienda pública
         </p>
       </div>
@@ -388,7 +388,7 @@ export default function ProductForm({
       <div className="flex items-center justify-between">
         <a
           href="/admin/productos"
-          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
           Cancelar
         </a>
@@ -397,8 +397,8 @@ export default function ProductForm({
           type="submit"
           disabled={isSubmitting}
           className={`
-            px-6 py-2 bg-pink-600 text-white rounded-lg font-medium transition
-            ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-pink-700'}
+            px-6 py-2 bg-pink-500 text-white rounded-lg font-medium transition-all cursor-pointer
+            ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-pink-600 dark:hover:bg-pink-700'}
           `}
         >
           {isSubmitting ? (

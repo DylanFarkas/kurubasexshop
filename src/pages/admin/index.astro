@@ -33,73 +33,107 @@ const { count: totalCategories } = await supabase
 ---
 
 <BaseAdminLayout title="Dashboard">
-  <h1 class="text-4xl font-bold mb-8">Dashboard</h1>
+  <!-- Welcome Section -->
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">¡Bienvenido de vuelta! 👋</h2>
+    <p class="text-gray-600 dark:text-gray-400 mt-2">Aquí está un resumen de tu tienda</p>
+  </div>
 
+  <!-- Stats Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-gray-600 text-sm">Total Productos</p>
-          <p class="text-3xl font-bold mt-2">{totalProducts || 0}</p>
+    <!-- Total Products -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Productos</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{totalProducts || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-xs text-gray-500 dark:text-gray-400">En catálogo</span>
+          </div>
         </div>
-        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-gray-600 text-sm">Productos Activos</p>
-          <p class="text-3xl font-bold mt-2">{activeProducts || 0}</p>
+    <!-- Active Products -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Productos Activos</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{activeProducts || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-xs text-green-600 dark:text-green-400 font-medium">Visibles</span>
+          </div>
         </div>
-        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
           </svg>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-gray-600 text-sm">Pedidos Pendientes</p>
-          <p class="text-3xl font-bold mt-2">{pendingOrders || 0}</p>
+    <!-- Pending Orders -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pedidos Pendientes</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{pendingOrders || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-xs text-yellow-600 dark:text-yellow-400 font-medium">Requieren atención</span>
+          </div>
         </div>
-        <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
-          <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-gray-600 text-sm">Pedidos Hoy</p>
-          <p class="text-3xl font-bold mt-2">{todayOrders || 0}</p>
+    <!-- Today's Orders -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pedidos Hoy</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{todayOrders || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <svg class="w-4 h-4 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-xs text-pink-600 dark:text-pink-400 font-medium">En las últimas 24h</span>
+          </div>
         </div>
-        <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
-          <svg class="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <p class="text-gray-600 text-sm">Total Categorías</p>
-          <p class="text-3xl font-bold mt-2">{totalCategories || 0}</p>
+    <!-- Total Categories -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Categorías</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{totalCategories || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-xs text-gray-500 dark:text-gray-400">Organizadas</span>
+          </div>
         </div>
-        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-          <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
         </div>
@@ -107,29 +141,125 @@ const { count: totalCategories } = await supabase
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="bg-white rounded-lg shadow p-6">
-      <h2 class="text-xl font-bold mb-4">Accesos Rápidos</h2>
-      <div class="space-y-3">
-        <a href="/admin/productos/nuevo" class="block px-4 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition text-center">
-          + Nuevo Producto
-        </a>
-        <a href="/admin/pedidos" class="block px-4 py-3 border-2 border-pink-600 text-pink-600 rounded-lg hover:bg-pink-50 transition text-center">
-          Ver Pedidos
-        </a>
-        <a href="/" target="_blank" class="block px-4 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-center">
-          Ver Sitio Público
-        </a>
+  <!-- Action Cards Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Quick Actions -->
+    <div class="lg:col-span-2">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-linear-to-r from-pink-50 to-purple-50 dark:from-pink-900/10 dark:to-purple-900/10">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <svg class="w-5 h-5 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Acciones Rápidas
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a 
+              href="/admin/productos/nuevo" 
+              class="group flex items-center gap-4 p-4 bg-pink-500 rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all"
+            >
+              <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-white font-semibold">Nuevo Producto</p>
+                <p class="text-pink-100 text-sm">Añadir al catálogo</p>
+              </div>
+              <svg class="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+
+            <a 
+              href="/admin/pedidos" 
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-pink-500 dark:hover:border-pink-400 transition-all"
+            >
+              <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-gray-900 dark:text-gray-100 font-semibold">Ver Pedidos</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Gestionar órdenes</p>
+              </div>
+              <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-pink-500 dark:group-hover:text-pink-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+
+            <a 
+              href="/admin/categorias/nuevo" 
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-purple-500 dark:hover:border-purple-400 transition-all"
+            >
+              <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-gray-900 dark:text-gray-100 font-semibold">Nueva Categoría</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Organizar productos</p>
+              </div>
+              <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+
+            <a 
+              href="/" 
+              target="_blank"
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-500 dark:hover:border-blue-400 transition-all"
+            >
+              <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-gray-900 dark:text-gray-100 font-semibold">Sitio Público</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Ver como cliente</p>
+              </div>
+              <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <h2 class="text-xl font-bold mb-4">Información</h2>
-      <div class="space-y-2 text-sm text-gray-600">
-        <p>• Los productos deben estar activos para ser visibles en la tienda</p>
-        <p>• Las categorías inactivas no se muestran en el sitio público</p>
-        <p>• Los pedidos se envían automáticamente por WhatsApp</p>
-        <p>• Todos los productos se venden bajo pedido sin límite de stock</p>
+    <!-- Information Panel -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+          <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Información
+        </h3>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="flex items-start gap-3 p-3 bg-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-green-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Los productos deben estar <span class="text-green-400 font-medium">activos</span> para ser visibles en la tienda</p>
+        </div>
+        <div class="flex items-start gap-3 p-3 bg-gray-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-purple-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Las categorías inactivas <span class="text-purple-400 font-medium">no se muestran</span> en el sitio público</p>
+        </div>
+        <!-- <div class="flex items-start gap-3 p-3 bg-gray-800/50 dark:bg-gray-900/50 rounded-lg border border-gray-700 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-blue-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Los pedidos se envían <span class="text-blue-400 font-medium">automáticamente por WhatsApp</span></p>
+        </div> -->
+        <div class="flex items-start gap-3 p-3 bg-gray-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-pink-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Todos los productos se venden <span class="text-pink-400 font-medium">bajo pedido</span> sin límite de stock</p>
+        </div>
       </div>
     </div>
   </div>
