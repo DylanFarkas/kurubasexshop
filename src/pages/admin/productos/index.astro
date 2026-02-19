@@ -1,7 +1,7 @@
 ---
 import StatCard from '../../../components/admin/StatCard';
 import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
-import { supabase } from '../../../lib/supabase';
+import { supabaseAdmin } from '../../../lib/supabaseAdmin';
 import { formatPrice, formatDate } from '../../../utils/formatters';
 
 export const prerender = false;
@@ -24,7 +24,7 @@ const [
   { count: activeCount },
   { count: featuredCount }
 ] = await Promise.all([
-  supabase
+  supabaseAdmin
     .from('products')
     .select(
       `
@@ -39,12 +39,12 @@ const [
     .order('created_at', { ascending: false })
     .range(from, to),
   
-  supabase
+  supabaseAdmin
     .from('products')
     .select('*', { count: 'exact', head: true })
     .eq('active', true),
   
-  supabase
+  supabaseAdmin
     .from('products')
     .select('*', { count: 'exact', head: true })
     .eq('featured', true)

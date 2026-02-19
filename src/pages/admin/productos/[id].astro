@@ -1,7 +1,7 @@
 ---
 import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
 import ProductForm from '../../../components/admin/ProductForm';
-import { supabase } from '../../../lib/supabase';
+import { supabaseAdmin } from '../../../lib/supabaseAdmin';
 
 export const prerender = false;
 
@@ -12,7 +12,7 @@ if (!id) {
 }
 
 // Obtener el producto
-const { data: product, error: productError } = await supabase
+const { data: product, error: productError } = await supabaseAdmin
   .from('products')
   .select('*')
   .eq('id', id)
@@ -24,7 +24,7 @@ if (productError || !product) {
 }
 
 // Obtener categorías activas
-const { data: categories, error: categoriesError } = await supabase
+const { data: categories, error: categoriesError } = await supabaseAdmin
   .from('categories')
   .select('id, label, slug')
   .eq('active', true)
