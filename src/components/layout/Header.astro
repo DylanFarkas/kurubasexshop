@@ -1,9 +1,11 @@
 ---
 import Nav from "./Nav.astro";
+import MobileMenu from "./MobileMenu";
 import { Icon } from 'astro-icon/components';
 import CartButton from '../cart/CartButton';
 import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { CATEGORIES } from "../../data/categories";
+import { NAV_ITEMS } from "../../data/navigation";
 
 // Obtener categorías activas desde Supabase una sola vez
 const { data: dbCategories } = await supabaseAdmin
@@ -14,10 +16,19 @@ const { data: dbCategories } = await supabaseAdmin
 
 // Usar categorías de BD si existen, sino usar las hardcodeadas como fallback
 const categories = (dbCategories && dbCategories.length > 0 ? dbCategories : CATEGORIES) as ReadonlyArray<{ label: string; slug: string }>;
+const pathname = Astro.url.pathname;
 ---
 
-<header class="fixed top-0 z-50 w-full bg-white">
+<header class="fixed top-0 z-50 w-full bg-white dark:bg-gray-900 transition-colors">
   <div class="relative h-10 w-full">
+
+    <MobileMenu 
+      navItems={NAV_ITEMS} 
+      categories={categories} 
+      currentPath={pathname}
+      client:load 
+    />
+
     <div class="absolute inset-0 flex items-center justify-center">
       <Nav categories={categories} />
     </div>
