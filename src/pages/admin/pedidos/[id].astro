@@ -5,6 +5,7 @@ import { generateWhatsAppLink } from '../../../lib/whatsapp';
 import { formatPrice, formatDateTime } from '../../../utils/formatters';
 import type { Order, OrderStatus } from '../../../types/order';
 import { Icon } from 'astro-icon/components';
+import { MapPin } from 'lucide-react';
 
 export const prerender = false;
 
@@ -171,10 +172,22 @@ const statusLabels: Record<OrderStatus, string> = {
                 </p>
               </div>
             )}
+            
+            <!-- Agregar después del email -->
+            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">Dirección de envío</p>
+              <div class="space-y-1">
+                <p class="font-medium text-gray-900 dark:text-gray-100">
+                  <MapPin className="inline w-5 h-5 mb-1" /> {orderData.customer_department} - {orderData.customer_city}
+                </p>
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  {orderData.customer_address}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Cambiar estado -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors">
           <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Estado del pedido</h2>

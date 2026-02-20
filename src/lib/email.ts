@@ -16,7 +16,6 @@ const EMAILS_ENABLED = import.meta.env.ENABLE_EMAILS === 'true';
  * Envía email de confirmación al cliente
  */
 export async function sendOrderConfirmationToCustomer(order: Order) {
-  // 🔴 Si los emails están desactivados, salir temprano
   if (!EMAILS_ENABLED) {
     console.log('⚠️ Emails desactivados - No se envió email a cliente');
     return { success: true, skipped: true };
@@ -47,7 +46,6 @@ export async function sendOrderConfirmationToCustomer(order: Order) {
  * Notifica al admin sobre nuevo pedido
  */
 export async function sendOrderNotificationToAdmin(order: Order) {
-  // 🔴 Si los emails están desactivados, salir temprano
   if (!EMAILS_ENABLED) {
     console.log('⚠️ Emails desactivados - No se envió email a admin');
     return { success: true, skipped: true };
@@ -128,6 +126,14 @@ function getCustomerEmailTemplate(order: Order): string {
             hour: '2-digit',
             minute: '2-digit'
           })}</p>
+        </div>
+
+        <!-- NUEVO: Dirección de envío -->
+        <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">📍 Dirección de Envío</h3>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0;">
+          <p style="margin: 5px 0;"><strong>Departamento:</strong> ${order.customer_department}</p>
+          <p style="margin: 5px 0;"><strong>Ciudad:</strong> ${order.customer_city}</p>
+          <p style="margin: 5px 0;"><strong>Dirección:</strong> ${order.customer_address}</p>
         </div>
 
         <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">📦 Productos</h3>
@@ -229,6 +235,14 @@ function getAdminEmailTemplate(order: Order): string {
           <p style="margin: 5px 0;"><strong>📱 Teléfono:</strong> <a href="tel:${order.customer_phone}" style="color: #f44336; text-decoration: none;">${order.customer_phone}</a></p>
           ${order.customer_email ? `<p style="margin: 5px 0;"><strong>📧 Email:</strong> <a href="mailto:${order.customer_email}" style="color: #f44336; text-decoration: none;">${order.customer_email}</a></p>` : ''}
           <p style="margin: 5px 0;"><strong>🕐 Fecha:</strong> ${new Date(order.created_at).toLocaleString('es-PE')}</p>
+        </div>
+
+        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #4caf50;">
+          <p style="margin: 0; font-weight: bold;">📍 Dirección de Envío:</p>
+          <p style="margin: 5px 0 0 0;">
+            ${order.customer_department} - ${order.customer_city}<br/>
+            ${order.customer_address}
+          </p>
         </div>
 
         ${order.notes ? `

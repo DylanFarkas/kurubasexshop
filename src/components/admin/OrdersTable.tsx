@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import type { Order, OrderStatus } from '../../types/order';
 import { formatPrice, formatDateTime } from '../../utils/formatters';
+import { MapPin } from 'lucide-react';
 
 interface OrdersTableProps {
   orders: Order[];
@@ -153,6 +154,11 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
                       <div className="text-sm text-gray-500 dark:text-gray-400">
                         {order.customer_phone}
                       </div>
+                      {order.customer_city && order.customer_department && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                          <MapPin className="inline w-3 h-3 mb-1" /> {order.customer_city}, {order.customer_department}
+                        </div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900 dark:text-gray-100">

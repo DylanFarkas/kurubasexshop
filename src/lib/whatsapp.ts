@@ -12,16 +12,22 @@ export function generateWhatsAppLink(order: Order): string {
   const message = `
 🛍️ *Nuevo Pedido #${order.order_number}*
 
-👤 Cliente: ${order.customer_name}
-📱 Teléfono: ${order.customer_phone}
-${order.customer_email ? `📧 Email: ${order.customer_email}` : ''}
+👤 *DATOS DEL CLIENTE*
+• Nombre: ${order.customer_name}
+• Teléfono: ${order.customer_phone}
+${order.customer_email ? `• Email: ${order.customer_email}` : ''}
 
-📦 *Productos:*
+📍 *DIRECCIÓN DE ENVÍO*
+• Departamento: ${order.customer_department}
+• Ciudad: ${order.customer_city}
+• Dirección: ${order.customer_address}
+
+📦 *PRODUCTOS:*
 ${order.items.map((item, index) => 
   `${index + 1}. ${item.name} x${item.quantity} - ${formatPrice(item.price * item.quantity)}`
 ).join('\n')}
 
-💰 *Total: ${formatPrice(order.total)}*
+💰 *TOTAL: ${formatPrice(order.total)}*
 
 ${order.notes ? `📝 Notas: ${order.notes}` : ''}
   `.trim();

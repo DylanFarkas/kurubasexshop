@@ -20,6 +20,9 @@ export type Order = {
     customer_name: string;
     customer_phone: string;
     customer_email?: string;
+    customer_department: string;
+    customer_city: string;
+    customer_address: string;
     items: OrderItem[];
     subtotal: number;
     shipping_cost: number;
@@ -35,6 +38,9 @@ export type CreateOrderInput = {
     customer_name: string;
     customer_phone: string;
     customer_email?: string;
+    customer_department: string;
+    customer_city: string;
+    customer_address: string;
     items: OrderItem[];
     total: number;
     notes?: string;
