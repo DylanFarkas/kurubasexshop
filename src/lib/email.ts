@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import type { Order } from '../types/order';
+import { formatPrice } from '../utils/formatters';
 
 const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
@@ -9,7 +10,7 @@ const SITE_URL = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
 // MODO TESTING: Usar email de Resend
 const FROM_EMAIL = 'onboarding@resend.dev';
 
-// 🆕 Verificar si los emails están habilitados
+// Verificar si los emails están habilitados
 const EMAILS_ENABLED = import.meta.env.ENABLE_EMAILS === 'true';
 
 /**
@@ -55,7 +56,7 @@ export async function sendOrderNotificationToAdmin(order: Order) {
     const { data, error } = await resend.emails.send({
       from: `Kuruba Notificaciones <${FROM_EMAIL}>`,
       to: ADMIN_EMAIL,
-      subject: `🛒 Nuevo Pedido #${order.order_number} - S/ ${order.total.toFixed(2)}`,
+      subject: `🛒 Nuevo Pedido #${order.order_number} - ${formatPrice(order.total)}`,
       html: getAdminEmailTemplate(order),
     });
 
@@ -87,10 +88,10 @@ function getCustomerEmailTemplate(order: Order): string {
         ${item.quantity}
       </td>
       <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
-        S/ ${item.price.toFixed(2)}
+        ${formatPrice(item.price)}
       </td>
       <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">
-        S/ ${(item.quantity * item.price).toFixed(2)}
+        ${formatPrice(item.quantity * item.price)}
       </td>
     </tr>
   `
@@ -153,9 +154,9 @@ function getCustomerEmailTemplate(order: Order): string {
         </table>
 
         <div style="text-align: right; margin-top: 20px; padding: 20px; background: #f9f9f9; border-radius: 8px;">
-          <p style="margin: 5px 0; font-size: 14px;">Subtotal: S/ ${order.subtotal.toFixed(2)}</p>
-          <p style="margin: 5px 0; font-size: 14px;">Envío: S/ ${order.shipping_cost.toFixed(2)}</p>
-          <p style="margin: 15px 0 0 0; font-size: 24px; color: #667eea;"><strong>Total: S/ ${order.total.toFixed(2)}</strong></p>
+          <p style="margin: 5px 0; font-size: 14px;">Subtotal: ${formatPrice(order.subtotal)}</p>
+          <p style="margin: 5px 0; font-size: 14px;">Envío: ${formatPrice(order.shipping_cost)}</p>
+          <p style="margin: 15px 0 0 0; font-size: 24px; color: #667eea;"><strong>Total: ${formatPrice(order.total)}</strong></p>
         </div>
 
         ${order.notes ? `
@@ -207,7 +208,7 @@ function getAdminEmailTemplate(order: Order): string {
         ${item.quantity}
       </td>
       <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">
-        S/ ${(item.quantity * item.price).toFixed(2)}
+        ${formatPrice(item.quantity * item.price)}
       </td>
     </tr>
   `
@@ -267,9 +268,9 @@ function getAdminEmailTemplate(order: Order): string {
         </table>
 
         <div style="text-align: right; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-          <p style="margin: 5px 0;">Subtotal: S/ ${order.subtotal.toFixed(2)}</p>
-          <p style="margin: 5px 0;">Envío: S/ ${order.shipping_cost.toFixed(2)}</p>
-          <p style="margin: 10px 0 0 0; font-size: 20px; color: #f44336;"><strong>Total: S/ ${order.total.toFixed(2)}</strong></p>
+          <p style="margin: 5px 0;">Subtotal: ${formatPrice(order.subtotal)}</p>
+          <p style="margin: 5px 0;">Envío: ${formatPrice(order.shipping_cost)}</p>
+          <p style="margin: 10px 0 0 0; font-size: 20px; color: #f44336;"><strong>Total: ${formatPrice(order.total)}</strong></p>
         </div>
 
         <div style="text-align: center; margin-top: 25px;">

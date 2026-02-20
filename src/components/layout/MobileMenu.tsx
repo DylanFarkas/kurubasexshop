@@ -55,7 +55,7 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
       />
 
       <aside
-        className={`lg:hidden fixed top-0 left-0 h-full w-70 bg-white dark:bg-gray-900 z-56 shadow-2xl transform transition-transform duration-300 ease-in-out ${
+        className={`lg:hidden fixed top-0 left-0 h-full w-70 bg-white z-56 shadow-2xl transform transition-transform duration-300 ease-in-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -63,10 +63,10 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
           {navItems.map((item) => {
             if (item.type === 'dropdown') {
               return (
-                <div key={item.label} className="border-b border-gray-200 dark:border-gray-700">
+                <div key={item.label} className="border-b border-gray-200">
                   <button
                     onClick={() => setCategoriesOpen(!categoriesOpen)}
-                    className="w-full flex items-center justify-between py-4 text-left text-gray-900 dark:text-white font-medium uppercase tracking-wide text-sm hover:opacity-70 transition-opacity"
+                    className="w-full flex items-center justify-between py-4 text-left text-gray-900 font-medium uppercase tracking-wide text-sm hover:opacity-70 transition-opacity"
                   >
                     {item.label}
                     <svg
@@ -93,7 +93,7 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
                           key={category.slug}
                           href={`/categoria/${category.slug}`}
                           onClick={closeMenu}
-                          className="block py-2 text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors text-sm"
+                          className="block py-2 text-gray-700 hover:text-pink-600  transition-colors text-sm"
                         >
                           {category.label}
                         </a>
@@ -113,14 +113,14 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
                 key={item.label}
                 href={href}
                 onClick={closeMenu}
-                className="py-4 border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white font-medium uppercase tracking-wide text-sm hover:opacity-70 transition-opacity"
+                className="py-4 border-b border-gray-200 text-gray-900 font-medium uppercase tracking-wide text-sm hover:opacity-70 transition-opacity"
               >
                 {item.label}
               </a>
             );
           })}
 
-          <div className="mt-auto pt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-auto pt-6 text-center text-xs text-gray-500">
             <p>Kuruba Sexshop</p>
             <p className="mt-1">© 2026</p>
           </div>

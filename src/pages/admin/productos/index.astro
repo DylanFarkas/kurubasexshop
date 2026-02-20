@@ -12,14 +12,11 @@ const url = new URL(Astro.request.url);
 const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
 const pageSize = Math.max(1, Number(url.searchParams.get('pageSize') ?? '10'));
 
-// --- Available page sizes
 const pageSizeOptions = [5, 10, 15];
 
-// --- Range pagination
 const from = (page - 1) * pageSize;
 const to = from + pageSize - 1;
 
-// --- Optimized queries: main data + stats in parallel
 const [
   { data: products, error, count },
   { count: activeCount },
@@ -58,27 +55,23 @@ const totalPages = Math.max(1, Math.ceil(total / pageSize));
 const prevPage = page > 1 ? page - 1 : null;
 const nextPage = page < totalPages ? page + 1 : null;
 
-// --- Link builder (keeps future params)
 function pageHref(p: number) {
   const u = new URL(Astro.request.url);
   u.searchParams.set('page', String(p));
   return u.pathname + u.search;
 }
 
-// --- Page size link builder
 function pageSizeHref(size: number) {
   const u = new URL(Astro.request.url);
   u.searchParams.set('pageSize', String(size));
-  u.searchParams.set('page', '1'); // Reset to page 1 when changing size
+  u.searchParams.set('page', '1'); 
   return u.pathname + u.search;
 }
 
-// --- Page numbers window (improved centering)
 const windowSize = 5;
 let start = Math.max(1, page - Math.floor(windowSize / 2));
 let end = Math.min(totalPages, start + windowSize - 1);
 
-// Adjust if window is smaller than windowSize at the beginning
 if (end - start + 1 < windowSize) {
   start = Math.max(1, end - windowSize + 1);
 }

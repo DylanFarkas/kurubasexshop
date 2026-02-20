@@ -1,21 +1,21 @@
 ---
 import { Icon } from 'astro-icon/components';
 import BaseAdminLayout from '../../layouts/BaseAdminLayout.astro';
-import { supabase } from '../../lib/supabase';
+import { supabaseAdmin } from '../../lib/supabaseAdmin';
 
 export const prerender = false;
 
 // Obtener estadísticas
-const { count: totalProducts } = await supabase
+const { count: totalProducts } = await supabaseAdmin
   .from('products')
   .select('*', { count: 'exact', head: true });
 
-const { count: activeProducts } = await supabase
+const { count: activeProducts } = await supabaseAdmin
   .from('products')
   .select('*', { count: 'exact', head: true })
   .eq('active', true);
 
-const { count: pendingOrders } = await supabase
+const { count: pendingOrders } = await supabaseAdmin
   .from('orders')
   .select('*', { count: 'exact', head: true })
   .eq('status', 'pending');
@@ -23,12 +23,12 @@ const { count: pendingOrders } = await supabase
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 
-const { count: todayOrders } = await supabase
+const { count: todayOrders } = await supabaseAdmin
   .from('orders')
   .select('*', { count: 'exact', head: true })
   .gte('created_at', today.toISOString());
 
-const { count: totalCategories } = await supabase
+const { count: totalCategories } = await supabaseAdmin
   .from('categories')
   .select('*', { count: 'exact', head: true });
 ---

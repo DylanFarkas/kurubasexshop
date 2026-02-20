@@ -1,8 +1,9 @@
-export function formatPrice(price: number): string {
+export function formatPrice(price: number, showDecimals: boolean = false): string {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
-    minimumFractionDigits: 0,
+    minimumFractionDigits: showDecimals ? 2 : 0,
+    maximumFractionDigits: showDecimals ? 2 : 0,
   }).format(price);
 }
 
