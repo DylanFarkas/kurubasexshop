@@ -105,7 +105,6 @@ export default function ProductForm({
         throw new Error(error.message || 'Error al guardar el producto');
       }
 
-      // Redirigir a la lista de productos
       window.location.href = '/admin/productos';
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -139,7 +138,6 @@ export default function ProductForm({
         </div>
       )}
 
-      {/* Información Básica */}
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4 transition-colors">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Información Básica</h2>
 
@@ -188,13 +186,21 @@ export default function ProductForm({
           <textarea
             {...register('description')}
             id="description"
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500"
-            placeholder="Describe las características del producto..."
+            rows={6}
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500 font-mono text-sm"
+            placeholder="Describe las características del producto...&#10;&#10;Usa **texto** para negritas y *texto* para cursivas.&#10;Los saltos de línea se respetarán."
           />
           {errors.description && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
           )}
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p className="font-semibold">💡 Formato disponible:</p>
+            <ul className="list-disc list-inside pl-2 space-y-0.5">
+              <li><code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">**texto**</code> para <strong>negritas</strong></li>
+              <li><code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">*texto*</code> para <em>cursivas</em></li>
+              <li>Doble Enter para crear párrafos</li>
+            </ul>
+          </div>
         </div>
 
         {/* Categoría */}

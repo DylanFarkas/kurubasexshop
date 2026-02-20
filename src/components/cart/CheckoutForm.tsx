@@ -14,7 +14,7 @@ const checkoutSchema = z.object({
   customer_email: z.string().email('Email inválido').optional().or(z.literal('')),
   customer_department: z.string().min(1, 'Selecciona un departamento'),
   customer_city: z.string().min(1, 'Selecciona un municipio'),
-  customer_address: z.string().min(10, 'La dirección debe tener al menos 10 caracteres'),
+  customer_address: z.string().min(10, 'Escribe una dirección'),
   notes: z.string().optional(),
 });
 

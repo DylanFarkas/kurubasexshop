@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { supabase } from '../../lib/supabase';
-import { formatPrice } from '../../utils/formatters';
+import { formatPrice, formatTextToHtml } from '../../utils/formatters';
 import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
 
@@ -34,7 +34,6 @@ const mappedProduct: Product = {
   categorySlug: product.categories?.slug,
 };
 
-// Construir galería de imágenes: siempre incluir imagen principal
 const galleryImages = [
   mappedProduct.image,
   ...(mappedProduct.images || [])
@@ -75,7 +74,6 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
         )}
       </div>
 
-      <!-- Información del producto -->
       <div class="space-y-4">
         {mappedProduct.categoryLabel && (
           <a
@@ -87,10 +85,6 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
         )}
         
         <h1 class="text-4xl font-bold">{mappedProduct.name}</h1>
-        
-        {mappedProduct.description && (
-          <p class="text-gray-600 leading-relaxed">{mappedProduct.description}</p>
-        )}
         
         <div class="flex items-baseline gap-3">
           <span class="text-4xl font-bold">{formatPrice(displayPrice)}</span>
@@ -104,7 +98,6 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
           )}
         </div>
         
-        <!-- Selector de cantidad -->
           <div class="flex items-center gap-5">
             <label for="quantity" class="font-semibold text-gray-700">Cantidad:</label>
             <div class="flex items-center bg-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
@@ -158,8 +151,37 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
             Seguir comprando
           </a>
         </div>
+
+        {mappedProduct.description && (
+          <div class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+            <button
+              id="description-toggle"
+              type="button"
+              class="w-full px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
+              aria-expanded="false"
+              aria-controls="description-content"
+            >
+              <span class="text-base">Descripción del producto</span>
+              <Icon 
+                id="description-icon"
+                name="chevron-down" 
+                size={20}
+                class="transition-transform duration-300 ease-in-out"
+              />
+            </button>
+            <div
+              id="description-content"
+              class="description-panel px-6 text-gray-600 leading-relaxed overflow-hidden"
+              style="max-height: 0; opacity: 0;"
+            >
+              <div 
+                class="pb-6 description-content-inner text-sm"
+                set:html={formatTextToHtml(mappedProduct.description)}
+              />
+            </div>
+          </div>
+        )}
         
-        <!-- Info adicional -->
         <div class="space-y-2 text-sm text-gray-800 pt-8">
           <div class="flex justify-center items-center border-t w-full border-gray-400 mb-6"></div>
           <p>✓ Producto bajo pedido (sin límite de stock)</p>
@@ -171,8 +193,64 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
     </div>
   </main>
 
+  <style>
+    .description-content-inner :global(p) {
+      margin-bottom: 0.75rem;
+    }
+    .description-content-inner :global(p:last-child) {
+      margin-bottom: 0;
+    }
+    .description-content-inner :global(strong) {
+      font-weight: 700;
+      color: rgb(17, 24, 39);
+    }
+    .description-content-inner :global(em) {
+      font-style: italic;
+      color: rgb(55, 65, 81);
+    }
+    
+    .description-panel {
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .description-panel.expanded {
+      opacity: 1;
+      padding-top: 1rem;
+    }
+  </style>
+
   <script>
     import { useCartStore } from '../../stores/cartStore';
+
+    // Toggle descripción con animación fluida
+    const descriptionToggle = document.getElementById('description-toggle');
+    const descriptionContent = document.getElementById('description-content') as HTMLElement;
+    const descriptionIcon = document.getElementById('description-icon');
+    
+    if (descriptionToggle && descriptionContent) {
+      descriptionToggle.addEventListener('click', () => {
+        const isExpanded = descriptionToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          // Colapsar
+          descriptionContent.style.maxHeight = '0';
+          descriptionContent.style.opacity = '0';
+          descriptionContent.classList.remove('expanded');
+          descriptionToggle.setAttribute('aria-expanded', 'false');
+          descriptionIcon?.classList.remove('rotate-180');
+        } else {
+          // Expandir
+          descriptionContent.classList.add('expanded');
+          const scrollHeight = descriptionContent.scrollHeight;
+          descriptionContent.style.maxHeight = scrollHeight + 'px';
+          descriptionContent.style.opacity = '1';
+          descriptionToggle.setAttribute('aria-expanded', 'true');
+          descriptionIcon?.classList.add('rotate-180');
+        }
+      });
+    }
 
     // Cambio de imagen en galería
     const mainImage = document.getElementById('main-image') as HTMLImageElement;
@@ -225,7 +303,6 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
           quantity: quantity,
         });
         
-        // Feedback visual
         const originalText = addToCartBtn.textContent;
         addToCartBtn.textContent = '✓ Añadido al carrito';
         addToCartBtn.classList.add('bg-green-600');
