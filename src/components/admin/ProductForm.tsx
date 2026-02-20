@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '../../utils/validators';
-import { generateSlug } from '../../utils/formatters';
+import { generateSlug, formatTextToHtml } from '../../utils/formatters';
 import ImageUploader from './ImageUploader';
 import MultiImageUploader from './MultiImageUploader';
 import { useState, useEffect } from 'react';
@@ -57,6 +57,8 @@ export default function ProductForm({
 
   // Auto-generar slug desde el nombre
   const name = watch('name');
+  const description = watch('description');
+  
   useEffect(() => {
     if (name && !initialData?.slug) {
       setValue('slug', generateSlug(name));
@@ -178,29 +180,78 @@ export default function ProductForm({
           </p>
         </div>
 
-        {/* Descripción */}
+        {/* Descripción con Vista Previa */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Descripción
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            Descripción del Producto
           </label>
-          <textarea
-            {...register('description')}
-            id="description"
-            rows={6}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500 font-mono text-sm"
-            placeholder="Describe las características del producto...&#10;&#10;Usa **texto** para negritas y *texto* para cursivas.&#10;Los saltos de línea se respetarán."
-          />
-          {errors.description && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
-          )}
-          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 space-y-1">
-            <p className="font-semibold">💡 Formato disponible:</p>
-            <ul className="list-disc list-inside pl-2 space-y-0.5">
-              <li><code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">**texto**</code> para <strong>negritas</strong></li>
-              <li><code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">*texto*</code> para <em>cursivas</em></li>
-              <li>Doble Enter para crear párrafos</li>
-            </ul>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Editor de Texto */}
+            <div className="flex flex-col">
+              <div className="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span className="font-medium">Editor</span>
+              </div>
+              <textarea
+                {...register('description')}
+                id="description"
+                rows={10}
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors placeholder:text-gray-400 dark:placeholder:text-gray-500 font-mono text-sm resize-y"
+                placeholder="Describe las características del producto...&#10;&#10;Usa **texto** para negritas y *texto* para cursivas.&#10;Los saltos de línea se respetarán."
+              />
+              <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-xs font-semibold text-blue-900 dark:text-blue-300 mb-2">Formato disponible:</p>
+                <ul className="text-xs text-blue-800 dark:text-blue-400 space-y-1">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500">•</span>
+                    <span><code className="bg-white dark:bg-blue-950 px-1.5 py-0.5 rounded border border-blue-300 dark:border-blue-700">**texto**</code> para <strong>negritas</strong></span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500">•</span>
+                    <span><code className="bg-white dark:bg-blue-950 px-1.5 py-0.5 rounded border border-blue-300 dark:border-blue-700">*texto*</code> para <em>cursivas</em></span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-500">•</span>
+                    <span>Doble Enter para crear párrafos separados</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Vista Previa */}
+            <div className="flex flex-col">
+              <div className="mb-2 flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span className="font-medium">Vista Previa</span>
+              </div>
+              <div className="flex-1 px-5 py-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:from-gray-900 text-sm dark:to-gray-800 transition-colors overflow-auto min-h-70">
+                {description ? (
+                  <div 
+                    className="prose prose-sm dark:prose-invert max-w-none text-gray-800 dark:text-gray-200 [&_p]:mb-4 [&_p:last-child]:mb-0"
+                    dangerouslySetInnerHTML={{ __html: formatTextToHtml(description) }}
+                  />
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-full min-h-62.5 text-gray-400 dark:text-gray-500">
+                    <svg className="w-12 h-12 mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <p className="text-sm italic">Escribe algo para ver la vista previa...</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
+          
+          {errors.description && (
+            <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
+          )}
         </div>
 
         {/* Categoría */}
