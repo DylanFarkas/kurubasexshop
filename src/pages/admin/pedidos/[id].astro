@@ -53,16 +53,13 @@ const statusLabels: Record<OrderStatus, string> = {
 
 <BaseAdminLayout title={`Pedido #${orderData.order_number}`}>
   <div class="space-y-6">
-    <!-- Header con botón de volver -->
     <div class="flex items-center justify-between">
       <div class="flex items-center gap-4">
         <a 
           href="/admin/pedidos"
           class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
         >
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-          </svg>
+          <Icon name="back" class="w-6 h-6" />
         </a>
         <div>
           <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Pedido #{orderData.order_number}</h1>
@@ -79,7 +76,6 @@ const statusLabels: Record<OrderStatus, string> = {
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <!-- Columna principal -->
       <div class="lg:col-span-2 space-y-6">
         <!-- Productos -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors">
@@ -146,7 +142,6 @@ const statusLabels: Record<OrderStatus, string> = {
         )}
       </div>
 
-      <!-- Columna lateral -->
       <div class="space-y-6">
         <!-- Información del cliente -->
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 transition-colors">

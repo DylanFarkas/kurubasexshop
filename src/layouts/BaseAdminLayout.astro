@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import Sidebar from '../components/admin/Sidebar.astro';
 import ThemeToggle from '../components/ui/ThemeToggle.astro';
 import '../styles/global.css';
@@ -32,12 +33,9 @@ const { title } = Astro.props;
 <body class="bg-white dark:bg-gray-900 antialiased">
   <div class="flex h-screen overflow-hidden">
 
-    <!-- Sidebar -->
     <Sidebar />
 
-    <!-- Main Content -->
     <main class="flex-1 overflow-y-auto">
-      <!-- Top Bar -->
       <div class="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div class="px-8 py-4 flex items-center justify-between">
           <div>
@@ -45,7 +43,7 @@ const { title } = Astro.props;
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Gestión y administración</p>
           </div>
           <div class="flex items-center gap-3">
-            <!-- Theme Toggle -->
+  
             <ThemeToggle />
             
             <!-- Current Date/Time -->
@@ -55,9 +53,9 @@ const { title } = Astro.props;
             <!-- User Badge -->
             <div class="flex items-center gap-2 px-3 py-2 bg-neutral-50 dark:bg-gray-700 rounded-lg">
               <div class="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+
+              <Icon name="admin" class="h-5 w-5 text-white" />
+                
               </div>
               <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin</span>
             </div>
@@ -93,7 +91,6 @@ const { title } = Astro.props;
     updateTime();
     setInterval(updateTime, 60000); // Update every minute
 
-    // Mejorar UX del logout
     const logoutForm = document.getElementById('logout-form') as HTMLFormElement;
     
     logoutForm?.addEventListener('submit', (e) => {

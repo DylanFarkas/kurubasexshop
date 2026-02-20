@@ -1,4 +1,5 @@
 ---
+import { Icon } from 'astro-icon/components';
 import BaseAdminLayout from '../../layouts/BaseAdminLayout.astro';
 import { supabase } from '../../lib/supabase';
 
@@ -33,14 +34,12 @@ const { count: totalCategories } = await supabase
 ---
 
 <BaseAdminLayout title="Dashboard">
-  <!-- Welcome Section -->
   <div class="mb-8">
     <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">¡Bienvenido de vuelta! 👋</h2>
     <p class="text-gray-600 dark:text-gray-400 mt-2">Aquí está un resumen de tu tienda</p>
   </div>
 
-  <!-- Stats Grid -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
     <!-- Total Products -->
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
       <div class="flex items-start justify-between">
@@ -52,9 +51,7 @@ const { count: totalCategories } = await supabase
           </div>
         </div>
         <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
+          <Icon name="box" class="h-6 w-6 text-white" />
         </div>
       </div>
     </div>
@@ -66,16 +63,12 @@ const { count: totalCategories } = await supabase
           <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Productos Activos</p>
           <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{activeProducts || 0}</p>
           <div class="flex items-center gap-1 mt-2">
-            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-            </svg>
+            <Icon name="check" class="w-5 h-5 text-green-500" />
             <span class="text-xs text-green-600 dark:text-green-400 font-medium">Visibles</span>
           </div>
         </div>
         <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-          </svg>
+          <Icon name="check" class="h-6 w-6 text-white" />
         </div>
       </div>
     </div>
@@ -87,22 +80,18 @@ const { count: totalCategories } = await supabase
           <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pedidos Pendientes</p>
           <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{pendingOrders || 0}</p>
           <div class="flex items-center gap-1 mt-2">
-            <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-            </svg>
+            <Icon name="information" class="w-5 h-5 text-yellow-500" />
             <span class="text-xs text-yellow-600 dark:text-yellow-400 font-medium">Requieren atención</span>
           </div>
         </div>
         <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <Icon name="clock" class="h-6 w-6 text-white" />
         </div>
       </div>
     </div>
 
     <!-- Today's Orders -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+    <!-- <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
       <div class="flex items-start justify-between">
         <div class="flex-1">
           <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pedidos Hoy</p>
@@ -120,7 +109,7 @@ const { count: totalCategories } = await supabase
           </svg>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Total Categories -->
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
@@ -133,9 +122,7 @@ const { count: totalCategories } = await supabase
           </div>
         </div>
         <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-          </svg>
+          <Icon name="tag" class="h-6 w-6 text-white" />
         </div>
       </div>
     </div>
@@ -146,11 +133,9 @@ const { count: totalCategories } = await supabase
     <!-- Quick Actions -->
     <div class="lg:col-span-2">
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-linear-to-r from-pink-50 to-purple-50 dark:from-pink-900/10 dark:to-purple-900/10">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <svg class="w-5 h-5 text-pink-600 dark:text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
+            <Icon name="quick" class="h-5 w-5 text-pink-600 dark:text-pink-400" />
             Acciones Rápidas
           </h3>
         </div>
@@ -161,35 +146,27 @@ const { count: totalCategories } = await supabase
               class="group flex items-center gap-4 p-4 bg-pink-500 rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all"
             >
               <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+                <Icon name="plus" class="h-6 w-6 text-white" />
               </div>
               <div class="flex-1">
                 <p class="text-white font-semibold">Nuevo Producto</p>
                 <p class="text-pink-100 text-sm">Añadir al catálogo</p>
               </div>
-              <svg class="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
+              <Icon name="enter" class="w-5 h-5 text-gray-200" />
             </a>
 
             <a 
               href="/admin/pedidos" 
-              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-pink-500 dark:hover:border-pink-400 transition-all"
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-yellow-500 dark:hover:border-yellow-400 transition-all"
             >
               <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+                <Icon name="order" class="h-6 w-6 text-white" />
               </div>
               <div class="flex-1">
                 <p class="text-gray-900 dark:text-gray-100 font-semibold">Ver Pedidos</p>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">Gestionar órdenes</p>
               </div>
-              <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-pink-500 dark:group-hover:text-pink-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
+              <Icon name="enter" class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-pink-500 dark:group-hover:text-pink-400 group-hover:translate-x-1 transition" /> 
             </a>
 
             <a 
@@ -197,17 +174,13 @@ const { count: totalCategories } = await supabase
               class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-purple-500 dark:hover:border-purple-400 transition-all"
             >
               <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
+                <Icon name="tag" class="h-6 w-6 text-white" />
               </div>
               <div class="flex-1">
                 <p class="text-gray-900 dark:text-gray-100 font-semibold">Nueva Categoría</p>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">Organizar productos</p>
               </div>
-              <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
+              <Icon name="enter" class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 group-hover:translate-x-1 transition" />
             </a>
 
             <a 
@@ -216,17 +189,13 @@ const { count: totalCategories } = await supabase
               class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-500 dark:hover:border-blue-400 transition-all"
             >
               <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
+                <Icon name="link" class="h-6 w-6 text-white" />
               </div>
               <div class="flex-1">
                 <p class="text-gray-900 dark:text-gray-100 font-semibold">Sitio Público</p>
                 <p class="text-gray-600 dark:text-gray-400 text-sm">Ver como cliente</p>
               </div>
-              <svg class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
+              <Icon name="enter" class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition" />
             </a>
           </div>
         </div>
@@ -237,9 +206,7 @@ const { count: totalCategories } = await supabase
     <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
       <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-          <svg class="w-5 h-5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+          <Icon name="information" class="w-5 h-5 text-pink-400" />
           Información
         </h3>
       </div>

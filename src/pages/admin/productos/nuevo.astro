@@ -2,6 +2,7 @@
 import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
 import ProductForm from '../../../components/admin/ProductForm';
 import { supabase } from '../../../lib/supabase';
+import { Icon } from 'astro-icon/components';
 
 export const prerender = false;
 
@@ -24,9 +25,7 @@ if (categoriesError) {
         href="/admin/productos" 
         class="text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 flex items-center gap-2 mb-4 transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-        </svg>
+      <Icon name="back" class="w-6 h-6" />
         Volver a Productos
       </a>
       

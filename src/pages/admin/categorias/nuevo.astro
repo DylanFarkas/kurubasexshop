@@ -1,21 +1,19 @@
 ---
 import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
 import CategoryForm from '../../../components/admin/CategoryForm';
+import { Icon } from 'astro-icon/components';
 
 export const prerender = false;
 ---
 
 <BaseAdminLayout title="Nueva Categoría">
   <div class="max-w-2xl">
-    <!-- Header con botón de volver -->
     <div class="flex items-center gap-4 mb-6">
       <a 
         href="/admin/categorias"
         class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
+        <Icon name="back" class="w-6 h-6" />
       </a>
       <div>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Nueva Categoría</h1>
@@ -32,7 +30,7 @@ export const prerender = false;
 
     <!-- Información adicional -->
     <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-      <h3 class="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">💡 Consejos:</h3>
+      <h3 class="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">Consejos:</h3>
       <ul class="text-sm text-blue-800 dark:text-blue-300 space-y-1">
         <li>• El slug se genera automáticamente del nombre, pero puedes personalizarlo</li>
         <li>• Usa la posición para ordenar cómo aparecen en el menú (0 = primero)</li>
