@@ -7,7 +7,6 @@ import { supabaseAdmin } from "../../lib/supabaseAdmin";
 import { CATEGORIES } from "../../data/categories";
 import { NAV_ITEMS } from "../../data/navigation";
 
-// Obtener categorías activas desde Supabase una sola vez
 const { data: dbCategories } = await supabaseAdmin
   .from('categories')
   .select('id, label, slug')

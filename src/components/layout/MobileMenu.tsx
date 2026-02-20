@@ -120,7 +120,6 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
             );
           })}
 
-          {/* Optional: Add social links or additional info */}
           <div className="mt-auto pt-6 text-center text-xs text-gray-500 dark:text-gray-400">
             <p>Kuruba Sexshop</p>
             <p className="mt-1">© 2026</p>
