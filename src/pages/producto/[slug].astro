@@ -5,16 +5,8 @@ import { formatPrice } from '../../utils/formatters';
 import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
 
-export async function getStaticPaths() {
-  const { data: products } = await supabase
-    .from('products')
-    .select('slug, active')
-    .eq('active', true);
-  
-  return (products || []).map(product => ({
-    params: { slug: product.slug },
-  }));
-}
+// SSR: Renderizado del lado del servidor (dinámico)
+export const prerender = false;
 
 const { slug } = Astro.params;
 
@@ -29,6 +21,7 @@ const { data: product, error } = await supabase
     )
   `)
   .eq('slug', slug)
+  .eq('active', true) 
   .single();
 
 if (error || !product) {

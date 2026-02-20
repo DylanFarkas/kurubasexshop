@@ -393,7 +393,6 @@ export default function CheckoutForm() {
         )}
       </div>
 
-      {/* Nota de privacidad */}
       <div className="pt-4 border-t border-gray-200">
         <p className="text-xs text-gray-500 text-center">
           <Lock className="inline-block mr-1 w-4 h-4 mb-1" />
