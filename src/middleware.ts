@@ -1,5 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
-import { createServerClient } from "./src/lib/supabaseServer";
+import { createServerClient } from "./lib/supabaseServer.js";
 
 export const onRequest = defineMiddleware(async ({ cookies, url, redirect }, next) => {
     // Excluir rutas API y auth callback del middleware de autenticación
