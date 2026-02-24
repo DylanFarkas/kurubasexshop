@@ -248,6 +248,8 @@ const categoriesWithCount = await Promise.all(
   </div>
 
   <script>
+    import { toast } from 'sonner';
+
     const deleteModal = document.getElementById('deleteModal');
     const categoryNameEl = document.getElementById('categoryName');
     const deleteWarningEl = document.getElementById('deleteWarning');
@@ -316,10 +318,11 @@ const categoriesWithCount = await Promise.all(
           throw new Error(result.message || 'Error al eliminar');
         }
 
+        sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: 'Categoría eliminada exitosamente' }));
         window.location.reload();
       } catch (error) {
         console.error('Error:', error);
-        alert(error instanceof Error ? error.message : 'Error al eliminar la categoría');
+        toast.error(error instanceof Error ? error.message : 'Error al eliminar la categoría');
         (confirmDeleteBtn as HTMLButtonElement).disabled = false;
         confirmDeleteBtn.textContent = 'Sí, eliminar';
       }

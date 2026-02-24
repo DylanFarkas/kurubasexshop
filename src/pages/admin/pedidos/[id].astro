@@ -243,6 +243,8 @@ const statusLabels: Record<OrderStatus, string> = {
   </div>
 
   <script>
+    import { toast } from 'sonner';
+
     document.getElementById('status-form')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -265,10 +267,11 @@ const statusLabels: Record<OrderStatus, string> = {
         
         if (!response.ok) throw new Error('Error al actualizar');
         
+        sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: 'Estado del pedido actualizado exitosamente' }));
         window.location.reload();
       } catch (error) {
         console.error('Error:', error);
-        alert('Error al actualizar el estado');
+        toast.error('Error al actualizar el estado');
         button.disabled = false;
         button.textContent = 'Actualizar estado';
       }

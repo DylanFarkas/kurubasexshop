@@ -2,6 +2,7 @@
 import { Icon } from 'astro-icon/components';
 import Sidebar from '../components/admin/Sidebar.astro';
 import ThemeToggle from '../components/ui/ThemeToggle.astro';
+import AdminToaster from '../components/admin/AdminToaster';
 import '../styles/global.css';
 
 interface Props {
@@ -67,6 +68,9 @@ const { title } = Astro.props;
       <div class="p-8">
         <slot />
       </div>
+
+    <!-- Toast notifications -->
+    <AdminToaster client:load />
     </main>
   </div>
 

@@ -7,6 +7,7 @@ import { getDepartments, getCitiesByDepartment } from '../../lib/colombiaApi';
 import type { CreateOrderInput } from '../../types/order';
 import type { Department, City } from '../../lib/colombiaApi';
 import { Lock, MapPin } from 'lucide-react';
+import { toast } from 'sonner';
 
 const checkoutSchema = z.object({
   customer_name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
@@ -109,7 +110,7 @@ export default function CheckoutForm() {
       window.location.href = `/confirmacion?order=${result.orderId}`;
     } catch (error) {
       console.error('Error:', error);
-      alert('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.');
+      toast.error('Hubo un error al procesar tu pedido. Por favor intenta de nuevo.');
     }
   };
 

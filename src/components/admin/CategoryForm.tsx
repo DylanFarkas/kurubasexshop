@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import type { Category } from '../../types/category';
 
 const categoryFormSchema = z.object({
@@ -20,7 +21,6 @@ interface CategoryFormProps {
 
 export default function CategoryForm({ category, onSuccess }: CategoryFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const isEditing = !!category;
 
@@ -57,7 +57,6 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
 
   const onSubmit = async (data: CategoryFormData) => {
     setIsSubmitting(true);
-    setError(null);
 
     try {
       const url = isEditing 
@@ -78,15 +77,18 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
         throw new Error(result.message || 'Error al guardar la categoría');
       }
 
-      // Redirigir al listado
+      const successMessage = isEditing ? 'Categoría actualizada exitosamente' : 'Categoría creada exitosamente';
+
       if (onSuccess) {
+        toast.success(successMessage);
         onSuccess();
       } else {
+        sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: successMessage }));
         window.location.href = '/admin/categorias';
       }
     } catch (err) {
       console.error('Error:', err);
-      setError(err instanceof Error ? err.message : 'Error al guardar la categoría');
+      toast.error(err instanceof Error ? err.message : 'Error al guardar la categoría');
     } finally {
       setIsSubmitting(false);
     }
@@ -94,12 +96,6 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
-          {error}
-        </div>
-      )}
-
       <div>
         <label className="block text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
           Nombre de la categoría *

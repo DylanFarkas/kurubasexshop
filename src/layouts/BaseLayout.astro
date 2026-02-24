@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Header from "../components/layout/Header.astro";
 import AgeGate from "../components/compliance/AgeGate.astro";
+import ToastProvider from "../components/ui/ToastProvider";
 //Footer could be added here in the future
 const { title = "Kuruba", description = "Kuruba Sexshop" } = Astro.props;
 ---
@@ -29,6 +30,7 @@ const { title = "Kuruba", description = "Kuruba Sexshop" } = Astro.props;
   <body class="bg-white text-black">
     <Header />
     <AgeGate />
+    <ToastProvider client:load />
     <main>
       <slot />
     </main>

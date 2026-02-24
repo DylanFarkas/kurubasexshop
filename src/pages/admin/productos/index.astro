@@ -11,31 +11,41 @@ export const prerender = false;
 const url = new URL(Astro.request.url);
 const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
 const pageSize = Math.max(1, Number(url.searchParams.get('pageSize') ?? '10'));
+const searchQuery = url.searchParams.get('search') ?? '';
 
 const pageSizeOptions = [5, 10, 15];
 
 const from = (page - 1) * pageSize;
 const to = from + pageSize - 1;
 
+// Build the query with optional search filter
+let productsQuery = supabaseAdmin
+  .from('products')
+  .select(
+    `
+      *,
+      categories (
+        label,
+        slug
+      )
+    `,
+    { count: 'exact' }
+  );
+
+if (searchQuery) {
+  productsQuery = productsQuery.ilike('name', `%${searchQuery}%`);
+}
+
+productsQuery = productsQuery
+  .order('created_at', { ascending: false })
+  .range(from, to);
+
 const [
   { data: products, error, count },
   { count: activeCount },
   { count: featuredCount }
 ] = await Promise.all([
-  supabaseAdmin
-    .from('products')
-    .select(
-      `
-        *,
-        categories (
-          label,
-          slug
-        )
-      `,
-      { count: 'exact' }
-    )
-    .order('created_at', { ascending: false })
-    .range(from, to),
+  productsQuery,
   
   supabaseAdmin
     .from('products')
@@ -58,13 +68,19 @@ const nextPage = page < totalPages ? page + 1 : null;
 function pageHref(p: number) {
   const u = new URL(Astro.request.url);
   u.searchParams.set('page', String(p));
+  if (searchQuery) {
+    u.searchParams.set('search', searchQuery);
+  }
   return u.pathname + u.search;
 }
 
 function pageSizeHref(size: number) {
   const u = new URL(Astro.request.url);
   u.searchParams.set('pageSize', String(size));
-  u.searchParams.set('page', '1'); 
+  u.searchParams.set('page', '1');
+  if (searchQuery) {
+    u.searchParams.set('search', searchQuery);
+  }
   return u.pathname + u.search;
 }
 
@@ -92,6 +108,38 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
     <Icon name="plus" class="w-6 h-6" />
       Nuevo Producto
     </a>
+  </div>
+
+  {/* Barra de búsqueda */}
+  <div class="mb-6">
+    <form method="get" class="relative">
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+          <Icon name="search" class="w-5 h-5 text-gray-400" />
+        </div>
+        <input
+          type="text"
+          name="search"
+          value={searchQuery}
+          placeholder="Buscar productos por nombre..."
+          class="w-full pl-11 pr-24 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+        />
+        {searchQuery && (
+          <a
+            href="/admin/productos"
+            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            title="Limpiar búsqueda"
+          >
+            <Icon name="close" class="w-5 h-5" />
+          </a>
+        )}
+      </div>
+      {searchQuery && (
+        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+          Mostrando resultados para: <span class="font-semibold text-gray-900 dark:text-gray-100">"{searchQuery}"</span>
+        </p>
+      )}
+    </form>
   </div>
 
   {/* Estadísticas */}
@@ -361,15 +409,30 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
         <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-linear-to-br from-pink-100 to-pink-200 mb-4">
           <Icon name="box" class="w-8 h-8 text-pink-600" />
         </div>
-        <h3 class="text-lg font-semibold text-gray-900 mb-1">No hay productos</h3>
-        <p class="text-sm text-gray-600 mb-6">Comienza creando tu primer producto para el catálogo</p>
-        <a
-          href="/admin/productos/nuevo"
-          class="inline-flex items-center px-5 py-2.5 bg-linear-to-r from-pink-500 to-pink-600 text-white rounded-lg hover:from-pink-600 hover:to-pink-700 transition-all font-medium"
-        >
-          <Icon name="plus" class="w-5 h-5 mr-2" />
-          Crear Primer Producto
-        </a>
+        {searchQuery ? (
+          <>
+            <h3 class="text-lg font-semibold text-gray-900 mb-1">No se encontraron productos</h3>
+            <p class="text-sm text-gray-600 mb-6">No hay productos que coincidan con "{searchQuery}"</p>
+            <a
+              href="/admin/productos"
+              class="inline-flex items-center px-5 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all font-medium"
+            >
+              Limpiar búsqueda
+            </a>
+          </>
+        ) : (
+          <>
+            <h3 class="text-lg font-semibold text-gray-900 mb-1">No hay productos</h3>
+            <p class="text-sm text-gray-600 mb-6">Comienza creando tu primer producto para el catálogo</p>
+            <a
+              href="/admin/productos/nuevo"
+              class="inline-flex items-center px-5 py-2.5 bg-linear-to-r from-pink-500 to-pink-600 text-white rounded-lg hover:from-pink-600 hover:to-pink-700 transition-all font-medium"
+            >
+              <Icon name="plus" class="w-5 h-5 mr-2" />
+              Crear Primer Producto
+            </a>
+          </>
+        )}
       </div>
     )}
   </div>
@@ -414,6 +477,22 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 </BaseAdminLayout>
 
 <script>
+  import { toast } from 'sonner';
+
+  // Search form auto-submit on change
+  const searchForm = document.querySelector('form[method="get"]') as HTMLFormElement;
+  const searchInput = searchForm?.querySelector('input[name="search"]') as HTMLInputElement;
+
+  if (searchInput) {
+    // Auto-submit on Enter key
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        searchForm.submit();
+      }
+    });
+  }
+
   const deleteModal = document.getElementById('deleteModal');
   const productNameEl = document.getElementById('productName');
   const cancelDelete = document.getElementById('cancelDelete');
@@ -455,15 +534,17 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
 
       const data = await response.json();
 
-      if (data.success) window.location.reload();
-      else {
-        alert('Error al eliminar: ' + data.message);
+      if (data.success) {
+        sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: 'Producto eliminado exitosamente' }));
+        window.location.reload();
+      } else {
+        toast.error('Error al eliminar: ' + data.message);
         (confirmDelete as HTMLButtonElement).disabled = false;
         confirmDelete.textContent = 'Eliminar';
       }
     } catch (err) {
       console.error(err);
-      alert('Error al eliminar el producto');
+      toast.error('Error al eliminar el producto');
       (confirmDelete as HTMLButtonElement).disabled = false;
       confirmDelete.textContent = 'Eliminar';
     }

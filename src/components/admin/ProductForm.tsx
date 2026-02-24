@@ -5,6 +5,7 @@ import { generateSlug, formatTextToHtml } from '../../utils/formatters';
 import ImageUploader from './ImageUploader';
 import MultiImageUploader from './MultiImageUploader';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import type { z } from 'zod';
 
 type ProductFormData = z.infer<typeof productSchema>;
@@ -29,7 +30,6 @@ export default function ProductForm({
   isEdit = false,
 }: ProductFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [imageUrls, setImageUrls] = useState<string[]>(initialData?.images || []);
 
   const {
@@ -80,7 +80,6 @@ export default function ProductForm({
 
   const handleFormSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
-    setSubmitError(null);
 
     try {
       // Asegurarse de que las imágenes estén incluidas
@@ -107,10 +106,13 @@ export default function ProductForm({
         throw new Error(error.message || 'Error al guardar el producto');
       }
 
+      const successMessage = isEdit ? 'Producto actualizado exitosamente' : 'Producto creado exitosamente';
+      sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: successMessage }));
+      window.dispatchEvent(new CustomEvent('productFormSaved'));
       window.location.href = '/admin/productos';
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitError(error instanceof Error ? error.message : 'Error al guardar el producto');
+      toast.error(error instanceof Error ? error.message : 'Error al guardar el producto');
     } finally {
       setIsSubmitting(false);
     }
@@ -134,12 +136,6 @@ export default function ProductForm({
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
-      {submitError && (
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg">
-          {submitError}
-        </div>
-      )}
-
       <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 space-y-4 transition-colors">
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Información Básica</h2>
 

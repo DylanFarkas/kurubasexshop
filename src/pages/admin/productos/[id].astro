@@ -134,6 +134,10 @@ if (categoriesError) {
     formDirty = false;
   });
 
+  window.addEventListener('productFormSaved', () => {
+    formDirty = false;
+  });
+
   // Lógica de eliminación
   const deleteButton = document.getElementById('deleteButton');
   const deleteModal = document.getElementById('deleteModal');
@@ -167,17 +171,17 @@ if (categoriesError) {
       const data = await response.json();
 
       if (data.success) {
-        alert('Producto eliminado exitosamente');
+        sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: 'Producto eliminado exitosamente' }));
         formDirty = false;
         window.location.href = '/admin/productos';
       } else {
-        alert('Error al eliminar: ' + data.message);
+        window.__sonnerToast?.error('Error al eliminar: ' + data.message);
         confirmDelete.disabled = false;
         confirmDelete.textContent = 'Eliminar';
       }
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al eliminar el producto');
+      window.__sonnerToast?.error('Error al eliminar el producto');
       confirmDelete.disabled = false;
       confirmDelete.textContent = 'Eliminar';
     }

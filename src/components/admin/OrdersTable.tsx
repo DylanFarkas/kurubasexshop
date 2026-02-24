@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { toast } from 'sonner';
 import type { Order, OrderStatus } from '../../types/order';
 import { formatPrice, formatDateTime } from '../../utils/formatters';
 import { MapPin } from 'lucide-react';
@@ -67,10 +68,11 @@ export default function OrdersTable({ orders }: OrdersTableProps) {
       if (!response.ok) throw new Error('Error al actualizar el estado');
 
       // Recargar la página para mostrar los cambios
+      sessionStorage.setItem('adminToast', JSON.stringify({ type: 'success', message: 'Estado del pedido actualizado' }));
       window.location.reload();
     } catch (error) {
       console.error('Error:', error);
-      alert('Error al actualizar el estado de la orden');
+      toast.error('Error al actualizar el estado de la orden');
     } finally {
       setUpdatingOrderId(null);
     }
