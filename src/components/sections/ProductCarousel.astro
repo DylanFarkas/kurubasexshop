@@ -29,10 +29,10 @@ const {
     </div>
 
     <div class="flex items-center gap-2">
-      <a href={href} class="text-sm font-medium text-neutral-900 hover:underline">Ver todo</a>
+      <a href={href} class="text-sm font-medium text-neutral-900 hover:underline hidden sm:block">Ver todo</a>
 
       <button
-        class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer"
+        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
         data-prev={id}
         aria-label={`Anterior ${title}`}
         type="button"
@@ -40,7 +40,7 @@ const {
         ‹
       </button>
       <button
-        class="hidden md:inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer"
+        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
         data-next={id}
         aria-label={`Siguiente ${title}`}
         type="button"
@@ -55,7 +55,7 @@ const {
     class="relative -mx-4 px-4 overflow-x-auto scroll-smooth overflow-visible pt-5"
     style="scrollbar-width: none;"
   >
-    <div class="flex gap-10 snap-x snap-mandatory">
+    <div class="flex gap-6 md:gap-10 snap-x snap-mandatory">
       {products.map((p) => (
         <ProductCard product={p} variant={getVariant ? getVariant(p) : {}} />
       ))}
@@ -69,9 +69,8 @@ const {
       const next = document.querySelector(`[data-next="${id}"]`);
 
       const scrollByCard = () => {
-        // mueve aprox 1 tarjeta (la primera del carrusel)
         const card = root.querySelector("a");
-        const gap = 16;
+        const gap = window.innerWidth < 768 ? 24 : 40;
         return card ? card.getBoundingClientRect().width + gap : 320;
       };
 
