@@ -1,0 +1,62 @@
+---
+import { Icon } from "astro-icon/components";
+
+// Theme toggle button component
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer"
+  aria-label="Toggle theme"
+  title="Toggle theme"
+>
+  <Icon id="theme-toggle-dark-icon" name="moon" class="hidden w-5 h-5 text-gray-700 dark:text-gray-300" />
+  <Icon id="theme-toggle-light-icon" name="sun" class="hidden w-5 h-5 text-gray-700 dark:text-gray-300" />
+</button>
+
+<script>
+  function updateThemeIcons() {
+    const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+    const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+    
+    if (!themeToggleDarkIcon || !themeToggleLightIcon) return;
+
+    if (document.documentElement.classList.contains('dark')) {
+      themeToggleLightIcon.classList.remove('hidden');
+      themeToggleDarkIcon.classList.add('hidden');
+    } else {
+      themeToggleLightIcon.classList.add('hidden');
+      themeToggleDarkIcon.classList.remove('hidden');
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.documentElement.classList.contains('dark');
+    
+    if (isDark) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    }
+    
+    updateThemeIcons();
+  }
+
+  updateThemeIcons();
+
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', toggleTheme);
+  }
+  
+  document.addEventListener('astro:page-load', () => {
+    updateThemeIcons();
+    const btn = document.getElementById('theme-toggle');
+    if (btn) {
+      btn.addEventListener('click', toggleTheme);
+    }
+  });
+</script>

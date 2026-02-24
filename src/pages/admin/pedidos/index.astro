@@ -1,0 +1,153 @@
+---
+import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
+import OrdersTable from '../../../components/admin/OrdersTable';
+import StatCard from '../../../components/admin/StatCard';
+import { supabaseAdmin } from '../../../lib/supabaseAdmin';
+import { formatPrice } from '../../../utils/formatters';
+import type { Order } from '../../../types/order';
+import { Icon } from 'astro-icon/components';
+
+export const prerender = false;
+
+// Obtener todas las órdenes con estadísticas en paralelo
+const [
+  { data: orders, error },
+  { count: pendingCount },
+  { count: confirmedCount },
+  { count: deliveredCount }
+] = await Promise.all([
+  supabaseAdmin
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false }),
+  
+  supabaseAdmin
+    .from('orders')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending'),
+  
+  supabaseAdmin
+    .from('orders')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'confirmed'),
+  
+  supabaseAdmin
+    .from('orders')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'delivered')
+]);
+
+if (error) {
+  console.error('Error fetching orders:', error);
+}
+
+const ordersData = (orders || []) as Order[];
+
+// Calcular total de ventas
+const totalSales = ordersData
+  .filter(order => order.status !== 'cancelled')
+  .reduce((sum, order) => sum + order.total, 0);
+
+// Calcular promedio de venta
+const avgOrderValue = ordersData.length > 0 ? totalSales / ordersData.length : 0;
+---
+
+<BaseAdminLayout title="Pedidos">
+  <!-- Action Bar -->
+  <div class="mb-6">
+    <p class="text-gray-600 dark:text-gray-400 text-sm">Gestiona y realiza seguimiento de todos los pedidos de la tienda</p>
+  </div>
+
+  <!-- Tarjetas de estadísticas -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-colors">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total de pedidos</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1">{ordersData.length}</p>
+        </div>
+        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+          <Icon name="order" class="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-colors">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pendientes</p>
+          <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-1">{pendingCount || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+          <Icon name="clock" class="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-colors">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Confirmados</p>
+          <p class="text-3xl font-bold text-green-600 dark:text-green-400 mt-1">{confirmedCount || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+          <Icon name="check" class="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-colors">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Entregados</p>
+          <p class="text-3xl font-bold text-purple-600 dark:text-purple-400 mt-1">{deliveredCount || 0}</p>
+        </div>
+        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+          <Icon name="check2" class="w-6 h-6 text-white" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estadísticas de ventas -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-linear-to-br from-pink-500 to-pink-600 rounded-xl p-6 text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white/10 rounded-full"></div>
+      <div class="absolute bottom-0 left-0 -mb-8 -ml-8 w-32 h-32 bg-white/10 rounded-full"></div>
+      <div class="relative">
+        <div class="flex items-center gap-2 mb-2">
+          <Icon name="cash" class="w-5 h-5" />
+          <p class="text-sm font-medium opacity-90">Total en ventas</p>
+        </div>
+        <p class="text-4xl font-bold mt-2">{formatPrice(totalSales)}</p>
+        <p class="text-sm opacity-75 mt-2">Pedidos confirmados y entregados</p>
+      </div>
+    </div>
+    
+    <div class="bg-linear-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white relative overflow-hidden">
+      <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white/10 rounded-full"></div>
+      <div class="absolute bottom-0 left-0 -mb-8 -ml-8 w-32 h-32 bg-white/10 rounded-full"></div>
+      <div class="relative">
+        <div class="flex items-center gap-2 mb-2">
+          <Icon name="chart" class="w-5 h-5" />
+          <p class="text-sm font-medium opacity-90">Promedio por pedido</p>
+        </div>
+        <p class="text-4xl font-bold mt-2">{formatPrice(avgOrderValue)}</p>
+        <p class="text-sm opacity-75 mt-2">Valor promedio de compra</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de órdenes -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-linear-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-900">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <Icon name="bag" class="w-5 h-5 text-pink-600 dark:text-pink-400" />
+        Todos los pedidos
+      </h2>
+    </div>
+    <div class="p-6">
+      <OrdersTable orders={ordersData} client:load />
+    </div>
+  </div>
+</BaseAdminLayout>

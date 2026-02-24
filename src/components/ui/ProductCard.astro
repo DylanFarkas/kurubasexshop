@@ -1,0 +1,63 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Product } from "../../types/product";
+import type { ProductCardVariant } from "../../types/productCard";
+
+const {
+  product,
+  variant = {},
+} = Astro.props as {
+  product: Product;
+  variant?: ProductCardVariant;
+};
+
+const v: Required<ProductCardVariant> = {
+  cardClass: variant.cardClass ?? "border-gray-100",
+  mediaClass: variant.mediaClass ?? "bg-neutral-100",
+  titleClass: variant.titleClass ?? "text-neutral-900",
+  buttonClass: variant.buttonClass ?? "bg-neutral-200 hover:bg-neutral-300",
+  iconClass: variant.iconClass ?? "text-neutral-900",
+  badgeClass: variant.badgeClass ?? "bg-black text-white",
+};
+---
+
+<a
+  href={product.slug ? `/producto/${product.slug}` : "#"}
+  class:list={[
+      "snap-start min-w-[80%] sm:min-w-[55%] md:min-w-[38%] lg:min-w-[31%]", 
+      "rounded-2xl border bg-white transition hover:-translate-y-1", 
+      "duration-300 ease-in-out overflow-hidden flex flex-col",
+    v.cardClass
+  ]}
+>
+  <div class:list={["aspect-4/5", v.mediaClass]}>
+    {
+    <img
+      src={product.image ?? product.images?.[0] ?? "/placeholder.png"}
+      alt={product.name}
+      class="h-full w-full object-cover"
+      loading="lazy"
+    />
+    }
+  </div>
+
+  <div class="p-3 md:p-4 flex items-center justify-between gap-3 md:gap-4">
+    <p class:list={["font-semibold text-base md:text-lg line-clamp-2 flex-1", v.titleClass]}>
+      {product.name}
+    </p>
+
+    <button
+      class:list={[
+        "flex justify-center items-center rounded-full transition shrink-0",
+        "w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-12",
+        v.buttonClass
+      ]}
+      type="button"
+      aria-label={`Ver ${product.name}`}
+    >
+      <span class:list={[v.iconClass]}>
+        <Icon name="arrow" size="15" />
+      </span>
+    </button>
+  </div>
+</a>

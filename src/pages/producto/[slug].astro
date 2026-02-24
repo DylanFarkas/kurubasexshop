@@ -1,0 +1,318 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { supabase } from '../../lib/supabase';
+import { formatPrice, formatTextToHtml } from '../../utils/formatters';
+import type { Product } from '../../types/product';
+import { Icon } from 'astro-icon/components';
+
+// SSR: Renderizado del lado del servidor (dinámico)
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// Fetch producto con categoría
+const { data: product, error } = await supabase
+  .from('products')
+  .select(`
+    *,
+    categories (
+      label,
+      slug
+    )
+  `)
+  .eq('slug', slug)
+  .eq('active', true) 
+  .single();
+
+if (error || !product) {
+  return Astro.redirect('/404');
+}
+
+const mappedProduct: Product = {
+  ...product,
+  categoryLabel: product.categories?.label,
+  categorySlug: product.categories?.slug,
+};
+
+const galleryImages = [
+  mappedProduct.image,
+  ...(mappedProduct.images || [])
+].filter(Boolean);
+
+const displayPrice = mappedProduct.final_price || mappedProduct.price;
+const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct > 0;
+---
+
+<BaseLayout 
+  title={`${mappedProduct.name} - Kuruba Sexshop`}
+  description={mappedProduct.description || `Compra ${mappedProduct.name} en Kuruba Sexshop`}
+>
+  <main class="container mx-auto px-4 pt-20 pb-16">
+    <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
+      <!-- Galería de imágenes -->
+      <div class="space-y-4">
+        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100">
+          <img
+            id="main-image"
+            src={mappedProduct.image || '/placeholder.png'}
+            alt={mappedProduct.name}
+            class="w-full h-full object-cover"
+          />
+        </div>
+        
+        {galleryImages.length > 1 && (
+          <div class="grid grid-cols-4 w-full gap-4">
+            {galleryImages.map((img, i) => (
+              <button
+                class="aspect-square rounded-lg overflow-hidden border border-transparent hover:border-pink-500 transition thumbnail-btn"
+                data-image={img}
+              >
+                <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full rounded-lg object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="space-y-4">
+        {mappedProduct.categoryLabel && (
+          <a
+            href={`/categoria/${mappedProduct.categorySlug}`}
+            class="inline-block text-sm text-pink-600 hover:underline"
+          >
+            {mappedProduct.categoryLabel}
+          </a>
+        )}
+        
+        <h1 class="text-4xl font-bold">{mappedProduct.name}</h1>
+        
+        <div class="flex items-baseline gap-3">
+          <span class="text-4xl font-bold">{formatPrice(displayPrice)}</span>
+          {hasDiscount && (
+            <>
+              <span class="text-xl text-gray-400 line-through">{formatPrice(mappedProduct.price)}</span>
+              <span class="px-2 py-1 bg-pink-100 text-pink-600 rounded text-sm font-semibold">
+                -{mappedProduct.discount_pct}%
+              </span>
+            </>
+          )}
+        </div>
+        
+          <div class="flex items-center gap-5">
+            <label for="quantity" class="font-semibold text-gray-700">Cantidad:</label>
+            <div class="flex items-center bg-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
+              <button
+                id="decrease-qty"
+                type="button"
+                class="w-10 h-10 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 hover:from-pink-300 hover:to-pink-500 focus:outline-none cursor-pointer"
+                aria-label="Disminuir cantidad"
+                >
+                <Icon name="minus" size={20} />
+              </button>
+              <input
+                id="quantity"
+                type="number"
+                min="1"
+                value="1"
+                class="w-14 text-center py-2 mx-2 border-none bg-transparent text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
+                style="appearance: none;"
+              />
+              <button
+                id="increase-qty"
+                type="button"
+                class="w-10 h-10 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 hover:from-pink-300 hover:to-pink-500 focus:outline-none cursor-pointer"
+                aria-label="Aumentar cantidad"
+              >
+              <Icon name="plus" size={20} />
+              </button>
+            </div>
+          </div>
+        
+        <div class="space-y-3">
+          <button
+            id="add-to-cart"
+            data-product={JSON.stringify({
+              productId: mappedProduct.id,
+              name: mappedProduct.name,
+              slug: mappedProduct.slug,
+              price: mappedProduct.price,
+              ...(mappedProduct.final_price && { finalPrice: mappedProduct.final_price }),
+              image: mappedProduct.image,
+            })}
+            class="w-full py-4 bg-white text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
+          >
+            Añadir al carrito
+          </button>
+          
+          <a
+            href="/tienda"
+            class="block w-full py-4 border-2 border-gray-300 text-center rounded-lg font-semibold hover:border-pink-600 hover:text-pink-600 transition"
+          >
+            Seguir comprando
+          </a>
+        </div>
+
+        {mappedProduct.description && (
+          <div class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+            <button
+              id="description-toggle"
+              type="button"
+              class="w-full px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
+              aria-expanded="false"
+              aria-controls="description-content"
+            >
+              <span class="text-base">Descripción del producto</span>
+              <Icon 
+                id="description-icon"
+                name="chevron-down" 
+                size={20}
+                class="transition-transform duration-300 ease-in-out"
+              />
+            </button>
+            <div
+              id="description-content"
+              class="description-panel px-6 text-gray-600 leading-relaxed overflow-hidden"
+              style="max-height: 0; opacity: 0;"
+            >
+              <div 
+                class="pb-6 description-content-inner text-sm"
+                set:html={formatTextToHtml(mappedProduct.description)}
+              />
+            </div>
+          </div>
+        )}
+        
+        <div class="space-y-2 text-sm text-gray-800 pt-8">
+          <div class="flex justify-center items-center border-t w-full border-gray-400 mb-6"></div>
+          <p>✓ Producto bajo pedido (sin límite de stock)</p>
+          <p>✓ Envío discreto</p>
+          <p>✓ Pago seguro</p>
+          <p>✓ Atención personalizada</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <style>
+    .description-content-inner :global(p) {
+      margin-bottom: 0.75rem;
+    }
+    .description-content-inner :global(p:last-child) {
+      margin-bottom: 0;
+    }
+    .description-content-inner :global(strong) {
+      font-weight: 700;
+      color: rgb(17, 24, 39);
+    }
+    .description-content-inner :global(em) {
+      font-style: italic;
+      color: rgb(55, 65, 81);
+    }
+    
+    .description-panel {
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                  opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                  padding-top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .description-panel.expanded {
+      opacity: 1;
+      padding-top: 1rem;
+    }
+  </style>
+
+  <script>
+    import { useCartStore } from '../../stores/cartStore';
+
+    // Toggle descripción con animación fluida
+    const descriptionToggle = document.getElementById('description-toggle');
+    const descriptionContent = document.getElementById('description-content') as HTMLElement;
+    const descriptionIcon = document.getElementById('description-icon');
+    
+    if (descriptionToggle && descriptionContent) {
+      descriptionToggle.addEventListener('click', () => {
+        const isExpanded = descriptionToggle.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+          // Colapsar
+          descriptionContent.style.maxHeight = '0';
+          descriptionContent.style.opacity = '0';
+          descriptionContent.classList.remove('expanded');
+          descriptionToggle.setAttribute('aria-expanded', 'false');
+          descriptionIcon?.classList.remove('rotate-180');
+        } else {
+          // Expandir
+          descriptionContent.classList.add('expanded');
+          const scrollHeight = descriptionContent.scrollHeight;
+          descriptionContent.style.maxHeight = scrollHeight + 'px';
+          descriptionContent.style.opacity = '1';
+          descriptionToggle.setAttribute('aria-expanded', 'true');
+          descriptionIcon?.classList.add('rotate-180');
+        }
+      });
+    }
+
+    // Cambio de imagen en galería
+    const mainImage = document.getElementById('main-image') as HTMLImageElement;
+    const thumbnails = document.querySelectorAll('.thumbnail-btn');
+    
+    thumbnails.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const newSrc = (btn as HTMLElement).dataset.image;
+        if (newSrc && mainImage) {
+          mainImage.src = newSrc;
+        }
+      });
+    });
+    
+    // Control de cantidad
+    const quantityInput = document.getElementById('quantity') as HTMLInputElement;
+    const decreaseBtn = document.getElementById('decrease-qty');
+    const increaseBtn = document.getElementById('increase-qty');
+    
+    decreaseBtn?.addEventListener('click', () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      if (currentValue > 1) {
+        quantityInput.value = String(currentValue - 1);
+      }
+    });
+    
+    increaseBtn?.addEventListener('click', () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      quantityInput.value = String(currentValue + 1);
+    });
+    
+    // Validar que el input siempre sea >= 1
+    quantityInput?.addEventListener('change', () => {
+      const value = parseInt(quantityInput.value) || 1;
+      if (value < 1) {
+        quantityInput.value = '1';
+      }
+    });
+    
+    // Añadir al carrito
+    const addToCartBtn = document.getElementById('add-to-cart');
+    addToCartBtn?.addEventListener('click', () => {
+      const productData = addToCartBtn.dataset.product;
+      if (productData) {
+        const product = JSON.parse(productData);
+        const quantity = parseInt(quantityInput?.value || '1');
+        
+        useCartStore.getState().addItem({
+          ...product,
+          quantity: quantity,
+        });
+        
+        const originalText = addToCartBtn.textContent;
+        addToCartBtn.textContent = '✓ Añadido al carrito';
+        addToCartBtn.classList.add('bg-green-600');
+        
+        setTimeout(() => {
+          addToCartBtn.textContent = originalText;
+          addToCartBtn.classList.remove('bg-green-600');
+          addToCartBtn.classList.add('bg-pink-600');
+        }, 2000);
+      }
+    });
+  </script>
+</BaseLayout>

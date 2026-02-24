@@ -1,0 +1,401 @@
+---
+import { Icon } from "astro-icon/components";
+import { CATEGORIES } from "../../data/categories";
+
+export interface Props {
+    categories?: any[];
+    showCategoryFilter?: boolean;
+}
+
+const { categories = [], showCategoryFilter = true } = Astro.props;
+---
+
+<div 
+    id="filters-panel"
+    class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50"
+>
+    <div class="h-full flex flex-col">
+        <!-- Header del panel -->
+        <div class="flex items-center justify-between p-6 border-b border-neutral-200">
+            <h2 class="text-2xl font-bold text-neutral-900">Filtros</h2>
+            <button 
+                id="close-filters"
+                class="text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+            >
+            <Icon name="close" size={25}/>
+            </button>
+        </div>
+
+        <!-- Contenido del panel -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6">
+            <!-- Filtro de Categoría -->
+            {showCategoryFilter && (
+                <div>
+                    <label 
+                        for="category-filter" 
+                        class="block text-sm font-semibold text-neutral-900 mb-3"
+                    >
+                        Categoría
+                    </label>
+                    <select
+                        id="category-filter"
+                        class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-pointer"
+                    >
+                        <option value="">Todas las categorías</option>
+                        {categories.map((cat) => (
+                            <option value={cat.label}>{cat.label}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
+
+            <!-- Filtro de Rango de Precio -->
+            <div>
+                <label class="block text-sm font-semibold text-neutral-900 mb-4">
+                    Rango de Precio
+                </label>
+                
+                <!-- Valores del rango -->
+                <div class="flex items-center justify-center gap-3 mb-6">
+                    <div class="flex-1 bg-linear-to-br from-purple-50 to-purple-100/50 rounded-xl p-3 border border-purple-200/50">
+                        <div class="text-xs text-purple-600 font-medium mb-1">Mínimo</div>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-xs text-purple-900/60">$</span>
+                            <span id="min-price-input" class="text-lg font-bold text-purple-900 tabular-nums">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100">
+                        <Icon name="arrow-right" class="w-4 h-4 text-neutral-400" />
+                    </div>
+                    
+                    <div class="flex-1 bg-linear-to-br from-purple-50 to-purple-100/50 rounded-xl p-3 border border-purple-200/50">
+                        <div class="text-xs text-purple-600 font-medium mb-1">Máximo</div>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-xs text-purple-900/60">$</span>
+                            <span id="max-price-input" class="text-lg font-bold text-purple-900 tabular-nums">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dual Range Slider -->
+                <div class="relative h-2">
+                    <!-- Track de fondo -->
+                    <div class="absolute w-full h-2 bg-neutral-200 rounded-full"></div>
+                    
+                    <!-- Track activo (entre los dos thumbs) -->
+                    <div 
+                        id="price-range-track" 
+                        class="absolute h-2 bg-purple-600 rounded-full"
+                    ></div>
+                    
+                    <!-- Input del mínimo -->
+                    <input
+                        type="range"
+                        id="min-price-range"
+                        min="0"
+                        max="1000000"
+                        value="0"
+                        step="1000"
+                        class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-600 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
+                    />
+                    
+                    <!-- Input del máximo -->
+                    <input
+                        type="range"
+                        id="max-price-range"
+                        min="0"
+                        max="1000000"
+                        value="1000000"
+                        step="1000"
+                        class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-600 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
+                    />
+                </div>
+            </div>
+
+            <!-- Filtro de Ordenamiento -->
+            <div>
+                <label 
+                    for="sort-filter" 
+                    class="block text-sm font-semibold text-neutral-900 mb-3"
+                >
+                    Ordenar por
+                </label>
+                <select
+                    id="sort-filter"
+                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-pointer"
+                >
+                    <option value="">Más relevantes</option>
+                    <option value="price-asc">Precio: Menor a Mayor</option>
+                    <option value="price-desc">Precio: Mayor a Menor</option>
+                    <!-- <option value="name-asc">Nombre: A-Z</option>
+                    <option value="name-desc">Nombre: Z-A</option> -->
+                </select>
+            </div>
+
+            <!-- Contador de productos -->
+
+        </div>
+
+        <!-- Footer del panel -->
+        <div class="p-6 border-t border-neutral-200 space-y-3">
+            <!-- <button 
+                id="apply-filters"
+                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer"
+            >
+                Aplicar Filtros
+            </button> -->
+            <button 
+                id="clear-filters"
+                class="w-full bg-white border border-gray-800 border-b-6 text-neutral-800 font-medium py-3 px-4 rounded-lg transition hover:-translate-y-1 duration-300 cursor-pointer"
+            >
+                Limpiar Filtros
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Overlay -->
+<div 
+    id="filters-overlay"
+    class="fixed inset-0 bg-black/50 opacity-0 invisible transition-opacity duration-300 z-40 pointer-events-none"
+></div>
+
+<script>
+    // Elementos del DOM
+    const openFiltersBtn = document.getElementById("open-filters") as HTMLButtonElement;
+    const closeFiltersBtn = document.getElementById("close-filters") as HTMLButtonElement;
+    const applyFiltersBtn = document.getElementById("apply-filters") as HTMLButtonElement;
+    const clearFiltersBtn = document.getElementById("clear-filters") as HTMLButtonElement;
+    const filtersPanel = document.getElementById("filters-panel") as HTMLElement;
+    const filtersOverlay = document.getElementById("filters-overlay") as HTMLElement;
+    
+    const categoryFilter = document.getElementById("category-filter") as HTMLSelectElement;
+    const sortFilter = document.getElementById("sort-filter") as HTMLSelectElement;
+    const productsGrid = document.getElementById("products-grid") as HTMLElement;
+    const productCount = document.getElementById("product-count") as HTMLElement;
+    const noProductsMsg = document.getElementById("no-products") as HTMLElement;
+
+    // Elementos del slider de precios
+    const minPriceRange = document.getElementById("min-price-range") as HTMLInputElement;
+    const maxPriceRange = document.getElementById("max-price-range") as HTMLInputElement;
+    const minPriceInput = document.getElementById("min-price-input") as HTMLElement;
+    const maxPriceInput = document.getElementById("max-price-input") as HTMLElement;
+    const priceRangeTrack = document.getElementById("price-range-track") as HTMLElement;
+    
+    function formatPrice(price: number): string {
+        return price.toLocaleString('es-CO');
+    }
+
+    let globalMinPrice = 0;
+    let globalMaxPrice = 1000000;
+
+    function initializePriceRange() {
+        const productCards = document.querySelectorAll(".product-card");
+        const prices: number[] = [];
+        
+        productCards.forEach((card) => {
+            const price = parseFloat((card as HTMLElement).dataset.price || "0");
+            if (price > 0) prices.push(price);
+        });
+
+        if (prices.length > 0) {
+            globalMinPrice = Math.floor(Math.min(...prices));
+            globalMaxPrice = Math.ceil(Math.max(...prices));
+            
+            minPriceRange.min = globalMinPrice.toString();
+            minPriceRange.max = globalMaxPrice.toString();
+            minPriceRange.value = globalMinPrice.toString();
+            
+            maxPriceRange.min = globalMinPrice.toString();
+            maxPriceRange.max = globalMaxPrice.toString();
+            maxPriceRange.value = globalMaxPrice.toString();
+            
+            minPriceInput.textContent = formatPrice(globalMinPrice);
+            maxPriceInput.textContent = formatPrice(globalMaxPrice);
+            
+            updatePriceRangeTrack();
+        }
+    }
+
+    function updatePriceRangeTrack() {
+        const min = parseInt(minPriceRange.value);
+        const max = parseInt(maxPriceRange.value);
+        const rangeMin = parseInt(minPriceRange.min);
+        const rangeMax = parseInt(minPriceRange.max);
+        
+        const percentMin = ((min - rangeMin) / (rangeMax - rangeMin)) * 100;
+        const percentMax = ((max - rangeMin) / (rangeMax - rangeMin)) * 100;
+        
+        priceRangeTrack.style.left = percentMin + "%";
+        priceRangeTrack.style.width = (percentMax - percentMin) + "%";
+    }
+
+    minPriceRange?.addEventListener("input", () => {
+        const minValue = parseInt(minPriceRange.value);
+        const maxValue = parseInt(maxPriceRange.value);
+        
+        if (minValue >= maxValue) {
+            minPriceRange.value = (maxValue - 1000).toString();
+        }
+        
+        minPriceInput.textContent = formatPrice(parseInt(minPriceRange.value));
+        updatePriceRangeTrack();
+        filterAndSortProducts();
+    });
+
+    maxPriceRange?.addEventListener("input", () => {
+        const minValue = parseInt(minPriceRange.value);
+        const maxValue = parseInt(maxPriceRange.value);
+        
+        if (maxValue <= minValue) {
+            maxPriceRange.value = (minValue + 1000).toString();
+        }
+        
+        maxPriceInput.textContent = formatPrice(parseInt(maxPriceRange.value));
+        updatePriceRangeTrack();
+        filterAndSortProducts();
+    });
+
+    function openFiltersPanel() {
+        const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        
+        filtersPanel.classList.remove("translate-x-full");
+        filtersOverlay.classList.remove("opacity-0", "invisible");
+        filtersOverlay.classList.add("pointer-events-auto");
+        
+        document.body.style.overflow = "hidden";
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+        
+        const header = document.querySelector("header");
+        if (header) {
+            header.style.paddingRight = `${scrollbarWidth}px`;
+        }
+    }
+
+    function closeFiltersPanel() {
+        filtersPanel.classList.add("translate-x-full");
+        filtersOverlay.classList.add("opacity-0", "invisible");
+        filtersOverlay.classList.remove("pointer-events-auto");
+        
+        document.body.style.overflow = "";
+        document.body.style.paddingRight = "";
+        
+        const header = document.querySelector("header");
+        if (header) {
+            header.style.paddingRight = "";
+        }
+    }
+
+    function filterAndSortProducts() {
+        const selectedCategory = categoryFilter?.value || "";
+        const selectedSort = sortFilter.value;
+        const minPrice = parseInt(minPriceRange.value);
+        const maxPrice = parseInt(maxPriceRange.value);
+
+        const productCards = Array.from(
+            document.querySelectorAll(".product-card")
+        ) as HTMLElement[];
+
+        let visibleProducts = productCards.filter((card) => {
+            const category = card.dataset.category || "";
+            const price = parseFloat(card.dataset.price || "0");
+            
+            if (selectedCategory && category !== selectedCategory) {
+                return false;
+            }
+            
+            if (price < minPrice || price > maxPrice) {
+                return false;
+            }
+            
+            return true;
+        });
+
+        if (selectedSort) {
+            visibleProducts.sort((a, b) => {
+                const priceA = parseFloat(a.dataset.price || "0");
+                const priceB = parseFloat(b.dataset.price || "0");
+                const nameA = a.dataset.name || "";
+                const nameB = b.dataset.name || "";
+
+                switch (selectedSort) {
+                    case "price-asc":
+                        return priceA - priceB;
+                    case "price-desc":
+                        return priceB - priceA;
+                    case "name-asc":
+                        return nameA.localeCompare(nameB);
+                    case "name-desc":
+                        return nameB.localeCompare(nameA);
+                    default:
+                        return 0;
+                }
+            });
+        }
+
+        productCards.forEach((card) => {
+            card.style.display = "none";
+        });
+
+        if (selectedSort) {
+            visibleProducts.forEach((card) => {
+                productsGrid.appendChild(card);
+            });
+        }
+        
+        visibleProducts.forEach((card) => {
+            card.style.display = "";
+        });
+
+        productCount.textContent = visibleProducts.length.toString();
+
+        if (visibleProducts.length === 0) {
+            productsGrid.classList.add("hidden");
+            noProductsMsg.classList.remove("hidden");
+        } else {
+            productsGrid.classList.remove("hidden");
+            noProductsMsg.classList.add("hidden");
+        }
+    }
+
+    function clearFilters() {
+        if (categoryFilter) {
+            categoryFilter.value = "";
+        }
+        sortFilter.value = "";
+        minPriceRange.value = globalMinPrice.toString();
+        maxPriceRange.value = globalMaxPrice.toString();
+        minPriceInput.textContent = formatPrice(globalMinPrice);
+        maxPriceInput.textContent = formatPrice(globalMaxPrice);
+        updatePriceRangeTrack();
+        filterAndSortProducts();
+    }
+
+    // Event listeners
+    openFiltersBtn?.addEventListener("click", openFiltersPanel);
+    closeFiltersBtn?.addEventListener("click", closeFiltersPanel);
+    filtersOverlay?.addEventListener("click", closeFiltersPanel);
+    applyFiltersBtn?.addEventListener("click", () => {
+        filterAndSortProducts();
+        closeFiltersPanel();
+    });
+    clearFiltersBtn?.addEventListener("click", clearFilters);
+    
+    if (categoryFilter) {
+        categoryFilter.addEventListener("change", filterAndSortProducts);
+    }
+    sortFilter?.addEventListener("change", filterAndSortProducts);
+
+    document.addEventListener("DOMContentLoaded", initializePriceRange);
+    
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        initializePriceRange();
+    }
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+            closeFiltersPanel();
+        }
+    });
+</script>
