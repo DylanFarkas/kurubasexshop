@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const { order } = Astro.url.searchParams;
+const orderId = order ? `#${order}` : '';
+---
+
+<BaseLayout title="Pedido Confirmado - Kuruba Sexshop">
+  <main class="container mx-auto px-4 pt-32 pb-16">
+    <div class="max-w-2xl mx-auto text-center">
+      <div class="mb-8">
+        <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
+          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        
+        <h1 class="text-4xl font-bold text-gray-900 mb-2">
+          ¡Pedido Confirmado!
+        </h1>
+        
+        {orderId && (
+          <p class="text-lg text-gray-600">
+            Orden {orderId}
+          </p>
+        )}
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 text-left">
+        <h2 class="text-xl font-bold mb-4">¿Qué sigue?</h2>
+        
+        <div class="space-y-4">
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold">
+              1
+            </div>
+            <div>
+              <p class="font-semibold">Hemos abierto WhatsApp</p>
+              <p class="text-gray-600 text-sm">
+                Envía el mensaje prellenado para confirmar tu pedido con nuestro equipo.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold">
+              2
+            </div>
+            <div>
+              <p class="font-semibold">Coordinamos el envío</p>
+              <p class="text-gray-600 text-sm">
+                Nuestro equipo confirmará tu pedido y coordinaremos la entrega.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold">
+              3
+            </div>
+            <div>
+              <p class="font-semibold">Recibe tu pedido</p>
+              <p class="text-gray-600 text-sm">
+                Envío discreto y seguro directamente a tu dirección.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <a
+          href="/tienda"
+          class="inline-block px-8 py-3 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition"
+        >
+          Seguir Comprando
+        </a>
+        
+        <p class="text-gray-600">
+          ¿Tienes preguntas? <a href="#" class="text-pink-600 hover:underline">Contáctanos</a>
+        </p>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  @keyframes checkmark {
+    0% { opacity: 0; transform: scale(0.5); }
+    50% { opacity: 1; transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  svg {
+    animation: checkmark 0.5s ease-out;
+  }
+</style>

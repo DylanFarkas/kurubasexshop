@@ -1,4 +1,5 @@
 ---
+import { Icon } from "astro-icon/components";
 import type { Product } from "../../types/product";
 
 interface Props {
@@ -8,23 +9,24 @@ interface Props {
 const { products } = Astro.props;
 ---
 
-<div class="w-full px-4 md:px-25 pb-10">
-    <div class="max-w-7xl mx-auto">
+<div class="w-full px-4 md:px-5 pb-10">
+    <div class="max-w-full mx-auto">
         <div
             id="products-grid"
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-10"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
         >
             {products.map((product) => {
-                const displayPrice = product.final_price ?? product.price;
-                const hasDiscount = product.discount_pct && product.discount_pct > 0;
+                const displayPrice = (product.final_price && product.final_price > 0) ? product.final_price : product.price;
+                const hasDiscount = !!product.discount_pct && product.discount_pct > 0;
 
                 return (
                     <article
-                        class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                        data-category={product.category}
+                        class="product-card group bg-white border border-neutral-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
+                        data-category={product.categoryLabel}
                         data-price={displayPrice}
                         data-name={product.name}
                     >
+
                         <div class="relative aspect-square bg-neutral-100 overflow-hidden">
                             {product.image ? (
                                 <img
@@ -35,9 +37,7 @@ const { products } = Astro.props;
                                 />
                             ) : (
                                 <div class="w-full h-full flex items-center justify-center text-neutral-400">
-                                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                    </svg>
+                                    <Icon name="photo" class="w-16 h-16" />
                                 </div>
                             )}
 
@@ -54,10 +54,10 @@ const { products } = Astro.props;
                             )}
                         </div>
 
-                        <div class="p-4">
+                        <div class="p-4 flex flex-col flex-1">
                             <div class="mb-2">
                                 <span class="text-xs text-neutral-500 uppercase tracking-wide">
-                                    {product.category}
+                                    {product.categoryLabel}
                                 </span>
                             </div>
 
@@ -76,12 +76,12 @@ const { products } = Astro.props;
                                 )}
                             </div>
 
-                            <button
-                                class="w-full bg-white hover:bg-gray-600 hover:text-white border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 cursor-pointer"
-                                data-product-id={product.id}
+                            <a
+                                href={`/producto/${product.slug}`}
+                                class="mt-auto block w-full bg-white hover:bg-pink-200 border border-b-6 border-gray-700 text-gray-800 font-medium py-3 px-4 rounded-lg transition-colors duration-200 text-center"
                             >
-                                Ver Producto
-                            </button>
+                                Ver producto
+                            </a>
                         </div>
                     </article>
                 );

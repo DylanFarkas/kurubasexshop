@@ -1,0 +1,233 @@
+---
+import { Icon } from 'astro-icon/components';
+import BaseAdminLayout from '../../layouts/BaseAdminLayout.astro';
+import { supabaseAdmin } from '../../lib/supabaseAdmin';
+
+export const prerender = false;
+
+// Obtener estadísticas
+const { count: totalProducts } = await supabaseAdmin
+  .from('products')
+  .select('*', { count: 'exact', head: true });
+
+const { count: activeProducts } = await supabaseAdmin
+  .from('products')
+  .select('*', { count: 'exact', head: true })
+  .eq('active', true);
+
+const { count: pendingOrders } = await supabaseAdmin
+  .from('orders')
+  .select('*', { count: 'exact', head: true })
+  .eq('status', 'pending');
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const { count: todayOrders } = await supabaseAdmin
+  .from('orders')
+  .select('*', { count: 'exact', head: true })
+  .gte('created_at', today.toISOString());
+
+const { count: totalCategories } = await supabaseAdmin
+  .from('categories')
+  .select('*', { count: 'exact', head: true });
+---
+
+<BaseAdminLayout title="Dashboard">
+  <div class="mb-8">
+    <h2 class="text-3xl font-bold text-gray-900 dark:text-gray-100">¡Bienvenid@ de vuelta! 👋</h2>
+    <p class="text-gray-600 dark:text-gray-400 mt-2">Aquí está un resumen de tu tienda</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total Products -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Productos</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{totalProducts || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-xs text-gray-500 dark:text-gray-400">En catálogo</span>
+          </div>
+        </div>
+        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+          <Icon name="box" class="h-6 w-6 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Products -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Productos Activos</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{activeProducts || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <Icon name="check" class="w-5 h-5 text-green-500" />
+            <span class="text-xs text-green-600 dark:text-green-400 font-medium">Visibles</span>
+          </div>
+        </div>
+        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
+          <Icon name="check" class="h-6 w-6 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Orders -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pedidos Pendientes</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{pendingOrders || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <Icon name="information" class="w-5 h-5 text-yellow-500" />
+            <span class="text-xs text-yellow-600 dark:text-yellow-400 font-medium">Requieren atención</span>
+          </div>
+        </div>
+        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center">
+          <Icon name="clock" class="h-6 w-6 text-white" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Today's Orders -->
+    <!-- <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pedidos Hoy</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{todayOrders || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <svg class="w-4 h-4 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+            </svg>
+            <span class="text-xs text-pink-600 dark:text-pink-400 font-medium">En las últimas 24h</span>
+          </div>
+        </div>
+        <div class="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Total Categories -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 transition-all">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Categorías</p>
+          <p class="text-3xl font-bold text-gray-900 dark:text-gray-100 mt-2">{totalCategories || 0}</p>
+          <div class="flex items-center gap-1 mt-2">
+            <span class="text-xs text-gray-500 dark:text-gray-400">Organizadas</span>
+          </div>
+        </div>
+        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center">
+          <Icon name="tag" class="h-6 w-6 text-white" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Cards Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Quick Actions -->
+    <div class="lg:col-span-2">
+      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden transition-colors">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <Icon name="quick" class="h-5 w-5 text-pink-600 dark:text-pink-400" />
+            Acciones Rápidas
+          </h3>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a 
+              href="/admin/productos/nuevo" 
+              class="group flex items-center gap-4 p-4 bg-pink-500 rounded-xl hover:from-pink-600 hover:to-pink-700 transition-all"
+            >
+              <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="plus" class="h-6 w-6 text-white" />
+              </div>
+              <div class="flex-1">
+                <p class="text-white font-semibold">Nuevo Producto</p>
+                <p class="text-pink-100 text-sm">Añadir al catálogo</p>
+              </div>
+              <Icon name="enter" class="w-5 h-5 text-gray-200" />
+            </a>
+
+            <a 
+              href="/admin/pedidos" 
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-yellow-500 dark:hover:border-yellow-400 transition-all"
+            >
+              <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="order" class="h-6 w-6 text-white" />
+              </div>
+              <div class="flex-1">
+                <p class="text-gray-900 dark:text-gray-100 font-semibold">Ver Pedidos</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Gestionar órdenes</p>
+              </div>
+              <Icon name="enter" class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-pink-500 dark:group-hover:text-pink-400 group-hover:translate-x-1 transition" /> 
+            </a>
+
+            <a 
+              href="/admin/categorias/nuevo" 
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-purple-500 dark:hover:border-purple-400 transition-all"
+            >
+              <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="tag" class="h-6 w-6 text-white" />
+              </div>
+              <div class="flex-1">
+                <p class="text-gray-900 dark:text-gray-100 font-semibold">Nueva Categoría</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Organizar productos</p>
+              </div>
+              <Icon name="enter" class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-purple-500 dark:group-hover:text-purple-400 group-hover:translate-x-1 transition" />
+            </a>
+
+            <a 
+              href="/" 
+              target="_blank"
+              class="group flex items-center gap-4 p-4 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 rounded-xl hover:border-blue-500 dark:hover:border-blue-400 transition-all"
+            >
+              <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Icon name="link" class="h-6 w-6 text-white" />
+              </div>
+              <div class="flex-1">
+                <p class="text-gray-900 dark:text-gray-100 font-semibold">Sitio Público</p>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Ver como cliente</p>
+              </div>
+              <Icon name="enter" class="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 group-hover:translate-x-1 transition" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Information Panel -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+          <Icon name="information" class="w-5 h-5 text-pink-400" />
+          Información
+        </h3>
+      </div>
+      <div class="p-6 space-y-4">
+        <div class="flex items-start gap-3 p-3 bg-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-green-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Los productos deben estar <span class="text-green-400 font-medium">activos</span> para ser visibles en la tienda</p>
+        </div>
+        <div class="flex items-start gap-3 p-3 bg-gray-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-purple-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Las categorías inactivas <span class="text-purple-400 font-medium">no se muestran</span> en el sitio público</p>
+        </div>
+        <!-- <div class="flex items-start gap-3 p-3 bg-gray-800/50 dark:bg-gray-900/50 rounded-lg border border-gray-700 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-blue-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Los pedidos se envían <span class="text-blue-400 font-medium">automáticamente por WhatsApp</span></p>
+        </div> -->
+        <div class="flex items-start gap-3 p-3 bg-gray-white dark:bg-gray-900/50 rounded-lg border border-gray-300 dark:border-gray-800">
+          <div class="w-2 h-2 rounded-full bg-pink-400 mt-1.5"></div>
+          <p class="text-sm text-gray-800 dark:text-gray-400">Todos los productos se venden <span class="text-pink-400 font-medium">bajo pedido</span> sin límite de stock</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseAdminLayout>

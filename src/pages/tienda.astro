@@ -1,36 +1,63 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getActiveProducts } from "../data/products";
-import FilterPanel from "../components/ui/FilterPanel.astro";
 import ProductGrid from "../components/sections/ProductGrid.astro";
+import FilterPanel from "../components/ui/FilterPanel.astro";
+import { supabase } from "../lib/supabase";
+import type { Product } from "../types/product";
+import { Icon } from "astro-icon/components";
 
-const allProducts = getActiveProducts();
+const { data: products, error } = await supabase
+    .from('products')
+    .select(`*,categories (label,slug)`)
+    .eq('active', true)
+    .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching products:', error);
+    }
+
+const mappedProducts: Product[] = (products || []).map(p => ({
+  ...p,
+  categoryLabel: p.categories?.label,
+  categorySlug: p.categories?.slug,
+}));
+
+const { data: categories } = await supabase
+  .from('categories')
+  .select('*')
+  .eq('active', true)
+  .order('order_position');
 ---
 
-<BaseLayout>
-    <div class="w-full min-h-screen bg-white">
-        <!-- Header -->
-        <div class="w-full mt-5 px-4 md:px-25 py-12 md:py-15">
-            <div class="mt-5 flex items-center justify-between gap-4">
-                <h1 class="text-4xl md:text-5xl font-bold text-neutral-900">
-                    Todos los Productos
-                </h1>
-
-                <button 
+<BaseLayout title="Tienda - Kuruba SexShop" description="Explora nuestro catálogo completo de productos">
+    <main class="pt-24 pb-16 min-h-screen bg-white">
+        <div class="container mx-auto px-4 md:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-neutral-200 pb-8">
+                <div>
+                    <span class="text-rose-600 font-bold text-sm tracking-wider uppercase mb-2 block">Catálogo Completo</span>
+                    <h1 class="text-3xl md:text-5xl font-bold text-neutral-900 mb-4 tracking-tight">
+                        Nuestra Selección
+                    </h1>
+                    <p class="text-neutral-500 max-w-2xl text-lg leading-relaxed">
+                        Explora nuestra colección premium de juguetes y accesorios íntimos. Calidad y placer garantizado en cada pedido
+                    </p>
+                    <p class="text-sm text-neutral-400 mt-2">
+                        <span id="product-count">{mappedProducts.length}</span> productos disponibles
+                    </p>
+                </div>
+                
+                <button
                     id="open-filters"
-                    class="text-sm font-medium text-neutral-700 border border-neutral-300 px-4 py-2 rounded-full hover:bg-neutral-100 cursor-pointer transition-colors"
+                    class="group flex items-center justify-center gap-3 px-8 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap cursor-pointer"
                 >
-                    Filtros
+                    <span class="mr-1">Filtros</span>
+                    <Icon name="filter" />
                 </button>
             </div>
 
-            <p class="text-lg md:text-xl mt-4 text-neutral-600">
-                Explora nuestra amplia gama de productos para adultos
-            </p>
+            <ProductGrid products={mappedProducts} />
         </div>
-
-        <FilterPanel totalProducts={allProducts.length} />
-
-        <ProductGrid products={allProducts} />
-    </div>
+        
+        <FilterPanel categories={categories || []} />
+    </main>
 </BaseLayout>

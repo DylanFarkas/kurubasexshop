@@ -1,19 +1,24 @@
 ---
-import { CATEGORIES } from "../../data/categories";
+interface Props {
+  categories: ReadonlyArray<{ label: string; slug: string }>;
+}
+
+const { categories } = Astro.props;
 ---
 
 <div class="relative group">
-  <button class="text-sm font-medium tracking-wide hover:opacity-70">
+  <button class="text-[18px] tracking-wide hover:opacity-70 uppercase">
     Categorías
   </button>
 
-  <div class="invisible absolute left-0 top-full mt-3 w-56 overflow-hidden rounded-2xl border bg-white opacity-0 shadow-xl transition
+  <!-- Submenú horizontal -->
+  <div class="invisible absolute left-1/2 top-full mt-2 -translate-x-1/2 opacity-0 transition-all duration-200
               group-hover:visible group-hover:opacity-100">
-    <div class="p-2">
-      {CATEGORIES.map((c) => (
+    <div class="flex gap-4 rounded-2xl bg-white px-6 py-4 shadow-xl">
+      {categories.map((c) => (
         <a
           href={`/categoria/${c.slug}`}
-          class="block rounded-xl px-3 py-2 text-sm hover:bg-black/5"
+          class="whitespace-nowrap rounded-lg px-4 py-2 text-[15px] transition hover:bg-[#FF3F63] hover:text-white"
         >
           {c.label}
         </a>

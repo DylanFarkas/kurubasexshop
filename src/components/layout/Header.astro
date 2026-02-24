@@ -1,27 +1,51 @@
 ---
 import Nav from "./Nav.astro";
+import MobileMenu from "./MobileMenu";
 import { Icon } from 'astro-icon/components';
+import CartButton from '../cart/CartButton';
+import SearchModal from '../ui/SearchModal';
+import { supabaseAdmin } from "../../lib/supabaseAdmin";
+import { CATEGORIES } from "../../data/categories";
+import { NAV_ITEMS } from "../../data/navigation";
+
+const { data: dbCategories } = await supabaseAdmin
+  .from('categories')
+  .select('id, label, slug')
+  .eq('active', true)
+  .order('order_position', { ascending: true });
+
+// Usar categorías de BD si existen, sino usar las hardcodeadas como fallback
+const categories = (dbCategories && dbCategories.length > 0 ? dbCategories : CATEGORIES) as ReadonlyArray<{ label: string; slug: string }>;
+const pathname = Astro.url.pathname;
 ---
 
-<header class="fixed top-0 z-50 w-full bg-white">
+<header class="fixed top-0 z-50 w-full bg-white transition-colors">
   <div class="relative h-10 w-full">
+
+    <MobileMenu 
+      navItems={NAV_ITEMS} 
+      categories={categories} 
+      currentPath={pathname}
+      client:load 
+    />
+
     <div class="absolute inset-0 flex items-center justify-center">
-      <Nav />
+      <Nav categories={categories} />
     </div>
 
     <div class="absolute right-4 top-1/2 flex -translate-y-1/2 items-center gap-2">
-      <button class="p-1 opacity-70 transition hover:opacity-100" aria-label="Buscar">
+      <button id="search-btn" class="p-1 opacity-70 transition hover:opacity-100 cursor-pointer" aria-label="Buscar">
         <Icon name="search" size={30} />
       </button>
   
-      </button>
-      <button class="p-1 opacity-70 transition hover:opacity-100" aria-label="Favoritos">
+      <!-- <button id="favorites-btn" class="p-1 opacity-70 transition hover:opacity-100 cursor-pointer" aria-label="Favoritos">
         <Icon name="heart" size={30} />
-      </button>
-      <a class="p-1 opacity-70 transition hover:opacity-100" href="/tienda" aria-label="Carrito">
-        <Icon name="cart" size={30} />
-      </a>
+      </button> -->
+      
+      <CartButton client:load />
     </div>
 
   </div>
 </header>
+
+<SearchModal client:load />

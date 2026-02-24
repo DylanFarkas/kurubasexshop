@@ -1,0 +1,78 @@
+import { useCartStore } from '../../stores/cartStore';
+import { formatPrice } from '../../utils/formatters';
+import CartItem from './CartItem';
+
+export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const items = useCartStore(state => state.items);
+  const total = useCartStore(state => state.getTotal());
+  const itemCount = useCartStore(state => state.getItemCount());
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/10 backdrop-blur-sm transition-opacity duration-300 ${
+          isOpen ? 'z-50 opacity-100' : 'opacity-0 pointer-events-none -z-10'
+        }`}
+        onClick={onClose}
+      />
+      
+      {/* Drawer */}
+      <div className={`fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col transition-transform duration-300 ${
+          isOpen ? 'z-50 translate-x-0' : 'z-50 translate-x-full'
+        }`}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 ">
+          <h2 className="text-2xl tracking-wider font-bold">
+            CARRITO ({itemCount})
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full transition hover:text-red-500 cursor-pointer"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Items */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {items.length === 0 ? (
+            <div className="text-center py-16 text-gray-500">
+              <p className="mb-4">Tu carrito está vacío</p>
+              <a
+                href='/tienda'
+                onClick={onClose}
+                className="text-pink-600 cursor-pointer hover:underline"
+              >
+                Ir a la tienda
+              </a>
+            </div>
+          ) : (
+            items.map(item => (
+              <CartItem key={item.productId} item={item} />
+            ))
+          )}
+        </div>
+
+        {/* Footer */}
+        {items.length > 0 && (
+          <div className="p-6 space-y-4">
+            <div className="flex justify-between text-xl tracking-wider font-bold">
+              <span>TOTAL:</span>
+              <span>{formatPrice(total)}</span>
+            </div>
+            <a
+              href="/checkout"
+              className="block w-full py-4 bg-white text-gray-700 text-center rounded-lg font-semibold transition border border-b-6 hover:-translate-y-1"
+            >
+              Proceder al Checkout
+            </a>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
