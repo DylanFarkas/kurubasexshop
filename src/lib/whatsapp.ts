@@ -10,26 +10,26 @@ export function generateWhatsAppLink(order: Order): string {
   const phone = import.meta.env.PUBLIC_WHATSAPP_NUMBER || '573001234567';
   
   const message = `
-🛍️ *Nuevo Pedido #${order.order_number}*
+*NUEVO PEDIDO #${order.order_number}*
 
-👤 *DATOS DEL CLIENTE*
+*DATOS DEL CLIENTE*
 • Nombre: ${order.customer_name}
 • Teléfono: ${order.customer_phone}
 ${order.customer_email ? `• Email: ${order.customer_email}` : ''}
 
-📍 *DIRECCIÓN DE ENVÍO*
+*DIRECCION DE ENVIO*
 • Departamento: ${order.customer_department}
 • Ciudad: ${order.customer_city}
 • Dirección: ${order.customer_address}
 
-📦 *PRODUCTOS:*
+*PRODUCTOS:*
 ${order.items.map((item, index) => 
   `${index + 1}. ${item.name} x${item.quantity} - ${formatPrice(item.price * item.quantity)}`
 ).join('\n')}
 
-💰 *TOTAL: ${formatPrice(order.total)}*
+*TOTAL: ${formatPrice(order.total)}*
 
-${order.notes ? `📝 Notas: ${order.notes}` : ''}
+${order.notes ? `Notas: ${order.notes}` : ''}
   `.trim();
   
   return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
