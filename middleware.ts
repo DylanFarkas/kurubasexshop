@@ -19,7 +19,6 @@ export const onRequest = defineMiddleware(async ({ cookies, url, redirect }, nex
 
         // TEMPORAL: Comentar verificación de admin mientras se configura
         // TODO: Descomentar cuando admin_users esté configurado
-        /*
         const { data: adminUser } = await supabase
             .from('admin_users')
             .select('id')
@@ -30,7 +29,6 @@ export const onRequest = defineMiddleware(async ({ cookies, url, redirect }, nex
             await supabase.auth.signOut();
             return redirect("/admin/login");
         }
-        */
     }
 
     return next();
