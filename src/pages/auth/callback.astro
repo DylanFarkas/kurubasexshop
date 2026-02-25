@@ -179,6 +179,13 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     async function syncSessionWithServer(session) {
       try {
         console.log('Syncing session with server...');
+        console.log('Session tokens available:', {
+          hasAccessToken: !!session.access_token,
+          hasRefreshToken: !!session.refresh_token,
+          accessTokenLength: session.access_token?.length,
+          refreshTokenLength: session.refresh_token?.length,
+        });
+        
         statusEl.textContent = 'Sincronizando sesión...';
         
         const syncResponse = await fetch('/api/auth/session', {
@@ -193,10 +200,16 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           }),
         });
         
+        console.log('Sync response status:', syncResponse.status);
+        
         if (!syncResponse.ok) {
           const errorData = await syncResponse.json().catch(() => ({}));
+          console.error('Sync error response:', errorData);
           throw new Error(errorData.message || 'Error al sincronizar sesión con el servidor');
         }
+        
+        const successData = await syncResponse.json();
+        console.log('Sync success:', successData);
         
         console.log('Session synced successfully');
         statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
