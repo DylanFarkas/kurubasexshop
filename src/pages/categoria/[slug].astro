@@ -11,31 +11,67 @@ export const prerender = false;
 
 const { slug } = Astro.params;
 
-// Fetch categoría
-const { data: category } = await supabase
-  .from('categories')
-  .select('*')
-  .eq('slug', slug)
-  .eq('active', true) // Solo categorías activas
-  .single();
+// Manejo especial para la página de ofertas
+const isOffersPage = slug === 'ofertas';
 
-if (!category) {
-  return Astro.redirect('/404');
+let category = null;
+let products = null;
+
+if (isOffersPage) {
+  // Para ofertas, no hay categoría, pero creamos un objeto simulado
+  category = {
+    id: 'ofertas',
+    label: 'Ofertas',
+    slug: 'ofertas',
+    active: true
+  };
+  
+  // Fetch productos con descuento
+  const { data } = await supabase
+    .from('products')
+    .select(`
+      *,
+      categories (
+        label,
+        slug
+      )
+    `)
+    .eq('active', true)
+    .gt('discount_pct', 0) // Solo productos con descuento > 0
+    .order('discount_pct', { ascending: false }); // Ordenar por mayor descuento primero
+  
+  products = data;
+} else {
+  // Fetch categoría normal
+  const { data: categoryData } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('slug', slug)
+    .eq('active', true)
+    .single();
+
+  if (!categoryData) {
+    return Astro.redirect('/404');
+  }
+  
+  category = categoryData;
+
+  // Fetch productos de la categoría
+  const { data: productsData } = await supabase
+    .from('products')
+    .select(`
+      *,
+      categories (
+        label,
+        slug
+      )
+    `)
+    .eq('category_id', category.id)
+    .eq('active', true)
+    .order('created_at', { ascending: false });
+  
+  products = productsData;
 }
-
-// Fetch productos de la categoría
-const { data: products } = await supabase
-  .from('products')
-  .select(`
-    *,
-    categories (
-      label,
-      slug
-    )
-  `)
-  .eq('category_id', category.id)
-  .eq('active', true)
-  .order('created_at', { ascending: false });
 
 const mappedProducts: Product[] = (products || []).map(p => ({
   ...p,
@@ -45,8 +81,8 @@ const mappedProducts: Product[] = (products || []).map(p => ({
 ---
 
 <BaseLayout 
-  title={`${category.label} - Kuruba Sexshop`}
-  description={`Explora nuestra selección de ${category.label.toLowerCase()}`}
+  title={isOffersPage ? 'Ofertas y Descuentos - Kuruba Sexshop' : `${category.label} - Kuruba Sexshop`}
+  description={isOffersPage ? 'Aprovecha nuestras mejores ofertas y descuentos en productos íntimos' : `Explora nuestra selección de ${category.label.toLowerCase()}`}
 >
   <main class="pt-24 pb-16 min-h-screen bg-white">
     <div class="container mx-auto px-4 md:px-8">
@@ -57,10 +93,13 @@ const mappedProducts: Product[] = (products || []).map(p => ({
             {category.label}
           </h1>
           <p class="text-neutral-500 max-w-2xl text-lg leading-relaxed">
-            Descubre nuestra selección exclusiva de {category.label.toLowerCase()}
+            {isOffersPage 
+              ? 'Aprovecha nuestros mejores descuentos y promociones especiales'
+              : `Descubre nuestra selección exclusiva de ${category.label.toLowerCase()}`
+            }
           </p>
           <p class="text-sm text-neutral-400 mt-2">
-            <span id="product-count">{mappedProducts.length}</span> productos disponibles
+            <span id="product-count">{mappedProducts.length}</span> {isOffersPage ? 'productos en oferta' : 'productos disponibles'}
           </p>
         </div>
         
@@ -77,7 +116,7 @@ const mappedProducts: Product[] = (products || []).map(p => ({
         <ProductGrid products={mappedProducts} />
       ) : (
         <div class="text-center py-16 text-gray-500">
-          <p>No hay productos disponibles en esta categoría</p>
+          <p>{isOffersPage ? 'No hay productos en oferta en este momento' : 'No hay productos disponibles en esta categoría'}</p>
           <a href="/tienda" class="text-pink-600 hover:underline mt-4 inline-block">
             Ver todos los productos
           </a>
