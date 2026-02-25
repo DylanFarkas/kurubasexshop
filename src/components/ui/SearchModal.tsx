@@ -139,7 +139,7 @@ export default function SearchModal() {
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 text-lg outline-none placeholder:text-neutral-400"
           />
-          {query && (
+          {/* {query && (
             <button
               onClick={() => setQuery('')}
               className="text-neutral-400 hover:text-neutral-600 transition"
@@ -147,7 +147,7 @@ export default function SearchModal() {
             >
               <X size={20} />
             </button>
-          )}
+          )} */}
           <button
             onClick={handleClose}
             className="text-neutral-400 hover:text-neutral-600 transition cursor-pointer"

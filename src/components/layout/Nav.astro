@@ -18,11 +18,15 @@ const isHome = pathname === "/";
     }
 
     const href =
-      item.type === "anchor" && isHome ? item.href.replace("/","") : item.href;
+      item.type === "anchor" && isHome ? item.href.replace("/", "") : item.href;
+
+    const isExternal = href.startsWith("http");
 
     return (
       <a
         href={href}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
         class="text-[18px] tracking-wide hover:opacity-70 uppercase transition-opacity"
       >
         {item.label}

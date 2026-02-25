@@ -59,7 +59,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
 
           <button
             onClick={() => removeItem(item.productId)}
-            className="text-red-500 hover:text-red-700 text-sm cursor-pointer transition"
+            className="text-red-500 z-20 hover:text-red-700 text-sm cursor-pointer transition"
           >
             Eliminar
           </button>
