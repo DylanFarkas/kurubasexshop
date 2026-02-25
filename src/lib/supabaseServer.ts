@@ -20,6 +20,7 @@ export function createServerClient(cookies: AstroCookies) {
             maxAge: 60 * 60 * 24 * 365,
             sameSite: 'lax',
             secure: import.meta.env.PROD,
+            httpOnly: false, // Permitir acceso desde JS si es necesario
           });
         },
         removeItem: (key) => {
