@@ -3,17 +3,73 @@ import { createServerClient } from '../../lib/supabaseServer';
 
 export const prerender = false;
 
-// Intentar obtener la sesión del servidor primero
 const supabase = createServerClient(Astro.cookies);
-const { data: { session: serverSession } } = await supabase.auth.getSession();
 
-// Si ya hay sesión en el servidor, redirigir inmediatamente
-if (serverSession) {
-  return Astro.redirect('/admin');
+// Obtener code de la URL (PKCE flow) o token_hash (Magic Link)
+const code = Astro.url.searchParams.get('code');
+const tokenHash = Astro.url.searchParams.get('token_hash');
+const type = Astro.url.searchParams.get('type') || 'email';
+
+console.log('[Callback] URL params:', { 
+  hasCode: !!code, 
+  hasTokenHash: !!tokenHash, 
+  type,
+  fullUrl: Astro.url.href 
+});
+
+let error: string | null = null;
+
+try {
+  if (code) {
+    // PKCE Flow: Intercambiar código por sesión
+    console.log('[Callback] Exchanging code for session...');
+    const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+    
+    if (exchangeError) {
+      console.error('[Callback] Error exchanging code:', exchangeError);
+      error = exchangeError.message;
+    } else if (data.session) {
+      console.log('[Callback] Session established successfully for user:', data.user?.email);
+      return Astro.redirect('/admin');
+    } else {
+      error = 'No session after code exchange';
+    }
+  } else if (tokenHash) {
+    // Magic Link con token_hash
+    console.log('[Callback] Verifying OTP token...');
+    const { data, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: type as any,
+    });
+    
+    if (verifyError) {
+      console.error('[Callback] Error verifying OTP:', verifyError);
+      error = verifyError.message;
+    } else if (data.session) {
+      console.log('[Callback] Session established successfully for user:', data.user?.email);
+      return Astro.redirect('/admin');
+    } else {
+      error = 'No session after token verification';
+    }
+  } else {
+    // Intentar obtener sesión existente
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      console.log('[Callback] Existing session found');
+      return Astro.redirect('/admin');
+    }
+    error = 'No authentication code or token provided';
+  }
+} catch (err: any) {
+  console.error('[Callback] Unexpected error:', err);
+  error = err.message || 'Error de autenticación';
 }
 
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+// Si llegamos aquí, hubo un error
+if (error) {
+  console.error('[Callback] Redirecting to login with error:', error);
+  return Astro.redirect('/admin/login?error=auth_failed');
+}
 ---
 
 <!DOCTYPE html>
@@ -28,204 +84,45 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: #f9fafb;
+      background: linear-gradient(135deg, #fce7f3 0%, #fff 100%);
       font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
     }
     .loading {
       text-align: center;
+      background: white;
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
     }
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 4px solid #e5e7eb;
+      width: 60px;
+      height: 60px;
+      border: 4px solid #fecaca;
       border-top-color: #ec4899;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 30px;
     }
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
-    .error {
-      color: #dc2626;
-      margin-top: 20px;
+    h2 {
+      margin: 0 0 10px;
+      color: #1f2937;
+      font-size: 24px;
+    }
+    p {
+      margin: 0;
+      color: #6b7280;
     }
   </style>
 </head>
 <body>
   <div class="loading">
     <div class="spinner"></div>
-    <p id="status">Autenticando...</p>
-    <p id="error" class="error" style="display: none;"></p>
+    <h2>Autenticando</h2>
+    <p>Por favor espera...</p>
   </div>
-  
-  <script type="module" define:vars={{ supabaseUrl, supabaseAnonKey }}>
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-    
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: {
-        flowType: 'pkce',
-        detectSessionInUrl: true,
-        persistSession: true,
-        storageKey: 'kuruba-auth',
-      },
-    });
-    
-    const statusEl = document.getElementById('status');
-    const errorEl = document.getElementById('error');
-    
-    async function handleCallback() {
-      try {
-        console.log('Handling auth callback...');
-        console.log('Current URL:', window.location.href);
-        
-        const url = new URL(window.location.href);
-        const hasCode = url.searchParams.has('code');
-        const hasTokenHash = url.searchParams.has('token_hash');
-        const hasAccessToken = url.hash.includes('access_token');
-        
-        console.log('URL params:', { hasCode, hasTokenHash, hasAccessToken });
-        
-        // Método 1: Si hay token_hash (magic link legacy)
-        if (hasTokenHash) {
-          console.log('Using token_hash flow...');
-          const tokenHash = url.searchParams.get('token_hash');
-          const type = url.searchParams.get('type') || 'email';
-          
-          const { data, error } = await supabase.auth.verifyOtp({
-            token_hash: tokenHash,
-            type: type,
-          });
-          
-          if (error) throw error;
-          if (!data.session) throw new Error('No session after token verification');
-          
-          await syncSessionWithServer(data.session);
-          return;
-        }
-        
-        // Método 2: Si hay access_token en el hash (implicit flow)
-        if (hasAccessToken) {
-          console.log('Using access_token from hash...');
-          const hashParams = new URLSearchParams(url.hash.substring(1));
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          
-          if (accessToken && refreshToken) {
-            const { data, error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-            
-            if (error) throw error;
-            if (!data.session) throw new Error('No session after setSession');
-            
-            await syncSessionWithServer(data.session);
-            return;
-          }
-        }
-        
-        // Método 3: Detectar sesión automáticamente (PKCE flow)
-        console.log('Trying automatic session detection...');
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error);
-          throw error;
-        }
-        
-        if (data.session) {
-          console.log('Session found via automatic detection');
-          await syncSessionWithServer(data.session);
-          return;
-        }
-        
-        // Método 4: Intentar intercambiar código manualmente
-        if (hasCode) {
-          console.log('Trying manual code exchange...');
-          const code = url.searchParams.get('code');
-          
-          const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-          
-          if (exchangeError) {
-            console.error('Error exchanging code:', exchangeError);
-            throw exchangeError;
-          }
-          
-          if (!sessionData.session) {
-            throw new Error('No session after code exchange');
-          }
-          
-          console.log('Code exchanged successfully');
-          await syncSessionWithServer(sessionData.session);
-          return;
-        }
-        
-        // Si llegamos aquí, no pudimos obtener una sesión
-        throw new Error('No se pudo establecer la sesión. Verifica la configuración de Supabase.');
-      } catch (error) {
-        console.error('Callback error:', error);
-        errorEl.textContent = `Error: ${error.message}`;
-        errorEl.style.display = 'block';
-        statusEl.textContent = 'Error al autenticar';
-        
-        // Redirigir al login después de 3 segundos
-        setTimeout(() => {
-          window.location.href = '/admin/login?error=auth_failed';
-        }, 3000);
-      }
-    }
-    
-    async function syncSessionWithServer(session) {
-      try {
-        console.log('Syncing session with server...');
-        console.log('Session tokens available:', {
-          hasAccessToken: !!session.access_token,
-          hasRefreshToken: !!session.refresh_token,
-          accessTokenLength: session.access_token?.length,
-          refreshTokenLength: session.refresh_token?.length,
-        });
-        
-        statusEl.textContent = 'Sincronizando sesión...';
-        
-        const syncResponse = await fetch('/api/auth/session', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            access_token: session.access_token,
-            refresh_token: session.refresh_token,
-          }),
-        });
-        
-        console.log('Sync response status:', syncResponse.status);
-        
-        if (!syncResponse.ok) {
-          const errorData = await syncResponse.json().catch(() => ({}));
-          console.error('Sync error response:', errorData);
-          throw new Error(errorData.message || 'Error al sincronizar sesión con el servidor');
-        }
-        
-        const successData = await syncResponse.json();
-        console.log('Sync success:', successData);
-        
-        console.log('Session synced successfully');
-        statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
-        
-        // Esperar un momento y redirigir
-        setTimeout(() => {
-          window.location.href = '/admin';
-        }, 500);
-      } catch (error) {
-        console.error('Sync error:', error);
-        throw error;
-      }
-    }
-    
-    // Ejecutar cuando cargue la página
-    handleCallback();
-  </script>
 </body>
 </html>

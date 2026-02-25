@@ -10,7 +10,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     flowType: 'pkce',
-    detectSessionInUrl: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false, // El servidor manejará el callback
     persistSession: true,
     storageKey: 'kuruba-auth',
   },
