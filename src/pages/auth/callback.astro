@@ -1,5 +1,16 @@
 ---
+import { createServerClient } from '../../lib/supabaseServer';
+
 export const prerender = false;
+
+// Intentar obtener la sesión del servidor primero
+const supabase = createServerClient(Astro.cookies);
+const { data: { session: serverSession } } = await supabase.auth.getSession();
+
+// Si ya hay sesión en el servidor, redirigir inmediatamente
+if (serverSession) {
+  return Astro.redirect('/admin');
+}
 
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
@@ -65,115 +76,138 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     
     async function handleCallback() {
       try {
-        console.log('🔐 Handling auth callback...');
-        console.log('📍 Current URL:', window.location.href);
-        console.log('🔑 URL Params:', Object.fromEntries(new URL(window.location.href).searchParams));
+        console.log('Handling auth callback...');
+        console.log('Current URL:', window.location.href);
         
-        // Supabase cliente detectará automáticamente el código en la URL
-        // y lo intercambiará por una sesión usando el code verifier del localStorage
+        const url = new URL(window.location.href);
+        const hasCode = url.searchParams.has('code');
+        const hasTokenHash = url.searchParams.has('token_hash');
+        const hasAccessToken = url.hash.includes('access_token');
+        
+        console.log('URL params:', { hasCode, hasTokenHash, hasAccessToken });
+        
+        // Método 1: Si hay token_hash (magic link legacy)
+        if (hasTokenHash) {
+          console.log('Using token_hash flow...');
+          const tokenHash = url.searchParams.get('token_hash');
+          const type = url.searchParams.get('type') || 'email';
+          
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type,
+          });
+          
+          if (error) throw error;
+          if (!data.session) throw new Error('No session after token verification');
+          
+          await syncSessionWithServer(data.session);
+          return;
+        }
+        
+        // Método 2: Si hay access_token en el hash (implicit flow)
+        if (hasAccessToken) {
+          console.log('Using access_token from hash...');
+          const hashParams = new URLSearchParams(url.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          
+          if (accessToken && refreshToken) {
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            
+            if (error) throw error;
+            if (!data.session) throw new Error('No session after setSession');
+            
+            await syncSessionWithServer(data.session);
+            return;
+          }
+        }
+        
+        // Método 3: Detectar sesión automáticamente (PKCE flow)
+        console.log('Trying automatic session detection...');
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('❌ Error getting session:', error);
+          console.error('Error getting session:', error);
           throw error;
         }
         
         if (data.session) {
-          console.log('✅ Session established successfully');
-          console.log('👤 User:', data.session.user.email);
-          statusEl.textContent = 'Sincronizando sesión...';
-          
-          // Sincronizar sesión con el servidor (guardar en cookies)
-          const syncResponse = await fetch('/api/auth/session', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-              access_token: data.session.access_token,
-              refresh_token: data.session.refresh_token,
-            }),
-          });
-          
-          if (!syncResponse.ok) {
-            const errorData = await syncResponse.json();
-            console.error('❌ Sync error:', errorData);
-            throw new Error(`Error al sincronizar sesión: ${errorData.message || syncResponse.statusText}`);
-          }
-          
-          console.log('✅ Session synced with server');
-          statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
-          
-          // Pequeño delay para que el usuario vea el mensaje
-          setTimeout(() => {
-            window.location.href = '/admin';
-          }, 500);
-        } else {
-          // No hay sesión, intentar con exchangeCodeForSession manualmente
-          console.log('⚠️ No session found, trying to exchange code...');
-          
-          const url = new URL(window.location.href);
+          console.log('Session found via automatic detection');
+          await syncSessionWithServer(data.session);
+          return;
+        }
+        
+        // Método 4: Intentar intercambiar código manualmente
+        if (hasCode) {
+          console.log('Trying manual code exchange...');
           const code = url.searchParams.get('code');
           
-          if (code) {
-            console.log('🔄 Attempting to exchange code for session...');
-            const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-            
-            if (exchangeError) {
-              console.error('❌ Error exchanging code:', exchangeError);
-              console.error('Code used:', code.substring(0, 10) + '...');
-              throw exchangeError;
-            }
-            
-            console.log('✅ Code exchanged successfully');
-            
-            if (sessionData.session) {
-              // Sincronizar sesión con el servidor
-              statusEl.textContent = 'Sincronizando sesión...';
-              
-              const syncResponse = await fetch('/api/auth/session', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                  access_token: sessionData.session.access_token,
-                  refresh_token: sessionData.session.refresh_token,
-                }),
-              });
-              
-              if (!syncResponse.ok) {
-                const errorData = await syncResponse.json();
-                console.error('❌ Sync error:', errorData);
-                throw new Error(`Error al sincronizar sesión: ${errorData.message || syncResponse.statusText}`);
-              }
-              
-              console.log('✅ Session synced with server');
-              statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
-              
-              setTimeout(() => {
-                window.location.href = '/admin';
-              }, 500);
-            } else {
-              throw new Error('No session after code exchange');
-            }
-          } else {
-            throw new Error('No session or code found in URL');
+          const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          
+          if (exchangeError) {
+            console.error('Error exchanging code:', exchangeError);
+            throw exchangeError;
           }
+          
+          if (!sessionData.session) {
+            throw new Error('No session after code exchange');
+          }
+          
+          console.log('Code exchanged successfully');
+          await syncSessionWithServer(sessionData.session);
+          return;
         }
+        
+        // Si llegamos aquí, no pudimos obtener una sesión
+        throw new Error('No se pudo establecer la sesión. Verifica la configuración de Supabase.');
       } catch (error) {
-        console.error('❌ Callback error:', error);
-        console.error('Full error details:', JSON.stringify(error, null, 2));
+        console.error('Callback error:', error);
         errorEl.textContent = `Error: ${error.message}`;
         errorEl.style.display = 'block';
         statusEl.textContent = 'Error al autenticar';
         
-        // Redirigir al login después de 3 segundos para dar tiempo de ver el error
+        // Redirigir al login después de 3 segundos
         setTimeout(() => {
           window.location.href = '/admin/login?error=auth_failed';
         }, 3000);
+      }
+    }
+    
+    async function syncSessionWithServer(session) {
+      try {
+        console.log('Syncing session with server...');
+        statusEl.textContent = 'Sincronizando sesión...';
+        
+        const syncResponse = await fetch('/api/auth/session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+          }),
+        });
+        
+        if (!syncResponse.ok) {
+          const errorData = await syncResponse.json().catch(() => ({}));
+          throw new Error(errorData.message || 'Error al sincronizar sesión con el servidor');
+        }
+        
+        console.log('Session synced successfully');
+        statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
+        
+        // Esperar un momento y redirigir
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 500);
+      } catch (error) {
+        console.error('Sync error:', error);
+        throw error;
       }
     }
     
