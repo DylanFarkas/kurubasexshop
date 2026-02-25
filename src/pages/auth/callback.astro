@@ -98,6 +98,25 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           }
           
           console.log('Session synced with server');
+          
+          // Verificar si el usuario es administrador
+          statusEl.textContent = 'Verificando permisos de administrador...';
+          
+          const { data: adminUser, error: adminError } = await supabase
+            .from('admin_users')
+            .select('id')
+            .eq('email', data.session.user.email)
+            .single();
+          
+          if (adminError || !adminUser) {
+            console.error('Usuario no es administrador:', adminError);
+            // Cerrar sesión
+            await supabase.auth.signOut();
+            await fetch('/api/auth/signout', { method: 'POST', credentials: 'include' });
+            throw new Error('No tienes permisos de administrador');
+          }
+          
+          console.log('Usuario verificado como administrador');
           statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
           
           // Pequeño delay para que el usuario vea el mensaje
@@ -142,6 +161,25 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
               }
               
               console.log('Session synced with server');
+              
+              // Verificar si el usuario es administrador
+              statusEl.textContent = 'Verificando permisos de administrador...';
+              
+              const { data: adminUser, error: adminError } = await supabase
+                .from('admin_users')
+                .select('id')
+                .eq('email', sessionData.session.user.email)
+                .single();
+              
+              if (adminError || !adminUser) {
+                console.error('Usuario no es administrador:', adminError);
+                // Cerrar sesión
+                await supabase.auth.signOut();
+                await fetch('/api/auth/signout', { method: 'POST', credentials: 'include' });
+                throw new Error('No tienes permisos de administrador');
+              }
+              
+              console.log('Usuario verificado como administrador');
               statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
               
               setTimeout(() => {

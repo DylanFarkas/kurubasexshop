@@ -43,7 +43,7 @@ const errorMessage = errorParam ? errorMessages[errorParam] : null;
       <div class="bg-white/80 backdrop-blur-xl rounded-3xl border border-neutral-200/50 shadow-2xl shadow-neutral-900/5 p-8 md:p-10">
         {errorMessage && (
           <div class="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-start gap-3">
-            <Icon name="alert-circle" class="shrink-0 mt-0.5" size={20} />
+            <Icon name="warning" class="shrink-0 mt-0.5" size={20} />
             <span>{errorMessage}</span>
           </div>
         )}
