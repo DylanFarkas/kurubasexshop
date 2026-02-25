@@ -65,19 +65,22 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
     
     async function handleCallback() {
       try {
-        console.log('Handling auth callback...');
+        console.log('🔐 Handling auth callback...');
+        console.log('📍 Current URL:', window.location.href);
+        console.log('🔑 URL Params:', Object.fromEntries(new URL(window.location.href).searchParams));
         
         // Supabase cliente detectará automáticamente el código en la URL
         // y lo intercambiará por una sesión usando el code verifier del localStorage
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Error getting session:', error);
+          console.error('❌ Error getting session:', error);
           throw error;
         }
         
         if (data.session) {
-          console.log('Session established successfully');
+          console.log('✅ Session established successfully');
+          console.log('👤 User:', data.session.user.email);
           statusEl.textContent = 'Sincronizando sesión...';
           
           // Sincronizar sesión con el servidor (guardar en cookies)
@@ -94,10 +97,12 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           });
           
           if (!syncResponse.ok) {
-            throw new Error('Error al sincronizar sesión con el servidor');
+            const errorData = await syncResponse.json();
+            console.error('❌ Sync error:', errorData);
+            throw new Error(`Error al sincronizar sesión: ${errorData.message || syncResponse.statusText}`);
           }
           
-          console.log('Session synced with server');
+          console.log('✅ Session synced with server');
           statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
           
           // Pequeño delay para que el usuario vea el mensaje
@@ -106,20 +111,22 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
           }, 500);
         } else {
           // No hay sesión, intentar con exchangeCodeForSession manualmente
-          console.log('No session found, trying to exchange code...');
+          console.log('⚠️ No session found, trying to exchange code...');
           
           const url = new URL(window.location.href);
           const code = url.searchParams.get('code');
           
           if (code) {
+            console.log('🔄 Attempting to exchange code for session...');
             const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
             
             if (exchangeError) {
-              console.error('Error exchanging code:', exchangeError);
+              console.error('❌ Error exchanging code:', exchangeError);
+              console.error('Code used:', code.substring(0, 10) + '...');
               throw exchangeError;
             }
             
-            console.log('Code exchanged successfully');
+            console.log('✅ Code exchanged successfully');
             
             if (sessionData.session) {
               // Sincronizar sesión con el servidor
@@ -138,10 +145,12 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
               });
               
               if (!syncResponse.ok) {
-                throw new Error('Error al sincronizar sesión con el servidor');
+                const errorData = await syncResponse.json();
+                console.error('❌ Sync error:', errorData);
+                throw new Error(`Error al sincronizar sesión: ${errorData.message || syncResponse.statusText}`);
               }
               
-              console.log('Session synced with server');
+              console.log('✅ Session synced with server');
               statusEl.textContent = '✓ Autenticación exitosa, redirigiendo...';
               
               setTimeout(() => {
@@ -151,16 +160,17 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
               throw new Error('No session after code exchange');
             }
           } else {
-            throw new Error('No session or code found');
+            throw new Error('No session or code found in URL');
           }
         }
       } catch (error) {
-        console.error('Callback error:', error);
+        console.error('❌ Callback error:', error);
+        console.error('Full error details:', JSON.stringify(error, null, 2));
         errorEl.textContent = `Error: ${error.message}`;
         errorEl.style.display = 'block';
         statusEl.textContent = 'Error al autenticar';
         
-        // Redirigir al login después de 3 segundos
+        // Redirigir al login después de 3 segundos para dar tiempo de ver el error
         setTimeout(() => {
           window.location.href = '/admin/login?error=auth_failed';
         }, 3000);
