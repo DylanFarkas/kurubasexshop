@@ -11,33 +11,24 @@ export const onRequest = defineMiddleware(async ({ cookies, url, redirect }, nex
     if (url.pathname.startsWith("/admin") && url.pathname !== "/admin/login") {
         const supabase = createServerClient(cookies);
 
-        const { data: { session }, error } = await supabase.auth.getSession();
-
-        console.log('[Middleware] Checking admin access for:', url.pathname);
-        console.log('[Middleware] Session exists:', !!session);
-        console.log('[Middleware] Session error:', error);
+        const { data: { session } } = await supabase.auth.getSession();
 
         if (!session) {
-            console.log('[Middleware] No session, redirecting to login');
-            return redirect("/admin/login?error=session_expired");
+            return redirect("/admin/login");
         }
 
-        // Verificar si es admin
+        // TEMPORAL: Comentar verificación de admin mientras se configura
+        // TODO: Descomentar cuando admin_users esté configurado
         const { data: adminUser } = await supabase
             .from('admin_users')
             .select('id')
             .eq('email', session.user.email)
             .single();
 
-        console.log('[Middleware] Admin user check:', !!adminUser);
-
         if (!adminUser) {
-            console.log('[Middleware] Not an admin user, signing out');
             await supabase.auth.signOut();
-            return redirect("/admin/login?error=not_authorized");
+            return redirect("/admin/login");
         }
-
-        console.log('[Middleware] Access granted');
     }
 
     return next();
