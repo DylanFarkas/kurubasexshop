@@ -11,7 +11,16 @@ const SITE_URL = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
 const FROM_EMAIL = 'onboarding@resend.dev';
 
 // Verificar si los emails están habilitados
-const EMAILS_ENABLED = import.meta.env.ENABLE_EMAILS === 'true';
+// ⚠️ IMPORTANTE: En Vercel, asegúrate de configurar PUBLIC_ENABLE_EMAILS=true
+const EMAILS_ENABLED = import.meta.env.PUBLIC_ENABLE_EMAILS === 'true';
+
+// Log de configuración para debugging
+console.log('📧 CONFIG EMAIL:', {
+  enabled: EMAILS_ENABLED,
+  envValue: import.meta.env.PUBLIC_ENABLE_EMAILS,
+  hasApiKey: !!import.meta.env.RESEND_API_KEY,
+  adminEmail: ADMIN_EMAIL,
+});
 
 /**
  * Envía email de confirmación al cliente
