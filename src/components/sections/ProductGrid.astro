@@ -57,13 +57,20 @@ const { products } = Astro.props;
                         </div>
 
                         <div class="p-4 flex flex-col flex-1">
-                            <div class="mb-2 flex flex-wrap gap-1">
+                            <div class="mb-2 flex flex-wrap gap-1 items-center">
                                 {product.categories && product.categories.length > 0 ? (
-                                    product.categories.map((cat) => (
-                                        <span class="text-xs text-neutral-500 uppercase tracking-wide">
-                                            {cat.label}
-                                        </span>
-                                    ))
+                                    <>
+                                        {product.categories.slice(0, 1).map((cat) => (
+                                            <span class="text-xs text-neutral-500 uppercase tracking-wide">
+                                                {cat.label}
+                                            </span>
+                                        ))}
+                                        {product.categories.length > 1 && (
+                                            <span class="text-xs text-neutral-400 uppercase tracking-wide">
+                                                +{product.categories.length - 1}
+                                            </span>
+                                        )}
+                                    </>
                                 ) : (
                                     <span class="text-xs text-neutral-400 uppercase tracking-wide">
                                         Sin categoría
