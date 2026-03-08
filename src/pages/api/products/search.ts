@@ -25,7 +25,13 @@ export const GET: APIRoute = async ({ url }) => {
         final_price,
         image,
         images,
-        categories (label)
+        product_categories (
+          categories (
+            id,
+            label,
+            slug
+          )
+        )
       `)
       .eq('active', true)
       .ilike('name', `%${query}%`)
@@ -42,9 +48,9 @@ export const GET: APIRoute = async ({ url }) => {
       });
     }
 
-    // Mapear los productos con categoryLabel
+    // Mapear los productos con las categorías
     const mappedProducts = (products || []).map(p => {
-      const category = p.categories as any;
+      const categories = p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [];
       return {
         id: p.id,
         name: p.name,
@@ -53,7 +59,9 @@ export const GET: APIRoute = async ({ url }) => {
         final_price: p.final_price,
         image: p.image,
         images: p.images,
-        categoryLabel: category?.label,
+        categories: categories,
+        // Mantener categoryLabel para compatibilidad (primera categoría)
+        categoryLabel: categories[0]?.label,
       };
     });
 

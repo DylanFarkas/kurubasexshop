@@ -1,0 +1,49 @@
+---
+interface Props {
+  product: {
+    name: string;
+    description?: string;
+    image?: string;
+    price: number;
+    final_price?: number;
+    discount_pct?: number;
+    sku?: string;
+    slug: string;
+    categories?: Array<{ label: string; slug: string }>;
+  };
+}
+
+const { product } = Astro.props;
+
+const price = product.final_price || product.price;
+const inStock = true; // Puedes agregar lógica de inventario aquí
+const productImage = product.image || '/imgs/brand/logo-kuruba.png';
+
+const structuredData = {
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": product.name,
+  "image": new URL(productImage, Astro.url.origin).href,
+  "description": product.description || `Compra ${product.name} en Kuruba Sexshop`,
+  "sku": product.sku || product.slug,
+  "brand": {
+    "@type": "Brand",
+    "name": "Kuruba Sexshop"
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": Astro.url.href,
+    "priceCurrency": "COP",
+    "price": price,
+    "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "Kuruba Sexshop"
+    }
+  }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(structuredData)} />

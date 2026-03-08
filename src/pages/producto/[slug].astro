@@ -4,20 +4,24 @@ import { supabase } from '../../lib/supabase';
 import { formatPrice, formatTextToHtml } from '../../utils/formatters';
 import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
+import ProductSchema from '../../components/seo/ProductSchema.astro';
 
 // SSR: Renderizado del lado del servidor (dinámico)
 export const prerender = false;
 
 const { slug } = Astro.params;
 
-// Fetch producto con categoría
+// Fetch producto con categorías
 const { data: product, error } = await supabase
   .from('products')
   .select(`
     *,
-    categories (
-      label,
-      slug
+    product_categories (
+      categories (
+        id,
+        label,
+        slug
+      )
     )
   `)
   .eq('slug', slug)
@@ -30,8 +34,8 @@ if (error || !product) {
 
 const mappedProduct: Product = {
   ...product,
-  categoryLabel: product.categories?.label,
-  categorySlug: product.categories?.slug,
+  categories: product.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+  category_ids: product.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
 };
 
 const galleryImages = [
@@ -41,12 +45,25 @@ const galleryImages = [
 
 const displayPrice = mappedProduct.final_price || mappedProduct.price;
 const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct > 0;
+
+// SEO optimizado para productos
+const productTitle = `${mappedProduct.name} | Comprar en Kuruba Sexshop`;
+const productDescription = mappedProduct.description 
+  ? `${mappedProduct.description.substring(0, 150)}... 💰 ${formatPrice(displayPrice)} ${hasDiscount ? `🔥 ${mappedProduct.discount_pct}% OFF` : ''} ✅ Envío discreto ✅ Compra segura`
+  : `Compra ${mappedProduct.name} en Kuruba Sexshop. Precio: ${formatPrice(displayPrice)}. Envío discreto a toda Colombia. ¡Calidad garantizada!`;
+
+const categoryLabels = (mappedProduct.categories || []).map(c => c.label).join(', ');
+const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${categoryLabels ? `, ${categoryLabels}` : ''}, sexshop colombia`;
 ---
 
 <BaseLayout 
-  title={`${mappedProduct.name} - Kuruba Sexshop`}
-  description={mappedProduct.description || `Compra ${mappedProduct.name} en Kuruba Sexshop`}
+  title={productTitle}
+  description={productDescription}
+  keywords={productKeywords}
+  image={mappedProduct.image || '/imgs/brand/logo-kuruba.png'}
+  type="product"
 >
+  {mappedProduct.image && <ProductSchema product={mappedProduct} slot="head" />}
   <main class="container mx-auto px-4 pt-20 pb-16">
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
@@ -75,13 +92,17 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
       </div>
 
       <div class="space-y-4">
-        {mappedProduct.categoryLabel && (
-          <a
-            href={`/categoria/${mappedProduct.categorySlug}`}
-            class="inline-block text-sm text-pink-600 hover:underline"
-          >
-            {mappedProduct.categoryLabel}
-          </a>
+        {mappedProduct.categories && mappedProduct.categories.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {mappedProduct.categories.map((cat) => (
+              <a
+                href={`/categoria/${cat.slug}`}
+                class="inline-block px-3 py-1 text-sm bg-pink-50 text-pink-600 rounded-full hover:bg-pink-100 transition"
+              >
+                {cat.label}
+              </a>
+            ))}
+          </div>
         )}
         
         <h1 class="text-4xl font-bold">{mappedProduct.name}</h1>

@@ -23,11 +23,11 @@ const categoriesData = (categories || []) as Category[];
 const activeCount = categoriesData.filter(c => c.active).length;
 const inactiveCount = categoriesData.filter(c => !c.active).length;
 
-// Obtener conteo de productos por categoría
+// Obtener conteo de productos por categoría usando la tabla de unión
 const categoriesWithCount = await Promise.all(
   categoriesData.map(async (category) => {
     const { count } = await supabaseAdmin
-      .from('products')
+      .from('product_categories')
       .select('*', { count: 'exact', head: true })
       .eq('category_id', category.id);
     

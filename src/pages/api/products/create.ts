@@ -39,14 +39,13 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const validatedData = productSchema.parse(body);
 
     // Insertar producto en Supabase usando Admin client (bypass RLS)
-    // TODO: Cambiar a 'supabase' cuando admin_users esté correctamente configurado
     const { data: product, error } = await supabaseAdmin
       .from('products')
       .insert([{
         name: validatedData.name,
         slug: validatedData.slug,
         description: validatedData.description,
-        category_id: validatedData.category_id,
+        // Ya no usamos category_id - se maneja con la tabla de unión
         price: validatedData.price,
         final_price: validatedData.final_price || null,
         discount_pct: validatedData.discount_pct || null,
@@ -67,6 +66,23 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Sincronizar categorías usando la función de Supabase
+    if (validatedData.category_ids && validatedData.category_ids.length > 0) {
+      const { error: categoriesError } = await supabaseAdmin.rpc(
+        'sync_product_categories',
+        {
+          p_product_id: product.id,
+          p_category_ids: validatedData.category_ids,
+        }
+      );
+
+      if (categoriesError) {
+        console.error('Error syncing categories:', categoriesError);
+        // No fallar completamente, solo advertir
+        console.warn('Producto creado pero hubo un error al asignar categorías');
+      }
     }
 
     return new Response(

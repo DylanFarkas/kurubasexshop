@@ -44,7 +44,7 @@ export default function ProductForm({
       name: initialData?.name || '',
       slug: initialData?.slug || '',
       description: initialData?.description || '',
-      category_id: initialData?.category_id || '',
+      category_ids: initialData?.category_ids || [],
       price: initialData?.price || 0,
       final_price: initialData?.final_price || null,
       discount_pct: initialData?.discount_pct || null,
@@ -77,6 +77,25 @@ export default function ProductForm({
       setValue('final_price', null);
     }
   }, [price, discountPct, setValue]);
+
+  // Auto-marcar/desmarcar categoría "Ofertas" basado en descuento
+  useEffect(() => {
+    const ofertasCategory = categories.find(cat => cat.slug === 'ofertas');
+    if (!ofertasCategory) return;
+
+    const currentCategories = watch('category_ids') || [];
+    const hasOfertas = currentCategories.includes(ofertasCategory.id);
+
+    if (discountPct && discountPct > 0) {
+      if (!hasOfertas) {
+        setValue('category_ids', [...currentCategories, ofertasCategory.id]);
+      }
+    } else {
+      if (hasOfertas) {
+        setValue('category_ids', currentCategories.filter(id => id !== ofertasCategory.id));
+      }
+    }
+  }, [discountPct, categories, watch, setValue]);
 
   const handleFormSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
@@ -250,26 +269,59 @@ export default function ProductForm({
           )}
         </div>
 
-        {/* Categoría */}
+        {/* Categorías (Selector Múltiple) */}
         <div>
-          <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Categoría *
+          <label htmlFor="category_ids" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            Categorías *
           </label>
-          <select
-            {...register('category_id')}
-            id="category_id"
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-pink-500 dark:focus:ring-pink-400 focus:border-transparent transition-colors"
-          >
-            <option value="">Selecciona una categoría</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.id}>
-                {category.label}
-              </option>
-            ))}
-          </select>
-          {errors.category_id && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category_id.message}</p>
+          <div className="space-y-2">
+            {categories.map(category => {
+              const selectedCategories = watch('category_ids') || [];
+              const isChecked = selectedCategories.includes(category.id);
+              const isOfertas = category.slug === 'ofertas';
+              const currentDiscountPct = watch('discount_pct');
+              const isAutoMarked = isOfertas && currentDiscountPct && currentDiscountPct > 0;
+              
+              return (
+                <label
+                  key={category.id}
+                  className="flex items-center gap-3 p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={(e) => {
+                      const currentCategories = watch('category_ids') || [];
+                      if (e.target.checked) {
+                        setValue('category_ids', [...currentCategories, category.id]);
+                      } else {
+                        setValue('category_ids', currentCategories.filter(id => id !== category.id));
+                      }
+                    }}
+                    className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                  />
+                  <span className="text-gray-900 dark:text-gray-100 flex-1">{category.label}</span>
+                  {isAutoMarked && (
+                    <span className="text-xs bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 px-2 py-1 rounded-full font-medium">
+                      Auto
+                    </span>
+                  )}
+                </label>
+              );
+            })}
+          </div>
+          {errors.category_ids && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.category_ids.message}</p>
           )}
+          <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 space-y-1">
+            <p>Selecciona una o más categorías para este producto</p>
+            <p className="flex items-center gap-1 text-pink-600 dark:text-pink-400">
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              "Ofertas" se marca automáticamente cuando hay descuento
+            </p>
+          </div>
         </div>
       </div>
 
@@ -321,7 +373,7 @@ export default function ProductForm({
               <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.discount_pct.message}</p>
             )}
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Ingresa el porcentaje de descuento
+              Si es mayor a 0, se marca "Ofertas" automáticamente
             </p>
           </div>
 

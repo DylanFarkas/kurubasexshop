@@ -1,0 +1,32 @@
+---
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Store",
+  "name": "Kuruba Sexshop",
+  "description": "Tu sexshop de confianza en Colombia. Amplia selección de juguetes eróticos, lencería, lubricantes y productos de bienestar íntimo.",
+  "url": "https://www.kurubasexshop.com",
+  "logo": new URL("/imgs/brand/logo-kuruba.png", Astro.url.origin).href,
+  "image": new URL("/imgs/brand/logo-kuruba.png", Astro.url.origin).href,
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "CO",
+    "addressLocality": "Colombia"
+  },
+  "sameAs": [
+    // Aquí agregar redes sociales
+    // "https://www.facebook.com/kurubasexshop",
+    // "https://www.instagram.com/kurubasexshop"
+  ],
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": "https://www.kurubasexshop.com/tienda?q={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
