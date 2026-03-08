@@ -108,11 +108,15 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
               ? item.href.replace('/', '') 
               : item.href;
 
+            const isExternal = href.startsWith('http');
+
             return (
               <a
                 key={item.label}
                 href={href}
                 onClick={closeMenu}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
                 className="py-4 border-b border-gray-200 text-gray-900 font-medium uppercase tracking-wide text-sm hover:opacity-70 transition-opacity"
               >
                 {item.label}
