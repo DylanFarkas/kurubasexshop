@@ -24,9 +24,12 @@ let productsQuery = supabaseAdmin
   .select(
     `
       *,
-      categories (
-        label,
-        slug
+      product_categories (
+        categories (
+          id,
+          label,
+          slug
+        )
       )
     `,
     { count: 'exact' }
@@ -254,10 +257,20 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
                     </div>
                   </td>
 
-                  <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {product.categories?.label || 'Sin categoría'}
-                    </span>
+                  <td class="px-6 py-4">
+                    {product.product_categories && product.product_categories.length > 0 ? (
+                      <div class="flex flex-wrap gap-1">
+                        {product.product_categories.map((pc: any) => (
+                          pc.categories && (
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-700">
+                              {pc.categories.label}
+                            </span>
+                          )
+                        ))}
+                      </div>
+                    ) : (
+                      <span class="text-sm text-gray-400 dark:text-gray-500 italic">Sin categoría</span>
+                    )}
                   </td>
 
                   <td class="px-6 py-4 whitespace-nowrap">

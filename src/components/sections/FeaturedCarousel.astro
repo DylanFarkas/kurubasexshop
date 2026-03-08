@@ -17,9 +17,12 @@ const { data: featuredProducts } = await supabase
   .select(
     `
     *,
-    categories (
-      label,
-      slug
+    product_categories (
+      categories (
+        id,
+        label,
+        slug
+      )
     )
   `,
   )
@@ -29,18 +32,29 @@ const { data: featuredProducts } = await supabase
 // Agrupar productos por categoría
 const featuredByCategory: Record<string, any[]> = {};
 (featuredProducts || []).forEach((product) => {
-  const categoryLabel = product.categories?.label;
-  if (categoryLabel) {
-    if (!featuredByCategory[categoryLabel]) {
-      featuredByCategory[categoryLabel] = [];
+  // Obtener todas las categorías del producto
+  const productCategories = product.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [];
+  
+  // Agregar el producto a cada una de sus categorías
+  productCategories.forEach((cat: any) => {
+    if (cat && cat.label) {
+      if (!featuredByCategory[cat.label]) {
+        featuredByCategory[cat.label] = [];
+      }
+      // Evitar duplicados
+      const exists = featuredByCategory[cat.label].some((p: any) => p.id === product.id);
+      if (!exists) {
+        featuredByCategory[cat.label].push({
+          ...product,
+          categories: productCategories,
+          category_ids: productCategories.map((c: any) => c.id),
+          // Mantener compatibilidad con categoryLabel (primera categoría)
+          categoryLabel: productCategories[0]?.label,
+          categorySlug: productCategories[0]?.slug,
+        });
+      }
     }
-    featuredByCategory[categoryLabel].push({
-      ...product,
-      category: categoryLabel,
-      categoryLabel: product.categories?.label,
-      categorySlug: product.categories?.slug,
-    });
-  }
+  });
 });
 
 // Construir bloques solo para categorías que tengan productos destacados
@@ -75,7 +89,7 @@ const blocks = (categories || [])
               subtitle="Destacados"
               href={b.href}
               products={featuredByCategory[b.key] ?? []}
-              getVariant={(p: Product) =>
+              getVariant={(p: any) =>
                 p.cardVariant ?? categoryThemes[p.categoryLabel || ""] ?? {}
               }
             />

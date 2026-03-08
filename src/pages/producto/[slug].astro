@@ -10,14 +10,17 @@ export const prerender = false;
 
 const { slug } = Astro.params;
 
-// Fetch producto con categoría
+// Fetch producto con categorías
 const { data: product, error } = await supabase
   .from('products')
   .select(`
     *,
-    categories (
-      label,
-      slug
+    product_categories (
+      categories (
+        id,
+        label,
+        slug
+      )
     )
   `)
   .eq('slug', slug)
@@ -30,8 +33,8 @@ if (error || !product) {
 
 const mappedProduct: Product = {
   ...product,
-  categoryLabel: product.categories?.label,
-  categorySlug: product.categories?.slug,
+  categories: product.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+  category_ids: product.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
 };
 
 const galleryImages = [
@@ -75,13 +78,17 @@ const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct >
       </div>
 
       <div class="space-y-4">
-        {mappedProduct.categoryLabel && (
-          <a
-            href={`/categoria/${mappedProduct.categorySlug}`}
-            class="inline-block text-sm text-pink-600 hover:underline"
-          >
-            {mappedProduct.categoryLabel}
-          </a>
+        {mappedProduct.categories && mappedProduct.categories.length > 0 && (
+          <div class="flex flex-wrap gap-2">
+            {mappedProduct.categories.map((cat) => (
+              <a
+                href={`/categoria/${cat.slug}`}
+                class="inline-block px-3 py-1 text-sm bg-pink-50 text-pink-600 rounded-full hover:bg-pink-100 transition"
+              >
+                {cat.label}
+              </a>
+            ))}
+          </div>
         )}
         
         <h1 class="text-4xl font-bold">{mappedProduct.name}</h1>

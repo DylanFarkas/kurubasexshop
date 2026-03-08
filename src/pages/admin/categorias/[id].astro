@@ -27,9 +27,9 @@ if (error || !category) {
 
 const categoryData = category as Category;
 
-// Obtener conteo de productos
+// Obtener conteo de productos usando la tabla de unión
 const { count: productCount } = await supabaseAdmin
-  .from('products')
+  .from('product_categories')
   .select('*', { count: 'exact', head: true })
   .eq('category_id', id);
 ---

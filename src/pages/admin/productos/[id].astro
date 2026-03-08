@@ -12,10 +12,19 @@ if (!id) {
   return Astro.redirect('/admin/productos');
 }
 
-// Obtener el producto
+// Obtener el producto con sus categorías
 const { data: product, error: productError } = await supabaseAdmin
   .from('products')
-  .select('*')
+  .select(`
+    *,
+    product_categories (
+      categories (
+        id,
+        label,
+        slug
+      )
+    )
+  `)
   .eq('id', id)
   .single();
 
@@ -23,6 +32,10 @@ if (productError || !product) {
   console.error('Error fetching product:', productError);
   return Astro.redirect('/admin/productos');
 }
+
+// Mapear las categorías del producto
+const productCategories = product.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [];
+const productCategoryIds = productCategories.map((cat: any) => cat.id);
 
 // Obtener categorías activas
 const { data: categories, error: categoriesError } = await supabaseAdmin
@@ -74,7 +87,7 @@ if (categoriesError) {
         name: product.name,
         slug: product.slug,
         description: product.description,
-        category_id: product.category_id,
+        category_ids: productCategoryIds,
         price: product.price,
         final_price: product.final_price,
         discount_pct: product.discount_pct,

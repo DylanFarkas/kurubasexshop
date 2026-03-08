@@ -57,7 +57,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         name: validatedData.name,
         slug: validatedData.slug,
         description: validatedData.description,
-        category_id: validatedData.category_id,
+        // Ya no usamos category_id - se maneja con la tabla de unión
         price: validatedData.price,
         final_price: validatedData.final_price || null,
         discount_pct: validatedData.discount_pct || null,
@@ -79,6 +79,23 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    // Sincronizar categorías usando la función de Supabase
+    if (validatedData.category_ids) {
+      const { error: categoriesError } = await supabaseAdmin.rpc(
+        'sync_product_categories',
+        {
+          p_product_id: id,
+          p_category_ids: validatedData.category_ids,
+        }
+      );
+
+      if (categoriesError) {
+        console.error('Error syncing categories:', categoriesError);
+        // No fallar completamente, solo advertir
+        console.warn('Producto actualizado pero hubo un error al sincronizar categorías');
+      }
     }
 
     return new Response(

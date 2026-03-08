@@ -298,10 +298,13 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
         ) as HTMLElement[];
 
         let visibleProducts = productCards.filter((card) => {
-            const category = card.dataset.category || "";
+            // Obtener array de categorías del producto (separadas por comas)
+            const categoriesStr = card.dataset.categories || "";
+            const categories = categoriesStr.split(',').filter(Boolean);
             const price = parseFloat(card.dataset.price || "0");
             
-            if (selectedCategory && category !== selectedCategory) {
+            // Verificar si el producto tiene la categoría seleccionada
+            if (selectedCategory && !categories.includes(selectedCategory)) {
                 return false;
             }
             

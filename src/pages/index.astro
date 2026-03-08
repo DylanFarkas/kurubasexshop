@@ -21,12 +21,16 @@ if (categories) {
       .from('products')
       .select(`
         *,
-        categories (
-          label,
-          slug
+        product_categories!inner (
+          category_id,
+          categories (
+            id,
+            label,
+            slug
+          )
         )
       `)
-      .eq('category_id', category.id)
+      .eq('product_categories.category_id', category.id)
       .eq('active', true)
       .eq('featured', true)
       .limit(8);
@@ -36,8 +40,8 @@ if (categories) {
         category: category.label,
         products: products.map(p => ({
           ...p,
-          categoryLabel: p.categories?.label,
-          categorySlug: p.categories?.slug,
+          categories: p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+          category_ids: p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
         })),
       });
     }

@@ -8,7 +8,16 @@ import { Icon } from "astro-icon/components";
 
 const { data: products, error } = await supabase
     .from('products')
-    .select(`*,categories (label,slug)`)
+    .select(`
+      *,
+      product_categories (
+        categories (
+          id,
+          label,
+          slug
+        )
+      )
+    `)
     .eq('active', true)
     .order('created_at', { ascending: false });
 
@@ -18,8 +27,8 @@ const { data: products, error } = await supabase
 
 const mappedProducts: Product[] = (products || []).map(p => ({
   ...p,
-  categoryLabel: p.categories?.label,
-  categorySlug: p.categories?.slug,
+  categories: p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+  category_ids: p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
 }));
 
 const { data: categories } = await supabase

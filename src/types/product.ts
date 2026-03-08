@@ -1,13 +1,14 @@
 import type { ProductCardVariant } from "./productCard";
+import type { Category } from "./category";
 
 export type Product = {
   id: string;              // UUID de Supabase
   name: string;
   slug: string;            // Ya no opcional
   description?: string;
-  category_id: string;     // UUID (renombrado de category)
-  categoryLabel?: string;  // Joined data para display
-  categorySlug?: string;   // Joined data para links
+  // Relación muchos-a-muchos con categorías
+  category_ids?: string[]; // Array de UUIDs de categorías (para formularios)
+  categories?: Category[]; // Joined data completo desde Supabase
   price: number;
   final_price?: number;
   discount_pct?: number;

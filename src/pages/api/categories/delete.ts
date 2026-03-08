@@ -17,9 +17,9 @@ export const DELETE: APIRoute = async ({ request, url }) => {
       );
     }
 
-    // Verificar si hay productos asociados a esta categoría
+    // Verificar si hay productos asociados a esta categoría usando la tabla de unión
     const { count: productCount } = await supabaseAdmin
-      .from('products')
+      .from('product_categories')
       .select('*', { count: 'exact', head: true })
       .eq('category_id', id);
 

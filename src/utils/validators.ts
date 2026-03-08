@@ -19,7 +19,9 @@ export const productSchema = z.object({
   name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
   slug: z.string().min(3, 'El slug debe tener al menos 3 caracteres'),
   description: z.string().optional(),
-  category_id: z.string().uuid('Selecciona una categoría válida'),
+  category_ids: z.array(z.string().uuid('ID de categoría inválido'))
+    .min(1, 'Selecciona al menos una categoría')
+    .max(10, 'Máximo 10 categorías por producto'),
   price: z.number().positive('El precio debe ser mayor a 0'),
   final_price: z.number().positive().optional().nullable(),
   discount_pct: z.number().int().min(0).max(100).optional().nullable(),
