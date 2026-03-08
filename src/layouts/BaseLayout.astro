@@ -3,8 +3,25 @@ import "../styles/global.css";
 import Header from "../components/layout/Header.astro";
 import AgeGate from "../components/compliance/AgeGate.astro";
 import ToastProvider from "../components/ui/ToastProvider";
-//Footer could be added here in the future
-const { title = "Kuruba", description = "Kuruba Sexshop" } = Astro.props;
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  keywords?: string;
+  type?: string;
+}
+
+const { 
+  title = "Kuruba Sexshop - Tu tienda de confianza en Colombia", 
+  description = "Descubre nuestra amplia selección de juguetes eróticos, lubricantes, lencería y productos de bienestar íntimo. Envíos discretos a toda Colombia. Compra segura y confidencial.",
+  image = "/imgs/brand/logo-kuruba.png",
+  keywords = "sexshop, juguetes eróticos, lubricantes, lencería, bondaje, bienestar íntimo, productos para adultos, Colombia",
+  type = "website"
+} = Astro.props;
+
+const currentUrl = Astro.url.href;
+const siteName = "Kuruba Sexshop";
 ---
 
 <!doctype html>
@@ -12,8 +29,40 @@ const { title = "Kuruba", description = "Kuruba Sexshop" } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/png" href="/imgs/brand/logo-kuruba.png" />
+    
+    <!-- SEO Básico -->
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    <meta name="author" content="Kuruba Sexshop" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={currentUrl} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={currentUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url.origin).href} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content="es_CO" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={currentUrl} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, Astro.url.origin).href} />
+    
+    <!-- Tema y PWA -->
+    <meta name="theme-color" content="#ec4899" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Structured Data Slot -->
+    <slot name="head" />
+    
     <script is:inline>
       (function() {
         const savedTheme = localStorage.getItem('theme');

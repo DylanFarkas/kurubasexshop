@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { formatPrice, formatTextToHtml } from '../../utils/formatters';
 import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
+import ProductSchema from '../../components/seo/ProductSchema.astro';
 
 // SSR: Renderizado del lado del servidor (dinámico)
 export const prerender = false;
@@ -44,12 +45,25 @@ const galleryImages = [
 
 const displayPrice = mappedProduct.final_price || mappedProduct.price;
 const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct > 0;
+
+// SEO optimizado para productos
+const productTitle = `${mappedProduct.name} | Comprar en Kuruba Sexshop`;
+const productDescription = mappedProduct.description 
+  ? `${mappedProduct.description.substring(0, 150)}... 💰 ${formatPrice(displayPrice)} ${hasDiscount ? `🔥 ${mappedProduct.discount_pct}% OFF` : ''} ✅ Envío discreto ✅ Compra segura`
+  : `Compra ${mappedProduct.name} en Kuruba Sexshop. Precio: ${formatPrice(displayPrice)}. Envío discreto a toda Colombia. ¡Calidad garantizada!`;
+
+const categoryLabels = (mappedProduct.categories || []).map(c => c.label).join(', ');
+const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${categoryLabels ? `, ${categoryLabels}` : ''}, sexshop colombia`;
 ---
 
 <BaseLayout 
-  title={`${mappedProduct.name} - Kuruba Sexshop`}
-  description={mappedProduct.description || `Compra ${mappedProduct.name} en Kuruba Sexshop`}
+  title={productTitle}
+  description={productDescription}
+  keywords={productKeywords}
+  image={mappedProduct.image || '/imgs/brand/logo-kuruba.png'}
+  type="product"
 >
+  {mappedProduct.image && <ProductSchema product={mappedProduct} slot="head" />}
   <main class="container mx-auto px-4 pt-20 pb-16">
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->

@@ -6,6 +6,7 @@ import FeaturedCarousel from '../components/sections/FeaturedCarousel.astro';
 import { supabase } from '../lib/supabase';
 import AboutUs from '../components/sections/AboutUs.astro';
 import Feedback from '../components/sections/Feedback.astro';
+import OrganizationSchema from '../components/seo/OrganizationSchema.astro';
 
 const { data: categories } = await supabase
   .from('categories')
@@ -50,9 +51,11 @@ if (categories) {
 ---
 
 <BaseLayout 
-  title="Kuruba Sexshop - Tu tienda de confianza"
-  description="Encuentra los mejores productos para tu bienestar íntimo"
+  title="Kuruba Sexshop Colombia | Juguetes, Lubricantes y Más ✨"
+  description="🔥 Tu sexshop de confianza en Colombia. Descubre juguetes eróticos, lubricantes premium y productos de bienestar íntimo. ✅ Envíos discretos ✅ Compra 100% segura. ¡El placer que mereces!"
+  keywords="sexshop colombia, juguetes eróticos, juguetes para adultos, lubricantes, vibradores, sexshop online, tienda erótica, productos íntimos"
 >
+  <OrganizationSchema slot="head" />
   <Hero />
   <CategoriesGrid />
   <FeaturedCarousel featuredByCategory={Object.fromEntries(featuredByCategory)} />

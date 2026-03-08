@@ -1,0 +1,12 @@
+# Kuruba Sexshop - Robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+
+# Sitemap
+Sitemap: https://www.kurubasexshop.com/sitemap.xml
+
+# Crawl-delay (opcional)
+Crawl-delay: 1

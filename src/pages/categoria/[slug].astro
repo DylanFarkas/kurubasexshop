@@ -85,11 +85,57 @@ const mappedProducts: Product[] = (products || []).map(p => ({
   categories: p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
   category_ids: p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
 }));
+
+// Descripciones SEO optimizadas por categoría
+const categoryDescriptions: Record<string, { title: string; description: string; keywords: string }> = {
+  'ofertas': {
+    title: '🔥 Ofertas y Descuentos | Kuruba Sexshop - Hasta 30% OFF',
+    description: '💰 ¡Aprovecha nuestras OFERTAS EXCLUSIVAS! Descuentos en juguetes, lubricantes y más. ¡Precios irresistibles! ⚡ Stock limitado. Compra ahora con envío discreto.',
+    keywords: 'ofertas sexshop, descuentos productos eróticos, promociones juguetes sexuales'
+  },
+  'juguetes': {
+    title: 'Juguetes Eróticos | Vibradores y Consoladores | Kuruba Sexshop',
+    description: '✨ Amplia selección de juguetes eróticos: vibradores, consoladores, bullets, huevos vibradores y más. Para ella, para él y parejas. ¡Placer garantizado!',
+    keywords: 'juguetes eróticos, vibradores, consoladores, juguetes sexuales, sex toys colombia'
+  },
+  'lubricantes': {
+    title: 'Lubricantes Íntimos | Base Agua y Silicona | Kuruba Sexshop',
+    description: '💧 Lubricantes de calidad premium: base agua, silicona, efecto calor y más. Compatibles con preservativos. ¡Máximo placer sin límites!',
+    keywords: 'lubricantes íntimos, lubricantes sexuales, lubricante base agua, lubricante silicona'
+  },
+  // 'lenceria': {
+  //   title: 'Lencería Sensual y Sexy | Conjuntos Eróticos | Kuruba Sexshop',
+  //   description: '👙 Lencería sexy para conquistar: conjuntos, baby dolls, corsés, disfraces y más. Todas las tallas. ¡Siéntete irresistible!',
+  //   keywords: 'lencería sensual, lencería sexy, ropa interior erótica, baby doll, corsés'
+  // },
+  // 'bondaje': {
+  //   title: 'Bondaje y BDSM | Esposas, Cuerdas y Más | Kuruba Sexshop',
+  //   description: '🔗 Explora el bondaje: esposas, vendas, látigos, cuerdas y accesorios BDSM. Para principiantes y expertos. ¡Atrévete a más!',
+  //   keywords: 'bondaje, bdsm, esposas, látigos, juegos de dominación, accesorios bdsm'
+  // },
+  'masculino': {
+    title: 'Productos Masculinos | Anillos, Masturbadores | Kuruba Sexshop',
+    description: '💪 Productos diseñados para él: anillos vibradores, masturbadores, bombas, extensores y más. ¡Potencia tu placer!',
+    keywords: 'productos masculinos, masturbadores, anillos vibradores, juguetes para hombres'
+  },
+  'bienestar-intimo': {
+    title: 'Bienestar Íntimo | Cuidado Personal | Kuruba Sexshop',
+    description: '🌸 Productos para tu bienestar: limpiadores íntimos, aceites de masaje, bolas chinas y más. Cuida tu salud sexual.',
+    keywords: 'bienestar íntimo, cuidado personal, aceites masaje, bolas chinas, limpiadores íntimos'
+  }
+};
+
+const seoData = categoryDescriptions[slug as string] || {
+  title: `${category.label} | Kuruba Sexshop Colombia`,
+  description: `Descubre nuestra selección de ${category.label.toLowerCase()}. Productos de calidad con envío discreto a toda Colombia. ¡Compra segura!`,
+  keywords: `${category.label.toLowerCase()}, productos eróticos, sexshop colombia`
+};
 ---
 
 <BaseLayout 
-  title={isOffersPage ? 'Ofertas y Descuentos - Kuruba Sexshop' : `${category.label} - Kuruba Sexshop`}
-  description={isOffersPage ? 'Aprovecha nuestras mejores ofertas y descuentos en productos íntimos' : `Explora nuestra selección de ${category.label.toLowerCase()}`}
+  title={seoData.title}
+  description={seoData.description}
+  keywords={seoData.keywords}
 >
   <main class="pt-24 pb-16 min-h-screen bg-white">
     <div class="container mx-auto px-4 md:px-8">
