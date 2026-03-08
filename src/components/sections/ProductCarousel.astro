@@ -52,12 +52,18 @@ const {
 
   <div
     id={id}
-    class="relative -mx-4 px-4 overflow-x-auto scroll-smooth overflow-visible pt-5"
+    class:list={[
+      "relative overflow-x-auto scroll-smooth overflow-visible pt-5",
+      products.length <= 2 ? "" : "-mx-4 px-4"
+    ]}
     style="scrollbar-width: none;"
   >
-    <div class="flex gap-6 md:gap-10 snap-x snap-mandatory">
+    <div class:list={[
+      "flex gap-6 md:gap-10 snap-x snap-mandatory",
+      products.length <= 2 ? "justify-start" : ""
+    ]}>
       {products.map((p) => (
-        <ProductCard product={p} variant={getVariant ? getVariant(p) : {}} />
+        <ProductCard product={p} variant={getVariant ? getVariant(p) : {}} compact={products.length <= 2} />
       ))}
     </div>
   </div>
