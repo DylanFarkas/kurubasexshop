@@ -15,13 +15,14 @@ interface Props {
 const { 
   title = "Kuruba Sexshop - Tu tienda de confianza en Colombia", 
   description = "Descubre nuestra amplia selección de juguetes eróticos, lubricantes, lencería y productos de bienestar íntimo. Envíos discretos a toda Colombia. Compra segura y confidencial.",
-  image = "/imgs/brand/logo-kuruba.png",
+  image = "/imgs/brand/logo-kuruba-og.svg",
   keywords = "sexshop, juguetes eróticos, lubricantes, lencería, bondaje, bienestar íntimo, productos para adultos, Colombia",
   type = "website"
 } = Astro.props;
 
 const currentUrl = Astro.url.href;
 const siteName = "Kuruba Sexshop";
+const absoluteImageUrl = new URL(image, Astro.url.origin).href;
 ---
 
 <!doctype html>
@@ -44,16 +45,19 @@ const siteName = "Kuruba Sexshop";
     <meta property="og:url" content={currentUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image, Astro.url.origin).href} />
+    <meta property="og:image" content={absoluteImageUrl} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:locale" content="es_CO" />
+    <meta property="og:image:secure_url" content={absoluteImageUrl} />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content={currentUrl} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(image, Astro.url.origin).href} />
+    <meta name="twitter:image" content={absoluteImageUrl} />
+    <meta itemprop="image" content={absoluteImageUrl} />
+    <link rel="image_src" href={absoluteImageUrl} />
     
     <!-- Tema y PWA -->
     <meta name="theme-color" content="#ec4899" />

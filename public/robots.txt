@@ -5,6 +5,12 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /auth/
 
+User-agent: Googlebot-Image
+Disallow: /imgs/brand/home-background.webp
+
+User-agent: bingbot
+Disallow: /imgs/brand/home-background.webp
+
 # Sitemap
 Sitemap: https://www.kurubasexshop.com/sitemap.xml
 
