@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Kuruba Sexshop</title>
+  <desc id="desc">Logo de Kuruba Sexshop sobre fondo #FA0745</desc>
+  <rect width="512" height="512" fill="#FA0745" />
+  <image
+    href="/imgs/brand/logo-kuruba.png"
+    x="64"
+    y="64"
+    width="384"
+    height="384"
+    preserveAspectRatio="xMidYMid meet"
+  />
+</svg>
