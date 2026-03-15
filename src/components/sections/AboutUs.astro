@@ -3,17 +3,12 @@ import { Icon } from "astro-icon/components";
 
 /**
  * AboutSection.astro
- * Coloca tus imágenes en:
- * /public/images/paola-lazo.png
- * /public/images/sen-intimo.png
- * /public/images/kuruba-mark.png
- * /public/images/ig.svg / fb.svg / tiktok.svg (o usa astro-icon)
  */
 const phone = "3102994686";
 const email = "kurubasexshop@gmail.com";
 ---
 
-<section id="nosotros" class="w-full bg-white min-h-dvh">
+<section id="nosotros" class="w-full bg-white dark:bg-black min-h-dvh">
   <div class="mx-auto max-w-7xl 2xl:max-w-425 px-6 md:px-10 lg:px-16 py-10 md:py-14">
     <!-- Header: logos arriba a la derecha -->
     <header
@@ -44,7 +39,7 @@ const email = "kurubasexshop@gmail.com";
           Conócenos
         </h2>
 
-        <p class="mt-6 text-neutral-700 leading-relaxed text-base xl:text-lg 2xl:text-xl">
+        <p class="mt-6 text-neutral-700 dark:text-neutral-300 leading-relaxed text-base xl:text-lg 2xl:text-xl">
           Kuruba Sexshop es un espacio creado para vivir la sexualidad con
           información, confianza y bienestar. Respaldados por la Dra. Paola
           Lazo, unimos salud íntima y placer responsable en una selección
@@ -98,7 +93,7 @@ const email = "kurubasexshop@gmail.com";
             <span class="text-neutral-500">
                 <Icon name="whatsapp" class="h-5 w-5" />
             </span>
-            <a href={`https://wa.me/57${phone}`} target="_blank" class="hover:underline">
+            <a href={`https://wa.me/57${phone}`} target="_blank" class="hover:underline dark:text-neutral-400">
               {phone}
             </a>
           </p>
@@ -107,7 +102,7 @@ const email = "kurubasexshop@gmail.com";
             <span class="text-neutral-500">
                 <Icon name="mail" class="h-5 w-5" />
             </span>
-            <a href={`mailto:${email}`} class="hover:underline">
+            <a href={`mailto:${email}`} class="hover:underline dark:text-neutral-400">
               {email}
             </a>
           </p>

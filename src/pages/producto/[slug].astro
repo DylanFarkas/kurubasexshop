@@ -68,7 +68,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
       <div class="space-y-4">
-        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100">
+        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100 dark:bg-black dark:border-gray-700 dark:border-3">
           <img
             id="main-image"
             src={mappedProduct.image || '/placeholder.png'}
@@ -81,7 +81,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           <div class="grid grid-cols-4 w-full gap-4">
             {galleryImages.map((img, i) => (
               <button
-                class="aspect-square rounded-lg overflow-hidden border border-transparent hover:border-pink-500 transition thumbnail-btn"
+                class="aspect-square rounded-lg overflow-hidden border border-transparent hover:border-pink-500 texttransition thumbnail-btn"
                 data-image={img}
               >
                 <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full rounded-lg object-cover" />
@@ -105,10 +105,10 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           </div>
         )}
         
-        <h1 class="text-4xl font-bold">{mappedProduct.name}</h1>
+        <h1 class="text-4xl font-bold dark:text-white">{mappedProduct.name}</h1>
         
         <div class="flex items-baseline gap-3">
-          <span class="text-4xl font-bold">{formatPrice(displayPrice)}</span>
+          <span class="text-4xl font-bold dark:text-neutral-300">{formatPrice(displayPrice)}</span>
           {hasDiscount && (
             <>
               <span class="text-xl text-gray-400 line-through">{formatPrice(mappedProduct.price)}</span>
@@ -120,8 +120,8 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         </div>
         
           <div class="flex items-center gap-5">
-            <label for="quantity" class="font-semibold text-gray-700">Cantidad:</label>
-            <div class="flex items-center bg-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
+            <label for="quantity" class="font-semibold text-gray-700 dark:text-gray-300">Cantidad:</label>
+            <div class="flex items-center bg-white dark:bg-black dark:text-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
               <button
                 id="decrease-qty"
                 type="button"
@@ -160,14 +160,14 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
               ...(mappedProduct.final_price && { finalPrice: mappedProduct.final_price }),
               image: mappedProduct.image,
             })}
-            class="w-full py-4 bg-white text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
+            class="w-full py-4 bg-white dark:bg-black dark:text-neutral-300 dark:border-neutral-300 dark:hover:text-black text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
           >
             Añadir al carrito
           </button>
           
           <a
             href="/tienda"
-            class="block w-full py-4 border-2 border-gray-300 text-center rounded-lg font-semibold hover:border-pink-600 hover:text-pink-600 transition"
+            class="block w-full py-4 border-2 border-gray-300 dark:text-neutral-300 text-center rounded-lg font-semibold hover:border-pink-600 hover:text-pink-600 transition"
           >
             Seguir comprando
           </a>
@@ -178,7 +178,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             <button
               id="description-toggle"
               type="button"
-              class="w-full px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
+              class="w-full dark:bg-black dark:text-neutral-300 px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
               aria-expanded="false"
               aria-controls="description-content"
             >
@@ -192,7 +192,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             </button>
             <div
               id="description-content"
-              class="description-panel px-6 text-gray-600 leading-relaxed overflow-hidden"
+              class="description-panel px-6 dark:bg-black text-gray-600 dark:text-gray-200 leading-relaxed overflow-hidden"
               style="max-height: 0; opacity: 0;"
             >
               <div 
@@ -205,16 +205,32 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         
         <div class="space-y-2 text-sm text-gray-800 pt-8">
           <div class="flex justify-center items-center border-t w-full border-gray-400 mb-6"></div>
-          <p>✓ Producto bajo pedido (sin límite de stock)</p>
-          <p>✓ Envío discreto</p>
-          <p>✓ Pago seguro</p>
-          <p>✓ Atención personalizada</p>
+          <p class="flex items-center dark:text-neutral-400">
+            <Icon name="check" size={16} class="mr-2 text-green-500" />
+            Producto bajo pedido (sin límite de stock)
+          </p>
+          <p class="flex items-center dark:text-neutral-400">
+            <Icon name="check" size={16} class="mr-2 text-green-500" />
+            Envío discreto
+          </p>
+          <p class="flex items-center dark:text-neutral-400">
+            <Icon name="check" size={16} class="mr-2 text-green-500" />
+            Pago seguro
+          </p>
+          <p class="flex items-center dark:text-neutral-400">
+            <Icon name="check" size={16} class="mr-2 text-green-500" />
+            Atención personalizada
+          </p>
         </div>
       </div>
     </div>
   </main>
 
   <style>
+    .description-content-inner :global(*) {
+      color: inherit;
+    }
+
     .description-content-inner :global(p) {
       margin-bottom: 0.75rem;
     }
@@ -223,11 +239,9 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     }
     .description-content-inner :global(strong) {
       font-weight: 700;
-      color: rgb(17, 24, 39);
     }
     .description-content-inner :global(em) {
       font-style: italic;
-      color: rgb(55, 65, 81);
     }
     
     .description-panel {
