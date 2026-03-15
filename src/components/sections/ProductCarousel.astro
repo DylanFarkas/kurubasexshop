@@ -24,15 +24,15 @@ const {
 <section class="w-full mb-15">
   <div class="flex items-end justify-between gap-4 mb-4">
     <div>
-      <p class="text-xs tracking-widest uppercase text-neutral-500">{subtitle}</p>
-      <h2 class="text-xl md:text-2xl font-semibold text-neutral-900">{title}</h2>
+      <p class="text-xs tracking-widest uppercase text-neutral-500 dark:text-neutral-200">{subtitle}</p>
+      <h2 class="text-xl md:text-2xl font-semibold text-neutral-900 dark:text-neutral-400">{title}</h2>
     </div>
 
     <div class="flex items-center gap-2">
-      <a href={href} class="text-sm font-medium text-neutral-900 hover:underline hidden sm:block">Ver todo</a>
+      <a href={href} class="text-sm font-medium text-neutral-900 dark:text-gray-200 hover:underline hidden sm:block">Ver todo</a>
 
       <button
-        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
+        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border dark:text-white border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
         data-prev={id}
         aria-label={`Anterior ${title}`}
         type="button"
@@ -40,7 +40,7 @@ const {
         ‹
       </button>
       <button
-        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
+        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border dark:text-white border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
         data-next={id}
         aria-label={`Siguiente ${title}`}
         type="button"
