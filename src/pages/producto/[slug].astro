@@ -68,7 +68,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
       <div class="space-y-4">
-        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100 dark:bg-black dark:border-gray-700 dark:border-3">
+        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100 dark:bg-[#0C0C0C] dark:border-gray-700 dark:border-3">
           <img
             id="main-image"
             src={mappedProduct.image || '/placeholder.png'}
@@ -121,7 +121,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         
           <div class="flex items-center gap-5">
             <label for="quantity" class="font-semibold text-gray-700 dark:text-gray-300">Cantidad:</label>
-            <div class="flex items-center bg-white dark:bg-black dark:text-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
+            <div class="flex items-center bg-white dark:bg-[#0C0C0C] dark:text-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
               <button
                 id="decrease-qty"
                 type="button"
@@ -160,7 +160,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
               ...(mappedProduct.final_price && { finalPrice: mappedProduct.final_price }),
               image: mappedProduct.image,
             })}
-            class="w-full py-4 bg-white dark:bg-black dark:text-neutral-300 dark:border-neutral-300 dark:hover:text-black text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
+            class="w-full py-4 bg-white dark:bg-[#0C0C0C] dark:text-neutral-300 dark:border-neutral-300 dark:hover:text-black text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
           >
             Añadir al carrito
           </button>
@@ -178,7 +178,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             <button
               id="description-toggle"
               type="button"
-              class="w-full dark:bg-black dark:text-neutral-300 px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
+              class="w-full dark:bg-[#0C0C0C] dark:text-neutral-300 px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
               aria-expanded="false"
               aria-controls="description-content"
             >
@@ -192,7 +192,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             </button>
             <div
               id="description-content"
-              class="description-panel px-6 dark:bg-black text-gray-600 dark:text-gray-200 leading-relaxed overflow-hidden"
+              class="description-panel px-6 dark:bg-[#0C0C0C] text-gray-600 dark:text-gray-200 leading-relaxed overflow-hidden"
               style="max-height: 0; opacity: 0;"
             >
               <div 

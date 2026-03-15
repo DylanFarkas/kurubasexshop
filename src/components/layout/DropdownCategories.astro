@@ -14,7 +14,7 @@ const { categories } = Astro.props;
   <!-- Submenú horizontal -->
   <div class="invisible absolute left-1/2 top-full mt-2 -translate-x-1/2 opacity-0 transition-all duration-200
               group-hover:visible group-hover:opacity-100">
-    <div class="flex gap-4 rounded-2xl bg-white dark:bg-black px-6 py-4 shadow-xl">
+    <div class="flex gap-4 rounded-2xl bg-white dark:bg-[#0C0C0C] px-6 py-4 shadow-xl">
       {categories.map((c) => (
         <a
           href={`/categoria/${c.slug}`}
