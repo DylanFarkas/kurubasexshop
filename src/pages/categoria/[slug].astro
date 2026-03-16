@@ -130,6 +130,15 @@ const seoData = categoryDescriptions[slug as string] || {
   description: `Descubre nuestra selección de ${category.label.toLowerCase()}. Productos de calidad con envío discreto a toda Colombia. ¡Compra segura!`,
   keywords: `${category.label.toLowerCase()}, productos eróticos, sexshop colombia`
 };
+
+const categoryHeroImages: Record<string, string> = {
+  'juguetes': '/imgs/category/juguetes.webp',
+  'lubricantes': '/imgs/category/para-ellas.webp',
+  'para-ellas': '/imgs/category/para-ellas.webp',
+  'para-ellos': '/imgs/category/para-ellos.webp'
+};
+
+const categoryHeroImage = categoryHeroImages[slug as string];
 ---
 
 <BaseLayout 
@@ -137,7 +146,19 @@ const seoData = categoryDescriptions[slug as string] || {
   description={seoData.description}
   keywords={seoData.keywords}
 >
-  <main class="pt-24 pb-16 min-h-screen bg-white">
+  <main class="pt-10 pb-16 min-h-screen bg-white">
+    {categoryHeroImage && (
+      <div class="w-full mb-8 md:mb-10">
+        <img
+          src={categoryHeroImage}
+          alt={`Imagen de categoría ${category.label}`}
+          class="w-full h-auto"
+          loading="eager"
+          decoding="async"
+        />
+      </div>
+    )}
+
     <div class="container mx-auto px-4 md:px-8">
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-neutral-200 pb-8">
         <div>
