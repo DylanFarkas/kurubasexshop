@@ -1,26 +1,28 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/sections/Hero.astro';
-import CategoriesGrid from '../components/sections/CategoriesGrid.astro';
-import FeaturedCarousel from '../components/sections/FeaturedCarousel.astro';
-import { supabase } from '../lib/supabase';
-import AboutUs from '../components/sections/AboutUs.astro';
-import Feedback from '../components/sections/Feedback.astro';
-import OrganizationSchema from '../components/seo/OrganizationSchema.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import CategoriesGrid from "../components/sections/CategoriesGrid.astro";
+import FeaturedCarousel from "../components/sections/FeaturedCarousel.astro";
+import { supabase } from "../lib/supabase";
+import AboutUs from "../components/sections/AboutUs.astro";
+import Feedback from "../components/sections/Feedback.astro";
+import OrganizationSchema from "../components/seo/OrganizationSchema.astro";
+import WellnessBanners from "../components/sections/WellnessBanners.astro";
 
 const { data: categories } = await supabase
-  .from('categories')
-  .select('*')
-  .eq('active', true)
-  .order('order_position');
+  .from("categories")
+  .select("*")
+  .eq("active", true)
+  .order("order_position");
 
 const featuredByCategory = new Map();
 
 if (categories) {
   for (const category of categories) {
     const { data: products } = await supabase
-      .from('products')
-      .select(`
+      .from("products")
+      .select(
+        `
         *,
         product_categories!inner (
           category_id,
@@ -30,19 +32,26 @@ if (categories) {
             slug
           )
         )
-      `)
-      .eq('product_categories.category_id', category.id)
-      .eq('active', true)
-      .eq('featured', true)
+      `,
+      )
+      .eq("product_categories.category_id", category.id)
+      .eq("active", true)
+      .eq("featured", true)
       .limit(8);
-    
+
     if (products && products.length > 0) {
       featuredByCategory.set(category.slug, {
         category: category.label,
-        products: products.map(p => ({
+        products: products.map((p) => ({
           ...p,
-          categories: p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
-          category_ids: p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
+          categories:
+            p.product_categories
+              ?.map((pc: any) => pc.categories)
+              .filter(Boolean) || [],
+          category_ids:
+            p.product_categories
+              ?.map((pc: any) => pc.categories?.id)
+              .filter(Boolean) || [],
         })),
       });
     }
@@ -50,7 +59,7 @@ if (categories) {
 }
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Kuruba Sexshop Colombia | Juguetes, Lubricantes y Más ✨"
   description="🔥 Tu sexshop de confianza en Colombia. Descubre juguetes eróticos, lubricantes premium y productos de bienestar íntimo. ✅ Envíos discretos ✅ Compra 100% segura. ¡El placer que mereces!"
   keywords="sexshop colombia, juguetes eróticos, juguetes para adultos, lubricantes, vibradores, sexshop online, tienda erótica, productos íntimos"
@@ -59,7 +68,50 @@ if (categories) {
   <OrganizationSchema slot="head" />
   <Hero />
   <CategoriesGrid />
-  <FeaturedCarousel featuredByCategory={Object.fromEntries(featuredByCategory)} />
+
+  <WellnessBanners
+    variant="overlay"
+    imageSrc="/imgs/banners/img5.webp"
+    imageAlt="Producto de bienestar íntimo en una escena elegante y cálida"
+    eyebrow="Descubre nuevas sensaciones"
+    title="Conecta con lo que te hace sentir bien"
+    subtitle="Placer consciente, femenino y moderno"
+    description="Responde a lo que tu cuerpo necesita hoy y descubre opciones diseñadas para acompañarte con suavidad, confianza y calidad."
+    ctaLabel="Descubrir"
+    ctaHref="/tienda"
+  />
+
+  <FeaturedCarousel
+    featuredByCategory={Object.fromEntries(featuredByCategory)}
+  />
+
+  <WellnessBanners
+    variant="split"
+    imageSrc="/imgs/banners/img2.webp"
+    imageAlt="Mujer en un momento íntimo de autocuidado y descanso"
+    eyebrow="Bienestar íntimo"
+    title="Tu placer también es autocuidado"
+    subtitle="Explora a tu ritmo, sin presión"
+    description="Encuentra productos pensados para sentirte segura, cómoda y conectada contigo. Todo con compra discreta y guía clara para elegir mejor."
+    ctaLabel="Empezar"
+    ctaHref="/tienda"
+    imagePosition="left"
+  />
+
   <Feedback />
+
+  <WellnessBanners
+    variant="overlay"
+    imageSrc="/imgs/banners/img1.webp"
+    imageAlt="Escena minimalista con enfoque en confianza y exploración íntima"
+    eyebrow="Confianza total"
+    title="Compra sin tabúes"
+    subtitle="Privacidad, apoyo y productos seleccionados"
+    description="Desde lubricantes premium hasta juguetes para explorar, te acompañamos con envíos discretos y una experiencia clara de principio a fin."
+    ctaLabel="Ver catálogo"
+    ctaHref="/tienda"
+    imagePosition="right"
+  />
+
   <AboutUs />
 </BaseLayout>

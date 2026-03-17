@@ -1,5 +1,12 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import juguetesBanner from "../../assets/banners/juguetes-home-1.webp";
+import juguetesAltBanner from "../../assets/banners/juguetes-home-2.webp";
+import lubricantesBanner from "../../assets/banners/lubricantes-home-1.webp";
+import paraEllosBanner from "../../assets/banners/para-ellos-home-1.webp";
+import paraEllasBanner from "../../assets/banners/para-ellas-home-1.webp";
+import ofertasBanner from "../../assets/banners/ofertas-home-1.webp";
 
 const tiles = [
   // Kuruba - arriba en columna 1
@@ -10,7 +17,7 @@ const tiles = [
     col: "col-span-2 lg:col-span-3",
     row: "row-span-2 lg:row-span-2",
     position: "col-start-1 lg:col-start-1 row-start-1",
-    bg: "bg-neutral-200",
+    bg: "bg-neutral-200 dark:bg-black/60 dark:border-gray-800",
     text: "text-pink-600",
   },
 
@@ -22,8 +29,9 @@ const tiles = [
     col: "col-span-1 lg:col-span-3",
     row: "row-span-3 lg:row-span-6",
     position: "col-start-1 lg:col-start-1 row-start-3 lg:row-start-3",
-    bg: "bg-[#fa0644]",
+    //bg: "bg-[#fa0644]",
     text: "text-white",
+    imageSrc: juguetesBanner,
   },
 
   // Lubricantes - mitad superior columna 2
@@ -34,8 +42,9 @@ const tiles = [
     col: "col-span-1 lg:col-span-6",
     row: "row-span-2 lg:row-span-4",
     position: "col-start-1 lg:col-start-4 row-start-6 lg:row-start-5",
-    bg: "bg-purple-600",
+    //bg: "bg-purple-600",
     text: "text-white",
+    imageSrc: lubricantesBanner,
   },
 
   // Masculino - mitad inferior columna 2
@@ -46,8 +55,9 @@ const tiles = [
     col: "col-span-1 lg:col-span-3",
     row: "row-span-3 lg:row-span-4",
     position: "col-start-2 lg:col-start-4 row-start-3 lg:row-start-1",
-    bg: "bg-[#fa5300]",
+    //bg: "bg-[#fa5300]",
     text: "text-white",
+    imageSrc: paraEllosBanner,
   },
 
   // Para ellas - mitad superior columna 3
@@ -58,8 +68,9 @@ const tiles = [
     col: "col-span-1 lg:col-span-3",
     row: "row-span-2 lg:row-span-4",
     position: "col-start-2 lg:col-start-7 row-start-6 lg:row-start-1",
-    bg: "bg-neutral-200",
-    text: "text-black",
+    //bg: "bg-neutral-200",
+    text: "text-white",
+    imageSrc: paraEllasBanner,
   },
 
   // Bondaje - mitad inferior columna 3
@@ -82,8 +93,9 @@ const tiles = [
     col: "col-span-2 lg:col-span-3",
     row: "row-span-2 lg:row-span-2",
     position: "col-start-1 lg:col-start-10 row-start-10 lg:row-start-1",
-    bg: "bg-[#fa0644]",
+    //bg: "bg-[#fa0644]",
     text: "text-white",
+    imageSrc: juguetesAltBanner,
   },
 
   // Ofertas - abajo en columna 4 (grande vertical)
@@ -94,8 +106,9 @@ const tiles = [
     col: "col-span-2 lg:col-span-3",
     row: "row-span-3 lg:row-span-6",
     position: "col-start-1 lg:col-start-10 row-start-12 lg:row-start-3",
-    bg: "bg-neutral-200",
+    //bg: "bg-neutral-200",
     text: "text-white",
+    imageSrc: ofertasBanner,
   },
 ];
 ---
@@ -112,13 +125,32 @@ const tiles = [
             href={`/categoria/${t.slug}`}
             class={`group relative rounded-2xl sm:rounded-3xl
               ${t.type === "brand" ? "overflow-visible" : "overflow-hidden"}
-              ${t.bg} ${t.col} ${t.row} ${t.position}
+              ${t.bg ?? ""} ${t.col} ${t.row} ${t.position}
               min-h-35 sm:min-h-40
               lg:min-h-0 lg:h-full
-              transition-all duration-300 ease-out
-              hover:scale-[1.03] hover:shadow-2xl hover:z-10
+              transform-gpu will-change-transform
+              transition-transform duration-300 ease-out
+              hover:scale-[1.02] hover:z-10
             `}
           >
+            {/* Imagen de fondo por categoría */}
+            {t.type !== "brand" && t.imageSrc && (
+              <div class="absolute inset-0 z-0">
+                <Image
+                  src={t.imageSrc}
+                  alt={t.label || t.slug}
+                  class="h-full w-full object-cover"
+                  loading={t.slug === "juguetes" || t.slug === "para-ellos" ? "eager" : "lazy"}
+                  fetchpriority={t.slug === "juguetes" || t.slug === "para-ellos" ? "high" : "auto"}
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  widths={[480, 720, 960, 1280]}
+                  quality={68}
+                />
+
+                <div class="absolute inset-0 z-10 bg-linear-to-t from-black/40 via-black/20 to-black/20" />
+              </div>
+            )}
+
             {/* Icono + (esquina superior derecha) */}
             {t.type !== "brand" && (
               <div
@@ -136,7 +168,7 @@ const tiles = [
             <div class="absolute inset-0 z-30 flex items-end p-3 sm:p-4 lg:p-6">
               <div
                 class={`${t.text} whitespace-pre-line text-sm sm:text-base lg:text-lg font-medium tracking-widest
-                  transition-all duration-300 ease-out
+                  transition-transform duration-300 ease-out
                   group-hover:translate-x-2 group-hover:scale-110`}
               >
                 {t.label}
@@ -149,7 +181,7 @@ const tiles = [
                 {/* Logo circular centrado, flotando */}
                 <div
                   class="absolute left-1/2 top-0 z-40 -translate-x-1/2 -translate-y-1/2
-                            transition-all duration-300 ease-out
+                            transition-transform duration-300 ease-out
                             group-hover:scale-110"
                 >
                   <div class="h-14 w-14 sm:h-16 sm:w-16 lg:h-18 lg:w-18 rounded-full bg-white p-0.75 shadow-lg">
@@ -178,7 +210,7 @@ const tiles = [
               <div class="absolute left-3 bottom-3 sm:left-4 sm:bottom-4 lg:left-6 lg:bottom-6 mb-10">
                 <div
                   class="grid h-10 w-10 sm:h-11 sm:w-11 lg:h-15 lg:w-15 place-items-center rounded-full border-2 border-white/80 text-white 
-                  transition-all duration-300 ease-out
+                  transition-transform duration-300 ease-out
                   group-hover:scale-125 group-hover:border-white group-hover:translate-x-2"
                 >
                   <span class="text-lg sm:text-xl">
@@ -188,27 +220,6 @@ const tiles = [
               </div>
             )}
 
-            {/* Ofertas con "imagen" (placeholder) */}
-            {t.type === "image" && (
-              <div class="absolute inset-0 z-0">
-                {/* Imagen de fondo */}
-                <img
-                  src="/imgs/brand/fondo-ofertas.jpg"
-                  alt="Ofertas"
-                  class="h-full w-full object-cover"
-                  loading="lazy"
-                />
-
-                <div class="absolute inset-0 z-10 bg-black/20" />
-
-                <div class="absolute inset-x-0 bottom-0 h-24 z-10 bg-linear-to-t from-black/25 to-transparent" />
-              </div>
-            )}
-
-            {/* Hover suave */}
-            <div class="absolute inset-0 opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100">
-              <div class="absolute inset-0 bg-linear-to-br from-white/10 via-transparent to-black/10" />
-            </div>
           </a>
         ))
       }
