@@ -1,51 +1,50 @@
-<section class="relative w-full min-h-dvh overflow-hidden">
-  <img
-    src="/imgs/brand/home-background.webp"
-    alt="Background"
-    class="absolute inset-0 w-full h-full object-cover"
-  />
+<section class="relative overflow-hidden border-b border-[#e6dfd5] bg-[#f8f5ef] px-8 pt-22 pb-16 dark:border-[#1e1c18] dark:bg-[#0a0a0a]">
+  <div class="absolute inset-0 z-0" aria-hidden="true">
+    <div class="absolute inset-0 bg-linear-to-b from-[rgba(248,245,239,0.72)] to-[rgba(248,245,239,0.92)] dark:from-[rgba(10,10,10,0.52)] dark:to-[rgba(10,10,10,0.9)]"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_65%_at_30%_45%,rgba(180,112,74,0.14)_0%,transparent_65%)] dark:bg-[radial-gradient(ellipse_75%_65%_at_30%_45%,rgba(180,112,74,0.08)_0%,transparent_65%)]"></div>
+  </div>
 
-  <div class="relative z-10 grid min-h-dvh grid-cols-1 lg:grid-cols-2 items-center px-6 lg:px-16">
-    <div class="flex flex-col items-center lg:items-start text-center lg:text-left gap-6 mt-10 lg:-mt-30">
-      <div class="flex items-center justify-center">
-        <img
-          src="/imgs/brand/logo.png"
-          alt="Logo"
-          class="w-40 h-40 object-contain hide-on-short"
-        />
+  <div class="relative z-10 mx-auto grid max-w-300 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(260px,460px)]">
+    <div>
+      <div class="mb-6 flex items-center gap-3 font-sans text-[12px] uppercase tracking-[0.3em] text-[#9d603f] before:inline-block before:h-px before:w-7 before:bg-current before:content-[''] dark:text-[#b4704a]">
+        Kuruba SexShop
       </div>
 
-      <h1 class="text-white font-extrabold leading-tight">
-        <span class="block text-4xl lg:text-6xl xl:text-9xl text-yellow-300">
-          PLACER Y
-        </span>
-        <span class="block text-4xl lg:text-6xl xl:text-7xl 2xl:text-[5.6rem]">
-          MULTIORGASMOS
-        </span>
+      <h1 class="max-w-175 font-serif text-[clamp(2.15rem,5vw,4.1rem)] leading-[1.08] tracking-wide text-[#221c15] dark:text-[#f0ece4]">
+        Explora el placer con <em class="italic text-[#c4855a]">confianza</em>,
+        discreción y bienestar
       </h1>
 
-      <a
-        href="#"
-        class="mt-4 inline-block rounded-full bg-linear-to-r from-yellow-500 to-pink-600 border-3 border-yellow-500 px-10 py-4 text-white font-semibold text-lg shadow-lg hover:scale-105 transition mb-10"
-      >
-        LUBRICANTE ÍNTIMO
-      </a>
+      <p class="mt-6 max-w-125 font-sans text-[15px] font-light leading-[1.8] tracking-wide text-[#5f5a52] dark:text-[#8b8a83]">
+        Productos seleccionados para acompañarte en cada etapa de tu autocuidado íntimo. Compra segura y envío discreto a toda Colombia.
+      </p>
+
+      <div class="mt-9 flex flex-wrap items-center gap-4">
+        <a
+          href="/tienda"
+          class="inline-flex items-center border border-[#cdb8a3] bg-[#f1e8db] px-6 py-3 font-sans text-[12px] uppercase tracking-[0.25em] text-[#2a2018] transition-colors duration-200 hover:border-[#b4704a] hover:text-[#20160e] dark:border-[#2a2520] dark:bg-[#14110f] dark:text-[#f0ece4] dark:hover:text-[#ffffff]"
+        >
+          Ver catálogo
+        </a>
+        <a
+          href="https://wa.me/573102994686"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center border border-[#d8ccbe] bg-transparent px-6 py-3 font-sans text-[12px] uppercase tracking-[0.25em] text-[#6c655b] transition-colors duration-200 hover:border-[#b4704a] hover:text-[#20160e] dark:border-[#2a2520] dark:text-[#8b8a83] dark:hover:text-[#f0ece4]"
+        >
+          Asesoría por WhatsApp
+        </a>
+      </div>
     </div>
 
-    <div class="relative flex justify-center lg:justify-end items-start">
+    <div class="relative mx-auto w-full max-w-115 lg:max-w-120">
+      <!-- <div class="absolute -inset-6 rounded-full bg-[radial-gradient(circle,rgba(180,112,74,0.18),transparent_68%)]"></div>
       <img
         src="/imgs/products/multiorgasmos.webp"
-        alt="Producto"
-        class="w-30 md:w-30 lg:w-50 xl:w-60 drop-shadow-2xl md:translate-y-1 transform -translate-y-10 transition-transform xl:-translate-x-30"
+        alt="Producto destacado de Kuruba"
+        class="relative z-10 mx-auto w-40 drop-shadow-[0_12px_36px_rgba(0,0,0,0.55)] md:w-55"
+        loading="eager"
       />
-    </div>
+    </div> -->
   </div>
 </section>
-
-<style>
-  @media (max-height: 615px) {
-    .hide-on-short {
-        display: none !important;
-    }
-}
-</style>

@@ -69,11 +69,11 @@ const blocks = (categories || [])
   }));
 ---
 
-<section class="bg-white dark:bg-[#0C0C0C] w-full py-10 md:py-10">
-  <div class="w-full px-5 md:px-25">
-    <div class="mb-8 flex justify-center text-center">
+<section class="w-full border-b border-[#e6dfd5] bg-[#f8f5ef] py-12 dark:border-[#1a1a18] dark:bg-[#0a0a0a]">
+  <div class="mx-auto w-full max-w-300 px-8">
+    <div class="mb-10 flex justify-center text-center">
       <h2
-        class="text-rose-500 font-semibold tracking-[0.25rem] uppercase text-lg md:text-xl"
+        class="font-serif text-[12px] uppercase tracking-[0.32em] text-[#9d603f] dark:text-[#b4704a]"
       >
         Lo más vendido
       </h2>
@@ -96,7 +96,7 @@ const blocks = (categories || [])
           ))}
         </div>
       ) : (
-        <div class="text-center py-12 text-gray-500">
+        <div class="py-12 text-center text-[#5f5a52] dark:text-[#8b8a83]">
           <p>No hay productos destacados disponibles en este momento</p>
         </div>
       )
