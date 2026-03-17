@@ -36,6 +36,8 @@ const { data: categories } = await supabase
   .select('*')
   .eq('active', true)
   .order('order_position');
+
+const shopHeroImage = '/imgs/category/prueba4.jpg';
 ---
 
 <BaseLayout 
@@ -43,9 +45,19 @@ const { data: categories } = await supabase
   description="🛍️ Explora nuestro catálogo completo: juguetes eróticos, vibradores, lubricantes y más. ✅ Precios especiales ✅ Envío discreto a toda Colombia ✅ Pago seguro. ¡Encuentra lo que buscas!"
   keywords="tienda erótica, catálogo sexshop, comprar juguetes sexuales, productos eróticos colombia, sexshop online, tienda para adultos"
 >
-    <main class="pt-24 pb-16 min-h-screen bg-white">
+    <main class="pb-16 min-h-screen bg-white">
+    <div class="w-full mb-8 md:mb-10">
+      <img
+        src={shopHeroImage}
+        alt="Banner principal de la tienda Kuruba Sexshop"
+        class="w-full h-auto object-cover shadow-md"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+
         <div class="container mx-auto px-4 md:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-neutral-200 pb-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b-2 border-neutral-200 pb-8">
                 <div>
                     <span class="text-rose-600 font-bold text-sm tracking-wider uppercase mb-2 block">Catálogo Completo</span>
                     <h1 class="text-3xl md:text-5xl font-bold text-neutral-900 mb-4 tracking-tight">

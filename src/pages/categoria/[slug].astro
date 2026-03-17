@@ -134,8 +134,8 @@ const seoData = categoryDescriptions[slug as string] || {
 const categoryHeroImages: Record<string, string> = {
   'juguetes': '/imgs/category/juguetes.webp',
   'lubricantes': '/imgs/category/para-ellas.webp',
-  'para-ellas': '/imgs/category/para-ellas.webp',
-  'para-ellos': '/imgs/category/para-ellos.webp'
+  'para-ellas': '/imgs/category/prueba3.jpg',
+  'para-ellos': '/imgs/category/prueba2.jpg'
 };
 
 const categoryHeroImage = categoryHeroImages[slug as string];
@@ -146,13 +146,13 @@ const categoryHeroImage = categoryHeroImages[slug as string];
   description={seoData.description}
   keywords={seoData.keywords}
 >
-  <main class="pt-10 pb-16 min-h-screen bg-white">
+  <main class="pt-12 pb-16 min-h-screen bg-white">
     {categoryHeroImage && (
       <div class="w-full mb-8 md:mb-10">
         <img
           src={categoryHeroImage}
           alt={`Imagen de categoría ${category.label}`}
-          class="w-full h-auto"
+          class="w-full h-44 md:h-110 object-cover shadow-md"
           loading="eager"
           decoding="async"
         />

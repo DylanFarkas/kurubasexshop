@@ -45,7 +45,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
               <a
                 href='/tienda'
                 onClick={onClose}
-                className="text-pink-600 cursor-pointer hover:underline"
+                className="text-neutral-900 cursor-pointer hover:underline"
               >
                 Ir a la tienda
               </a>
@@ -66,7 +66,7 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
             </div>
             <a
               href="/checkout"
-              className="block w-full py-4 bg-white text-gray-700 text-center rounded-lg font-semibold transition border border-b-6 hover:-translate-y-1"
+              className="block w-full py-4 bg-white text-gray-700 hover:bg-black hover:text-white text-center rounded font-semibold transition border"
             >
               Proceder al Checkout
             </a>
