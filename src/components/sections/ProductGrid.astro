@@ -3,112 +3,115 @@ import { Icon } from "astro-icon/components";
 import type { Product } from "../../types/product";
 
 interface Props {
-    products: Product[];
+  products: Product[];
 }
 
 const { products } = Astro.props;
 ---
 
-<div class="w-full px-4 md:px-5 pb-10">
-    <div class="max-w-full mx-auto">
-        <div
-            id="products-grid"
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10"
-        >
-            {products.map((product) => {
-                const displayPrice = (product.final_price && product.final_price > 0) ? product.final_price : product.price;
-                const hasDiscount = !!product.discount_pct && product.discount_pct > 0;
-                // Convertir array de categorías a string separado por comas para el filtro
-                const categoryLabels = product.categories?.map((c) => c.label).join(',') || '';
+<div
+  id="products-grid"
+  class="grid gap-px bg-[#0A0A0A] grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-[480px]:grid-cols-2"
+>
+  {products.map((product) => {
+    const displayPrice =
+      product.final_price && product.final_price > 0
+        ? product.final_price
+        : product.price;
 
-                return (
-                    <article
-                        class="product-card group bg-white border border-neutral-500 overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col h-full"
-                        data-categories={categoryLabels}
-                        data-price={displayPrice}
-                        data-name={product.name}
-                    >
+    const hasDiscount = !!product.discount_pct && product.discount_pct > 0;
+    const categoryLabels =
+      product.categories?.map((c) => c.label).join(",") || "";
+    const firstCat = product.categories?.[0]?.label ?? null;
+    const extraCats = (product.categories?.length ?? 0) - 1;
 
-                        <div class="relative aspect-square bg-neutral-100 overflow-hidden">
-                            {product.image ? (
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    class="w-full h-full object-cover duration-300"
-                                    loading="lazy"
-                                />
-                            ) : (
-                                <div class="w-full h-full flex items-center justify-center text-neutral-400">
-                                    <Icon name="photo" class="w-16 h-16" />
-                                </div>
-                            )}
+    return (
+      <article
+        class="group relative flex flex-col overflow-hidden bg-[#0a0a0a] transition-colors duration-200 hover:bg-[#0f0f0d]"
+        data-categories={categoryLabels}
+        data-price={displayPrice}
+        data-name={product.name}
+      >
+        {/* Image */}
+        <div class="relative aspect-square overflow-hidden bg-[#111110]">
+          {product.image ? (
+            <img
+              src={product.image}
+              alt={product.name}
+              loading="lazy"
+              decoding="async"
+              class="block h-full w-full object-cover opacity-85 transition-all duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04] group-hover:opacity-100"
+            />
+          ) : (
+            <div class="flex h-full w-full items-center justify-center text-[#2a2520]">
+              <Icon name="photo" class="h-12 w-12" />
+            </div>
+          )}
 
-                            {hasDiscount && (
-                                <div class="absolute top-2 right-2 bg-[#0C0C0C] text-white px-2 py-1 rounded text-xs font-bold">
-                                    -{product.discount_pct}%
-                                </div>
-                            )}
+          {hasDiscount && (
+            <span class="absolute top-3.5 right-3.5 px-2.25 py-1.25 font-sans text-[9px] font-medium uppercase leading-none tracking-[0.16em] bg-[#c4855a] text-[#0a0a0a]">
+              -{product.discount_pct}%
+            </span>
+          )}
 
-                            {product.featured && (
-                                <div class="absolute top-2 left-2 bg-[#0C0C0C] text-white px-2 py-1 rounded text-xs font-semibold">
-                                    Destacado
-                                </div>
-                            )}
-                        </div>
-
-                        <div class="p-4 flex flex-col flex-1">
-                            <div class="mb-2 flex flex-wrap gap-1 items-center">
-                                {product.categories && product.categories.length > 0 ? (
-                                    <>
-                                        {product.categories.slice(0, 1).map((cat) => (
-                                            <span class="text-xs text-neutral-500 uppercase tracking-wide">
-                                                {cat.label}
-                                            </span>
-                                        ))}
-                                        {product.categories.length > 1 && (
-                                            <span class="text-xs text-neutral-400 uppercase tracking-wide">
-                                                +{product.categories.length - 1}
-                                            </span>
-                                        )}
-                                    </>
-                                ) : (
-                                    <span class="text-xs text-neutral-400 uppercase tracking-wide">
-                                        Sin categoría
-                                    </span>
-                                )}
-                            </div>
-
-                            <h3 class="text-sm font-semibold tracking-widest text-neutral-900 mb-3 line-clamp-2">
-                                {product.name}
-                            </h3>
-
-                            <div class="flex items-baseline gap-2 mb-4">
-                                <span class="text-md tracking-widest font-bold text-neutral-900">
-                                    ${displayPrice.toLocaleString()}
-                                </span>
-                                {hasDiscount && (
-                                    <span class="text-sm text-neutral-500 line-through">
-                                        ${product.price.toLocaleString()}
-                                    </span>
-                                )}
-                            </div>
-
-                            <a
-                                href={`/producto/${product.slug}`}
-                                class="mt-auto block w-full bg-white hover:bg-black hover:text-white border border-neutral-700 text-gray-800 font-medium py-3 px-4 transition-colors duration-200 text-center"
-                            >
-                                Ver producto
-                            </a>
-                        </div>
-                    </article>
-                );
-            })}
+          {product.featured && (
+            <span class="absolute top-3.5 left-3.5 border border-[#c4855a] bg-transparent px-2.25 py-1.25 font-sans text-[9px] font-medium uppercase leading-none tracking-[0.16em] text-[#c4855a]">
+              Destacado
+            </span>
+          )}
         </div>
 
-        <div id="no-products" class="hidden text-center py-20">
-            <p class="text-xl text-neutral-500">
-                No se encontraron productos
-            </p>
+        {/* Body */}
+        <div class="flex flex-1 flex-col gap-0 px-5 pt-[1.2rem] pb-[1.4rem]">
+          <p class="mb-[0.65rem] flex items-center gap-1.5 font-sans text-[11px] font-normal uppercase tracking-[0.22em] text-[#8b8a83]">
+            {firstCat ? (
+              <>
+                <span>{firstCat}</span>
+                {extraCats > 0 && (
+                  <span class="text-[#8b8a83]">+{extraCats}</span>
+                )}
+              </>
+            ) : (
+              <span>Sin categoría</span>
+            )}
+          </p>
+
+          <h3 class="mb-4 flex-1 overflow-hidden font-serif text-[0.95rem] font-normal leading-[1.42] text-[#c8c0b4] line-clamp-2">
+            {product.name}
+          </h3>
+
+          <div class="mb-[1.1rem] flex items-baseline gap-2.5">
+            <span class="font-sans text-[1.05rem] font-medium tracking-[0.01em] text-[#f0ece4]">
+              ${displayPrice.toLocaleString("es-CO")}
+            </span>
+
+            {hasDiscount && (
+              <span class="font-sans text-[0.78rem] font-light text-[#8b8a83] line-through">
+                ${product.price.toLocaleString("es-CO")}
+              </span>
+            )}
+          </div>
+
+          <a
+            href={`/producto/${product.slug}`}
+            class="mt-auto block w-full cursor-pointer border border-[#1e1c18] bg-transparent px-4 py-2.75 text-center font-sans text-[12px] font-normal uppercase tracking-[0.18em] text-[#8b8a83] no-underline transition-all duration-200 group-hover:border-[#3a3020] group-hover:text-[#8a806a] hover:border-[#b4704a] hover:bg-[#120d0a] hover:text-[#c4855a]"
+          >
+            Ver producto
+          </a>
         </div>
-    </div>
+      </article>
+    );
+  })}
+
+  <div
+    id="no-products"
+    class="hidden col-span-full bg-[#0a0a0a] px-8 py-24 text-center [&.show]:block"
+  >
+    <p class="font-serif text-[1.15rem] font-normal italic text-[#2a2520]">
+      Ningún producto coincide
+    </p>
+    <span class="mt-2 block font-sans text-[10px] uppercase tracking-[0.2em] text-[#1e1c18]">
+      Prueba con otros filtros
+    </span>
+  </div>
 </div>

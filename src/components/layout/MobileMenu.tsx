@@ -37,11 +37,11 @@ export default function MobileMenu({ navItems, categories, currentPath }: Props)
     <>
       <button
         onClick={toggleMenu}
-        className="lg:hidden fixed left-4 z-60 p-2 text-gray-900 hover:text-pink-500  transition-all duration-300 cursor-pointer"
+        className="lg:hidden fixed left-4 z-60 p-2 text-gray-900 dark:text-white hover:text-neutral-500  transition-all duration-200 cursor-pointer"
         aria-label="Toggle menu"
       >
         {isOpen ? (
-          <X className="w-6 h-6" />
+          <X className="dark:text-black dark:hover:text-neutral-500 duration-200 transition-all w-6 h-6" />
         ) : (
           <Menu className="w-6 h-6" />
         )}
