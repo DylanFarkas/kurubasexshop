@@ -1,6 +1,5 @@
 ---
 import { Icon } from "astro-icon/components";
-import { CATEGORIES } from "../../data/categories";
 
 export interface Props {
     categories?: any[];
@@ -12,15 +11,15 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
 
 <div 
     id="filters-panel"
-    class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50"
+    class="fixed inset-y-0 right-0 z-50 w-full transform translate-x-full border-l border-[#d8d2c8] bg-[#f8f5ef] shadow-2xl transition-transform duration-300 ease-in-out sm:w-96 dark:border-[#1a1a18] dark:bg-[#0f0f0d]"
 >
     <div class="h-full flex flex-col">
         <!-- Header del panel -->
-        <div class="flex items-center justify-between p-6 border-b border-neutral-200">
-            <h2 class="text-2xl font-bold text-neutral-900">Filtros</h2>
+        <div class="flex items-center justify-between border-b border-[#d8d2c8] p-6 dark:border-[#1a1a18]">
+            <h2 class="font-serif text-2xl font-normal tracking-wide text-[#0f0f0d] dark:text-[#f0ece4]">Filtros</h2>
             <button 
                 id="close-filters"
-                class="text-neutral-500 hover:text-neutral-900 transition-colors cursor-pointer"
+                class="cursor-pointer text-[#6a6560] transition-colors hover:text-[#0f0f0d] dark:text-[#8b8a83] dark:hover:text-[#f0ece4]"
             >
             <Icon name="close" size={25}/>
             </button>
@@ -33,13 +32,13 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
                 <div>
                     <label 
                         for="category-filter" 
-                        class="block text-sm font-semibold text-neutral-900 mb-3"
+                        class="mb-3 block text-sm font-semibold uppercase tracking-[0.15em] text-[#1e1c18] dark:text-[#cfc6b8]"
                     >
                         Categoría
                     </label>
                     <select
                         id="category-filter"
-                        class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-pointer"
+                        class="w-full cursor-pointer border border-[#c8c1b7] bg-[#fbf8f2] px-4 py-3 text-[#1e1c18] transition focus:border-[#b4704a] focus:outline-none dark:border-[#2a2520] dark:bg-[#121210] dark:text-[#f0ece4]"
                     >
                         <option value="">Todas las categorías</option>
                         {categories.map((cat) => (
@@ -51,29 +50,29 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
 
             <!-- Filtro de Rango de Precio -->
             <div>
-                <label class="block text-sm font-semibold text-neutral-900 mb-4">
+                <label class="mb-4 block text-sm font-semibold uppercase tracking-[0.15em] text-[#1e1c18] dark:text-[#cfc6b8]">
                     Rango de Precio
                 </label>
                 
                 <!-- Valores del rango -->
                 <div class="flex items-center justify-center gap-3 mb-6">
-                    <div class="flex-1 bg-linear-to-br from-purple-50 to-purple-100/50 rounded-xl p-3 border border-purple-200/50">
-                        <div class="text-xs text-purple-600 font-medium mb-1">Mínimo</div>
+                    <div class="flex-1 rounded-xl border border-[#dfd7cb] bg-linear-to-br from-[#f6f1e7] to-[#fbf7ef] p-3 dark:border-[#2a2520] dark:from-[#161512] dark:to-[#10100f]">
+                        <div class="mb-1 text-xs font-medium uppercase tracking-widest text-[#7a6e5f] dark:text-[#9a907f]">Mínimo</div>
                         <div class="flex items-baseline gap-1">
-                            <span class="text-xs text-purple-900/60">$</span>
-                            <span id="min-price-input" class="text-lg font-bold text-purple-900 tabular-nums">0</span>
+                            <span class="text-xs text-[#534b41] dark:text-[#b6ad9e]">$</span>
+                            <span id="min-price-input" class="text-lg font-bold tabular-nums text-[#1e1c18] dark:text-[#f0ece4]">0</span>
                         </div>
                     </div>
                     
-                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100">
-                        <Icon name="arrow-right" class="w-4 h-4 text-neutral-400" />
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#e9e3d9] dark:bg-[#1a1a18]">
+                        <Icon name="arrow-right" class="h-4 w-4 text-[#6a6560] dark:text-[#8b8a83]" />
                     </div>
                     
-                    <div class="flex-1 bg-linear-to-br from-purple-50 to-purple-100/50 rounded-xl p-3 border border-purple-200/50">
-                        <div class="text-xs text-purple-600 font-medium mb-1">Máximo</div>
+                    <div class="flex-1 rounded-xl border border-[#dfd7cb] bg-linear-to-br from-[#f6f1e7] to-[#fbf7ef] p-3 dark:border-[#2a2520] dark:from-[#161512] dark:to-[#10100f]">
+                        <div class="mb-1 text-xs font-medium uppercase tracking-widest text-[#7a6e5f] dark:text-[#9a907f]">Máximo</div>
                         <div class="flex items-baseline gap-1">
-                            <span class="text-xs text-purple-900/60">$</span>
-                            <span id="max-price-input" class="text-lg font-bold text-purple-900 tabular-nums">0</span>
+                            <span class="text-xs text-[#534b41] dark:text-[#b6ad9e]">$</span>
+                            <span id="max-price-input" class="text-lg font-bold tabular-nums text-[#1e1c18] dark:text-[#f0ece4]">0</span>
                         </div>
                     </div>
                 </div>
@@ -81,12 +80,12 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
                 <!-- Dual Range Slider -->
                 <div class="relative h-2">
                     <!-- Track de fondo -->
-                    <div class="absolute w-full h-2 bg-neutral-200 rounded-full"></div>
+                    <div class="absolute h-2 w-full rounded-full bg-[#ddd4c8] dark:bg-[#2a2520]"></div>
                     
                     <!-- Track activo (entre los dos thumbs) -->
                     <div 
                         id="price-range-track" 
-                        class="absolute h-2 bg-purple-600 rounded-full"
+                        class="absolute h-2 rounded-full bg-[#fa0644]"
                     ></div>
                     
                     <!-- Input del mínimo -->
@@ -97,7 +96,7 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
                         max="1000000"
                         value="0"
                         step="1000"
-                        class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-600 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
+                        class="absolute h-2 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#fa0644] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#fbf8f2] dark:[&::-webkit-slider-thumb]:border-[#0f0f0d] [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#fa0644] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-[#fbf8f2] dark:[&::-moz-range-thumb]:border-[#0f0f0d] [&::-moz-range-thumb]:shadow-md"
                     />
                     
                     <!-- Input del máximo -->
@@ -108,7 +107,7 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
                         max="1000000"
                         value="1000000"
                         step="1000"
-                        class="absolute w-full h-2 bg-transparent appearance-none pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-purple-600 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-purple-600 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-md"
+                        class="absolute h-2 w-full appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#fa0644] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#fbf8f2] dark:[&::-webkit-slider-thumb]:border-[#0f0f0d] [&::-webkit-slider-thumb]:shadow-md [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#fa0644] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-[#fbf8f2] dark:[&::-moz-range-thumb]:border-[#0f0f0d] [&::-moz-range-thumb]:shadow-md"
                     />
                 </div>
             </div>
@@ -117,13 +116,13 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
             <div>
                 <label 
                     for="sort-filter" 
-                    class="block text-sm font-semibold text-neutral-900 mb-3"
+                        class="mb-3 block text-sm font-semibold uppercase tracking-[0.15em] text-[#1e1c18] dark:text-[#cfc6b8]"
                 >
                     Ordenar por
                 </label>
                 <select
                     id="sort-filter"
-                    class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition cursor-pointer"
+                        class="w-full cursor-pointer border border-[#c8c1b7] bg-[#fbf8f2] px-4 py-3 text-[#1e1c18] transition focus:border-[#b4704a] focus:outline-none dark:border-[#2a2520] dark:bg-[#121210] dark:text-[#f0ece4]"
                 >
                     <option value="">Más relevantes</option>
                     <option value="price-asc">Precio: Menor a Mayor</option>
@@ -138,7 +137,7 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
         </div>
 
         <!-- Footer del panel -->
-        <div class="p-6 border-t border-neutral-200 space-y-3">
+        <div class="space-y-3 border-t border-[#d8d2c8] p-6 dark:border-[#1a1a18]">
             <!-- <button 
                 id="apply-filters"
                 class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer"
@@ -147,7 +146,7 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
             </button> -->
             <button 
                 id="clear-filters"
-                class="w-full bg-white border border-gray-800 border-b-6 text-neutral-800 font-medium py-3 px-4 rounded-lg transition hover:-translate-y-1 duration-300 cursor-pointer"
+                class="w-full cursor-pointer border border-[#2a2520] bg-transparent px-4 py-3 font-medium uppercase tracking-[0.18em] text-[#1e1c18] transition duration-200 hover:-translate-y-0.5 hover:border-[#b4704a] dark:border-[#8b8a83] dark:text-[#f0ece4] dark:hover:border-[#f0ece4]"
             >
                 Limpiar Filtros
             </button>
@@ -158,7 +157,7 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
 <!-- Overlay -->
 <div 
     id="filters-overlay"
-    class="fixed inset-0 bg-black/50 opacity-0 invisible transition-opacity duration-300 z-40 pointer-events-none"
+    class="fixed inset-0 z-40 invisible bg-black/60 opacity-0 transition-opacity duration-300 pointer-events-none"
 ></div>
 
 <script>
@@ -190,8 +189,17 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
     let globalMinPrice = 0;
     let globalMaxPrice = 1000000;
 
+    function getProductCards(): HTMLElement[] {
+        const cards = Array.from(document.querySelectorAll(".product-card")) as HTMLElement[];
+        if (cards.length > 0) {
+            return cards;
+        }
+
+        return Array.from(document.querySelectorAll("#products-grid article[data-price]")) as HTMLElement[];
+    }
+
     function initializePriceRange() {
-        const productCards = document.querySelectorAll(".product-card");
+        const productCards = getProductCards();
         const prices: number[] = [];
         
         productCards.forEach((card) => {
@@ -293,9 +301,7 @@ const { categories = [], showCategoryFilter = true } = Astro.props;
         const minPrice = parseInt(minPriceRange.value);
         const maxPrice = parseInt(maxPriceRange.value);
 
-        const productCards = Array.from(
-            document.querySelectorAll(".product-card")
-        ) as HTMLElement[];
+        const productCards = getProductCards();
 
         let visibleProducts = productCards.filter((card) => {
             // Obtener array de categorías del producto (separadas por comas)
