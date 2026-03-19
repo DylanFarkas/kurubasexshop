@@ -48,7 +48,7 @@ const shopHeroImage = "/imgs/category/prueba4.jpg";
   description="🛍️ Explora nuestro catálogo completo: juguetes eróticos, vibradores, lubricantes y más. ✅ Precios especiales ✅ Envío discreto a toda Colombia ✅ Pago seguro."
   keywords="tienda erótica, catálogo sexshop, comprar juguetes sexuales, productos eróticos colombia, sexshop online, tienda para adultos"
 >
-  <main class="min-h-screen bg-[#f8f5ef] dark:bg-[#0A0A0A] pb-20">
+  <main class="min-h-screen bg-white pb-20">
     <!-- HERO -->
     <section class="relative overflow-hidden border-b border-[#1e1c18] bg-[#0a0a0a] px-8 pt-20 pb-18">
       <div class="absolute inset-0 z-0" aria-hidden="true">
@@ -116,25 +116,25 @@ const shopHeroImage = "/imgs/category/prueba4.jpg";
     <div class="mx-auto max-w-300 px-8">
       <div class="flex flex-wrap items-end justify-between gap-6 border-[#1a1a18] py-12 pb-[2.2rem] max-sm:pt-8">
         <div>
-          <p class="mb-2 font-serif text-[12px] uppercase tracking-[0.3em] text-[#000000] dark:text-[#8b8a83]">
+          <p class="mb-2 font-sans text-[12px] uppercase tracking-[0.3em] text-[#000000]">
             Catálogo completo
           </p>
-          <h2 class="font-serif text-[2rem] font-normal leading-none text-[#000000] dark:text-[#f0ece4] max-sm:text-[1.6rem]">
+          <h2 class="font-serif text-[2rem] tracking-widest font-normal leading-none text-[#000000] max-sm:text-[1.6rem]">
             Selección premium
           </h2>
         </div>
 
         <button
           id="open-filters"
-          class="inline-flex cursor-pointer items-center gap-2.5 border border-[#2a2520] bg-transparent px-6 py-2.75 font-sans tracking-[5px] text-[12px] font-normal uppercase text-black dark:text-[#8b8a83] transition-colors duration-200 hover:border-[#b4704a] dark:hover:text-[#f0ece4]"
+          class="inline-flex cursor-pointer items-center gap-2.5 border border-[#2a2520] bg-transparent px-6 py-2.75 font-sans tracking-[5px] text-[12px] font-normal uppercase text-black transition-colors duration-200 hover:border-[#b4704a]"
           aria-label="Abrir filtros"
         >
-          <Icon name="filter" />
+          <Icon name="filter" size={20} />
           Filtrar catálogo
         </button>
       </div>
 
-      <div class="border-x border-b border-[#d3d3d3] bg-[#d3d3d3] dark:border-x dark:border-b dark:border-[#1a1a18] dark:bg-[#1a1a18]">
+      <div class="border-x border-b border-[#d3d3d3] bg-[#d3d3d3]">
         <ProductGrid products={mappedProducts} />
       </div>
     </div>

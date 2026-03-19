@@ -67,7 +67,7 @@ const absoluteImageUrl = new URL(image, Astro.url.origin).href;
     <!-- Structured Data Slot -->
     <slot name="head" />
     
-    <script is:inline>
+    <!-- <script is:inline>
       (function() {
         const savedTheme = localStorage.getItem('theme');
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -77,10 +77,10 @@ const absoluteImageUrl = new URL(image, Astro.url.origin).href;
           document.documentElement.classList.add('dark');
         }
       })();
-    </script>
+    </script> -->
   </head>
 
-  <body class="bg-[#f8f5ef] dark:bg-[#0C0C0C] text-black">
+  <body class="bg-white text-black">
     <Header />
     <AgeGate />
     <ToastProvider client:load />

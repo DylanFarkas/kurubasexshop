@@ -11,7 +11,7 @@ const { products } = Astro.props;
 
 <div
   id="products-grid"
-  class="grid gap-px bg-[#f8f5ef] dark:bg-[#0A0A0A] grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-[480px]:grid-cols-2"
+  class="grid gap-px bg-white grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-[480px]:grid-cols-2"
 >
   {products.map((product) => {
     const displayPrice =
@@ -27,7 +27,7 @@ const { products } = Astro.props;
 
     return (
       <article
-        class="product-card group relative flex flex-col overflow-hidden bg-[#f8f5ef] dark:bg-[#0A0A0A] transition-colors duration-200 hover:bg-amber-50 dark:hover:bg-[#0f0f0d]"
+        class="product-card group relative flex flex-col overflow-hidden bg-white transition-colors duration-200"
         data-categories={categoryLabels}
         data-price={displayPrice}
         data-name={product.name}
@@ -63,12 +63,12 @@ const { products } = Astro.props;
 
         {/* Body */}
         <div class="flex flex-1 flex-col gap-0 px-5 pt-[1.2rem] pb-[1.4rem]">
-          <p class="mb-[0.65rem] flex items-center gap-1.5 font-sans text-[11px] font-normal uppercase tracking-[0.22em] text-black dark:text-[#8b8a83]">
+          <p class="mb-[0.65rem] flex items-center gap-1.5 font-sans text-[11px] font-normal uppercase tracking-[0.22em] text-black">
             {firstCat ? (
               <>
                 <span>{firstCat}</span>
                 {extraCats > 0 && (
-                  <span class="text-black dark:text-[#8b8a83]">+{extraCats}</span>
+                  <span class="text-black">+{extraCats}</span>
                 )}
               </>
             ) : (
@@ -76,17 +76,17 @@ const { products } = Astro.props;
             )}
           </p>
 
-          <h3 class="mb-4 flex-1 overflow-hidden font-serif text-[0.95rem] font-normal leading-[1.42] text-black dark:text-[#c8c0b4] line-clamp-2">
+          <h3 class="mb-4 flex-1 overflow-hidden font-serif text-[0.95rem] font-normal leading-[1.42] text-black line-clamp-2">
             {product.name}
           </h3>
 
           <div class="mb-[1.1rem] flex items-baseline gap-2.5">
-            <span class="font-sans text-[1.05rem] font-medium tracking-[0.01em] text-neutral-700 dark:text-[#f0ece4]">
+            <span class="font-sans text-[1.05rem] font-medium tracking-[0.01em] text-neutral-700 ">
               ${displayPrice.toLocaleString("es-CO")}
             </span>
 
             {hasDiscount && (
-              <span class="font-sans text-[0.78rem] font-light text-neutral-700 dark:text-[#8b8a83] line-through">
+              <span class="font-sans text-[0.78rem] font-light text-neutral-700 line-through">
                 ${product.price.toLocaleString("es-CO")}
               </span>
             )}
@@ -94,7 +94,7 @@ const { products } = Astro.props;
 
           <a
             href={`/producto/${product.slug}`}
-            class="mt-auto block w-full cursor-pointer border border-[#1e1c18] bg-transparent px-4 py-2.75 text-center font-sans text-[12px] font-normal uppercase tracking-[0.18em] text-[#8b8a83] no-underline transition-all duration-200 group-hover:border-[#3a3020] group-hover:text-[#8a806a] hover:border-[#b4704a] hover:bg-[#120d0a] hover:text-[#c4855a]"
+            class="mt-auto block w-full cursor-pointer border border-[#1e1c18] bg-transparent px-4 py-2.75 text-center font-sans text-[12px] font-normal uppercase tracking-[0.18em] text-neutral-700 no-underline transition-all duration-200 group-hover:border-[#3a3020] group-hover:text-[#8a806a] hover:border-[#b4704a] hover:bg-[#120d0a] hover:text-[#c4855a]"
           >
             Ver producto
           </a>

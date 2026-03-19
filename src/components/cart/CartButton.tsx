@@ -11,7 +11,7 @@ export default function CartButton() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="relative p-1 opacity-70 dark:text-white transition hover:opacity-100 cursor-pointer"
+        className="relative p-1 opacity-70 text-white transition hover:opacity-100 cursor-pointer"
         aria-label="Carrito"
       >
         <svg

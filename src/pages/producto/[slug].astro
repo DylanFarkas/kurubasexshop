@@ -56,7 +56,7 @@ const categoryLabels = (mappedProduct.categories || []).map(c => c.label).join('
 const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${categoryLabels ? `, ${categoryLabels}` : ''}, sexshop colombia`;
 ---
 
-<BaseLayout 
+<BaseLayout
   title={productTitle}
   description={productDescription}
   keywords={productKeywords}
@@ -64,11 +64,11 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
   type="product"
 >
   {mappedProduct.image && <ProductSchema product={mappedProduct} slot="head" />}
-  <main class="container mx-auto px-4 pt-20 pb-16 text-[#1e1c18] bg-[#f8f5ef] dark:text-[#f0ece4] dark:bg-[#0A0A0A] font-sans">
+  <main class="container mx-auto px-4 pt-20 pb-16 text-[#1e1c18] bg-[white] font-sans">
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
       <div class="space-y-4">
-        <div class="aspect-square max-w-lg overflow-hidden rounded-3xl border border-[#ddd4c8] bg-[#f2ece2] dark:border-[#1a1a18] dark:bg-[#0f0f0d]">
+        <div class="aspect-square max-w-lg overflow-hidden rounded-3xl border border-[#ddd4c8] bg-[#f2ece2]">
           <img
             id="main-image"
             src={mappedProduct.image || '/placeholder.png'}
@@ -81,7 +81,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           <div class="grid grid-cols-4 w-full gap-4">
             {galleryImages.map((img, i) => (
               <button
-                class="thumbnail-btn aspect-square overflow-hidden rounded-lg border border-[#d8d2c8] transition hover:border-[#b4704a] dark:border-[#2a2520] dark:hover:border-[#8b8a83]"
+                class="thumbnail-btn aspect-square overflow-hidden rounded-lg border border-[#d8d2c8] transition hover:border-[#b4704a]"
                 data-image={img}
               >
                 <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full rounded-lg object-cover" />
@@ -97,7 +97,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             {mappedProduct.categories.map((cat) => (
               <a
                 href={`/categoria/${cat.slug}`}
-                class="inline-block rounded-full border border-[#d8d2c8] bg-[#f6f1e7] px-3 py-1 text-sm text-[#5b5144] transition hover:border-[#b4704a] hover:text-[#b4704a] dark:border-[#2a2520] dark:bg-[#131210] dark:text-[#b6ad9e] dark:hover:border-[#f0ece4] dark:hover:text-[#f0ece4]"
+                class="inline-block rounded-full border border-[#d8d2c8] bg-white px-3 py-1 text-sm text-neutral-700 transition hover:border-[#b4704a] hover:text-[#b4704a]"
               >
                 {cat.label}
               </a>
@@ -105,7 +105,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           </div>
         )}
         
-        <h1 class="font-serif text-4xl font-normal tracking-wide">{mappedProduct.name}</h1>
+        <h1 class="font-sans text-4xl font-normal tracking-wide">{mappedProduct.name}</h1>
         
         <div class="flex items-baseline gap-3">
           <span class="text-4xl font-semibold">{formatPrice(displayPrice)}</span>
@@ -120,12 +120,12 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         </div>
         
           <div class="flex items-center gap-5">
-            <label for="quantity" class="font-semibold uppercase tracking-widest text-[#5b5144] dark:text-[#b6ad9e]">Cantidad:</label>
-            <div class="flex items-center rounded-full border border-[#d8d2c8] bg-[#f8f5ef] px-2 py-1 shadow-sm dark:border-[#2a2520] dark:bg-[#11110f] dark:text-[#f0ece4]">
+            <label for="quantity" class="font-semibold uppercase tracking-widest text-[#5b5144]">Cantidad:</label>
+            <div class="flex items-center rounded-full border border-[#d8d2c8] bg-white px-2 py-1 shadow-sm">
               <button
                 id="decrease-qty"
                 type="button"
-                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#d4c8b8] bg-[#efe6da] text-2xl font-bold transition hover:border-[#b4704a] hover:text-[#b4704a] focus:outline-none dark:border-[#2a2520] dark:bg-[#1a1a18] dark:hover:border-[#8b8a83] dark:hover:text-[#f0ece4]"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#d4c8b8] bg-white text-2xl font-bold transition hover:border-[#b4704a] hover:text-[#b4704a] focus:outline-none"
                 aria-label="Disminuir cantidad"
                 >
                 <Icon name="minus" size={20} />
@@ -135,13 +135,13 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
                 type="number"
                 min="1"
                 value="1"
-                class="mx-2 w-14 border-none bg-transparent py-2 text-center text-lg font-semibold text-[#1e1c18] transition focus:outline-none dark:text-[#f0ece4]"
+                class="mx-2 w-14 border-none bg-transparent py-2 text-center text-lg font-semibold text-[#1e1c18] transition focus:outline-none"
                 style="appearance: none;"
               />
               <button
                 id="increase-qty"
                 type="button"
-                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#d4c8b8] bg-[#efe6da] text-2xl font-bold transition hover:border-[#b4704a] hover:text-[#b4704a] focus:outline-none dark:border-[#2a2520] dark:bg-[#1a1a18] dark:hover:border-[#8b8a83] dark:hover:text-[#f0ece4]"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#d4c8b8] bg-white text-2xl font-bold transition hover:border-[#b4704a] hover:text-[#b4704a] focus:outline-none"
                 aria-label="Aumentar cantidad"
               >
               <Icon name="plus" size={20} />
@@ -160,25 +160,25 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
               ...(mappedProduct.final_price && { finalPrice: mappedProduct.final_price }),
               image: mappedProduct.image,
             })}
-            class="w-full cursor-pointer border border-[#2a2520] bg-transparent py-4 font-medium uppercase tracking-[0.16em] text-[#1e1c18] transition duration-200 hover:border-[#b4704a] hover:text-[#b4704a] dark:border-[#8b8a83] dark:text-[#f0ece4] dark:hover:border-[#f0ece4]"
+            class="w-full cursor-pointer border border-[#2a2520] bg-transparent py-4 font-medium uppercase tracking-[0.16em] text-[#1e1c18] transition duration-200 hover:border-[#b4704a] hover:text-[#b4704a]"
           >
             Añadir al carrito
           </button>
           
           <a
             href="/tienda"
-            class="block w-full border border-[#c8c1b7] py-4 text-center font-medium uppercase tracking-[0.16em] text-[#5b5144] transition hover:border-[#b4704a] hover:text-[#b4704a] dark:border-[#2a2520] dark:text-[#b6ad9e] dark:hover:border-[#f0ece4] dark:hover:text-[#f0ece4]"
+            class="block w-full border border-[#c8c1b7] py-4 text-center font-medium uppercase tracking-[0.16em] text-[#5b5144] transition hover:border-[#b4704a] hover:text-[#b4704a]"
           >
             Seguir comprando
           </a>
         </div>
 
         {mappedProduct.description && (
-          <div class="overflow-hidden rounded-xl border border-[#d8d2c8] bg-[#fbf8f2] shadow-sm transition-shadow duration-300 hover:shadow-md dark:border-[#1a1a18] dark:bg-[#10100f]">
+          <div class="overflow-hidden rounded-xl border border-[#d8d2c8] bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
             <button
               id="description-toggle"
               type="button"
-              class="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left font-semibold text-[#1e1c18] transition-colors duration-200 dark:bg-[#0f0f0d] dark:text-[#f0ece4]"
+              class="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left font-semibold text-[#1e1c18] transition-colors duration-200"
               aria-expanded="false"
               aria-controls="description-content"
             >
@@ -192,7 +192,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             </button>
             <div
               id="description-content"
-              class="description-panel overflow-hidden px-6 leading-relaxed text-[#4b4339] dark:bg-[#0f0f0d] dark:text-[#d5cfc4]"
+              class="description-panel overflow-hidden px-6 leading-relaxed text-[#4b4339]"
               style="max-height: 0; opacity: 0;"
             >
               <div 
@@ -203,8 +203,8 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           </div>
         )}
         
-        <div class="space-y-2 pt-8 text-sm text-[#3f382f] dark:text-[#b6ad9e]">
-          <div class="mb-6 flex w-full items-center justify-center border-t border-[#cfc6b8] dark:border-[#1a1a18]"></div>
+        <div class="space-y-2 pt-8 text-sm text-[#3f382f]">
+          <div class="mb-6 flex w-full items-center justify-center border-t border-[#cfc6b8]"></div>
           <p class="flex items-center">
             <Icon name="check" size={16} class="mr-2 text-green-500" />
             Producto bajo pedido (sin límite de stock)

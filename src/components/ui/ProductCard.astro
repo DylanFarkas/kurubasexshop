@@ -30,7 +30,7 @@ const v: Required<ProductCardVariant> = {
         ? "snap-start min-w-[45%] sm:min-w-[55%] md:min-w-[38%] lg:min-w-[31%]"
         : "snap-start min-w-[80%] sm:min-w-[55%] md:min-w-[38%] lg:min-w-[31%]", 
       "max-w-[320px] sm:max-w-95 md:max-w-105",
-      "rounded-2xl border bg-white dark:bg-[#0C0C0C] transition hover:-translate-y-1", 
+      "rounded-2xl border bg-[#0C0C0C] transition hover:-translate-y-1", 
       "duration-300 ease-in-out overflow-hidden flex flex-col",
     v.cardClass
   ]}
@@ -47,7 +47,7 @@ const v: Required<ProductCardVariant> = {
   </div>
 
   <div class="p-3 md:p-4 flex items-center justify-between gap-3 md:gap-4">
-    <p class:list={["font-semibold text-base dark:text-neutral-200 md:text-lg line-clamp-2 flex-1", v.titleClass]}>
+    <p class:list={["font-semibold text-base text-white md:text-lg line-clamp-2 flex-1", v.titleClass]}>
       {product.name}
     </p>
 

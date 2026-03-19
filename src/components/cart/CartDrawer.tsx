@@ -18,13 +18,13 @@ export default function CartDrawer({ isOpen, onClose }: { isOpen: boolean; onClo
       />
       
       {/* Drawer */}
-      <div className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-[#d8d2c8] bg-[#f8f5ef] shadow-2xl transition-transform duration-300 dark:border-[#1a1a18] dark:bg-[#0f0f0d] ${
+      <div className={`fixed font-sans right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-[#d8d2c8] bg-[white] shadow-2xl transition-transform duration-300 dark:border-[#1a1a18] dark:bg-[#0f0f0d] ${
           isOpen ? 'z-50 translate-x-0' : 'z-50 translate-x-full'
         }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#d8d2c8] p-6 dark:border-[#1a1a18]">
-          <h2 className="font-serif text-2xl font-normal tracking-wide text-[#0f0f0d] dark:text-[#f0ece4]">
+          <h2 className="font-sans text-2xl font-normal tracking-wide text-[#0f0f0d] dark:text-[#f0ece4]">
             CARRITO ({itemCount})
           </h2>
           <button

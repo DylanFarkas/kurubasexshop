@@ -17,8 +17,8 @@ const tiles = [
     col: "col-span-2 lg:col-span-3",
     row: "row-span-2 lg:row-span-2",
     position: "col-start-1 lg:col-start-1 row-start-1",
-    bg: "bg-[#f1e8db] border border-[#dccfbf] dark:bg-[#14110f] dark:border-[#2a2520]",
-    text: "text-[#9d603f] dark:text-[#c4855a]",
+    bg: "border bg-[#14110f] border-[#2a2520]",
+    text: "text-[#c4855a]",
   },
 
   // Juguetes - abajo en columna 1 (grande vertical)
@@ -113,7 +113,7 @@ const tiles = [
 ];
 ---
 
-<section class="w-full min-h-screen border-b border-[#e6dfd5] bg-[#f8f5ef] lg:h-screen dark:border-[#1a1a18] dark:bg-[#0a0a0a]">
+<section class="w-full min-h-screen lg:h-screen border-[#1a1a18] bg-[#0a0a0a]">
   <div class="w-full h-full px-4 sm:px-8 lg:px-20 py-6 sm:py-10 lg:py-20">
     <div
       class="grid grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-3 lg:gap-4 h-full
@@ -184,8 +184,8 @@ const tiles = [
                             transition-transform duration-300 ease-out
                             group-hover:scale-110"
                 >
-                  <div class="h-14 w-14 sm:h-16 sm:w-16 lg:h-18 lg:w-18 rounded-full border border-[#fa7a9d] bg-[#ffe7ef] p-0.75 shadow-lg dark:border-[#7a1f3a] dark:bg-[#2a0f18]">
-                    <div class="grid h-full w-full place-items-center overflow-hidden rounded-full bg-[#fa0644] dark:bg-[#d9043a]">
+                  <div class="h-14 w-14 sm:h-16 sm:w-16 lg:h-18 lg:w-18 rounded-full border p-0.75 shadow-lg border-[#7a1f3a] bg-[#2a0f18]">
+                    <div class="grid h-full w-full place-items-center overflow-hidden rounded-full bg-[#d9043a]">
                       <img
                         src="/imgs/brand/logo-kuruba.png"
                         alt="Kuruba"

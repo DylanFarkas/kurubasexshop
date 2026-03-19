@@ -9,13 +9,8 @@
 html {
     scroll-behavior: smooth;
     scroll-padding-top: 4rem; /* Offset para el header fixed */
-    background-color: #f8f5ef;
 }
 
 body {
     font-family: sans-serif;
-}
-
-html.dark {
-    background-color: #0C0C0C;
 }

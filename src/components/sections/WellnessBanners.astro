@@ -41,8 +41,8 @@ const alignment =
 
 {
 	isOverlay ? (
-		<section class="w-full bg-[#f8f5ef] px-8 py-12 dark:bg-[#0a0a0a]">
-			<article class="relative isolate overflow-hidden border border-[#dccfbf] min-h-96 md:min-h-128 dark:border-[#1f1b17]">
+		<section class="w-full px-8 py-12 bg-[#0a0a0a]">
+			<article class="relative isolate overflow-hidden border min-h-96 md:min-h-128 border-[#1f1b17]">
 				<img
 					src={imageSrc}
 					alt={imageAlt}
@@ -53,9 +53,9 @@ const alignment =
 					class="absolute inset-0 h-full w-full object-cover"
 				/>
 
-				<div class="absolute inset-0 bg-linear-to-r from-[rgba(231,220,205,0.56)] via-[rgba(231,220,205,0.3)] to-[rgba(231,220,205,0.12)] dark:from-[rgba(10,10,10,0.78)] dark:via-[rgba(10,10,10,0.52)] dark:to-[rgba(10,10,10,0.24)]" />
+				<div class="absolute inset-0 bg-linear-to-r  from-[rgba(10,10,10,0.78)] via-[rgba(10,10,10,0.52)] to-[rgba(10,10,10,0.24)]" />
 
-				<div class="relative z-10 flex min-h-96 md:min-h-128 max-w-3xl flex-col justify-end gap-4 p-6 md:p-10 lg:p-12 text-[#221c15] dark:text-[#f0ece4]">
+				<div class="relative z-10 flex min-h-96 md:min-h-128 max-w-3xl flex-col justify-end gap-4 p-6 md:p-10 lg:p-12 text-[#f0ece4]">
 					{eyebrow && (
 						<span class="font-sans text-[12px] uppercase tracking-[0.25em] text-[#ff6800]">
 							{eyebrow}
@@ -66,14 +66,14 @@ const alignment =
 						{title}
 					</h2>
 
-					<p class="text-xl md:text-2xl text-[#3e342a] dark:text-[#ded6c8]">{subtitle}</p>
+					<p class="text-xl md:text-2xl text-[#ded6c8]">{subtitle}</p>
 
-					<p class="max-w-2xl text-base md:text-lg text-[#5f5a52] dark:text-[#8b8a83]">{description}</p>
+					<p class="max-w-2xl text-base md:text-lg text-[#8b8a83]">{description}</p>
 
 					<div class="pt-2">
 						<a
 							href={ctaHref}
-							class="inline-flex items-center justify-center border border-[#cdb8a3] bg-[#f1e8db] px-7 py-3 font-sans text-[12px] uppercase tracking-[0.25em] text-[#2a2018] transition-colors duration-200 motion-reduce:transition-none hover:border-[#b4704a] hover:text-[#20160e] dark:border-[#2a2520] dark:bg-[#14110f] dark:text-[#f0ece4] dark:hover:text-white"
+							class="inline-flex items-center justify-center border px-7 py-3 font-sans text-[12px] uppercase tracking-[0.25em] transition-colors duration-200 motion-reduce:transition-none hover:border-[#b4704a] border-[#2a2520] bg-[#14110f] text-[#f0ece4] hover:text-white"
 						>
 							{ctaLabel}
 						</a>
@@ -82,8 +82,8 @@ const alignment =
 			</article>
 		</section>
 	) : (
-		<section class="w-full bg-[#f8f5ef] px-8 py-12 dark:bg-[#0a0a0a]">
-			<article class="grid overflow-hidden border border-[#dccfbf] bg-[#fbf7f1] md:grid-cols-2 dark:border-[#1f1b17] dark:bg-[#11100f]">
+		<section class="w-full px-8 py-12 bg-[#0a0a0a]">
+			<article class="grid overflow-hidden border md:grid-cols-2 border-[#1f1b17] bg-[#11100f]">
 				<div class={`relative min-h-80 md:min-h-full ${isImageRight ? 'md:order-2' : ''}`}>
 					<img
 						src={imageSrc}
@@ -103,22 +103,22 @@ const alignment =
 						</span>
 					)}
 
-					<h2 class="font-serif text-3xl md:text-5xl leading-tight tracking-wide text-[#221c15] dark:text-[#f0ece4]">
+					<h2 class="font-serif text-3xl md:text-5xl leading-tight tracking-wide text-[#f0ece4]">
 						{title}
 					</h2>
 
-					<p class="text-xl md:text-2xl text-[#3e342a] dark:text-[#ded6c8]">
+					<p class="text-xl md:text-2xl text-[#ded6c8]">
 						{subtitle}
 					</p>
 
-					<p class="max-w-xl text-base md:text-lg text-[#5f5a52] dark:text-[#8b8a83]">
+					<p class="max-w-xl text-base md:text-lg text-[#8b8a83]">
 						{description}
 					</p>
 
 					<div class="pt-2">
 						<a
 							href={ctaHref}
-							class="inline-flex items-center justify-center border border-[#d8ccbe] bg-transparent px-7 py-3 font-sans text-[12px] uppercase tracking-[0.25em] text-[#6c655b] transition-colors duration-200 motion-reduce:transition-none hover:border-[#b4704a] hover:text-[#20160e] dark:border-[#2a2520] dark:text-[#8b8a83] dark:hover:text-[#f0ece4]"
+							class="inline-flex items-center justify-center border bg-transparent px-7 py-3 font-sans text-[12px] uppercase tracking-[0.25em] transition-colors duration-200 motion-reduce:transition-none hover:border-[#b4704a] border-[#2a2520] text-[#8b8a83] hover:text-[#f0ece4]"
 						>
 							{ctaLabel}
 						</a>
