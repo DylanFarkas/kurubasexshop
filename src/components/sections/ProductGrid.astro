@@ -12,7 +12,7 @@ const { products } = Astro.props;
 
 <div
   id="products-grid"
-  class="grid gap-px bg-white grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-[480px]:grid-cols-2"
+  class="grid gap-5 bg-white grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-[480px]:grid-cols-2"
 >
   {products.map((product) => {
     const displayPrice =

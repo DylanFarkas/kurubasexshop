@@ -8,8 +8,9 @@ import Feedback from "../components/sections/Feedback.astro";
 import OrganizationSchema from "../components/seo/OrganizationSchema.astro";
 import WellnessBanners from "../components/sections/WellnessBanners.astro";
 import bannerImg1 from "../assets/banners/img1.webp";
-import bannerImg2 from "../assets/banners/img2.webp";
+import bannerImg2 from "../assets/banners/anillo-vibrador-banner.webp";
 import bannerImg5 from "../assets/banners/img5.webp";
+import bannerImg6 from "../assets/banners/brillo-labial-banner.webp";
 ---
 
 <BaseLayout
@@ -20,7 +21,9 @@ import bannerImg5 from "../assets/banners/img5.webp";
 >
   <OrganizationSchema slot="head" />
   <Hero />
+  
   <CategoriesGrid />
+
 
   <WellnessBanners
     variant="overlay"
@@ -38,20 +41,21 @@ import bannerImg5 from "../assets/banners/img5.webp";
 
   <WellnessBanners
     variant="split"
-    imageSrc={bannerImg2}
-    imageAlt="Mujer en un momento íntimo de autocuidado y descanso"
-    eyebrow="Bienestar íntimo"
-    title="Tu placer también es autocuidado"
-    subtitle="Explora a tu ritmo, sin presión"
-    description="Encuentra productos pensados para sentirte segura, cómoda y conectada contigo. Todo con compra discreta y guía clara para elegir mejor."
-    ctaLabel="Empezar"
-    ctaHref="/tienda"
-    imagePosition="left"
+    imageSrc={bannerImg6}
+    imageAlt="Labios con brillo natural y acabado seductor"
+    eyebrow="Toque irresistible"
+    title="Labios que hablan por ti"
+    subtitle="Brillo, sabor y actitud"
+    description="Un acabado jugoso que resalta tu belleza natural, con un delicioso toque a frutos rojos que invita a disfrutar cada momento. Ligero, fácil de aplicar y simplemente irresistible."
+    ctaLabel="Descubrir"
+    ctaHref="/producto/brillo-labial"
+    splitImageMinHeightClass="min-h-130 md:min-h-140 lg:min-h-200"
+    imageObjectPositionClass="object-top"
   />
 
   <Feedback />
 
-  <WellnessBanners
+  <!-- <WellnessBanners
     variant="overlay"
     imageSrc={bannerImg1}
     imageAlt="Escena minimalista con enfoque en confianza y exploración íntima"
@@ -62,6 +66,19 @@ import bannerImg5 from "../assets/banners/img5.webp";
     ctaLabel="Ver catálogo"
     ctaHref="/tienda"
     imagePosition="right"
+  /> -->
+
+  <WellnessBanners
+    variant="split"
+    imageSrc={bannerImg2}
+    imageAlt="Momento íntimo de conexión y bienestar"
+    eyebrow="Favorito de parejas"
+    title="Eleva el placer en cada momento"
+    subtitle="Más duración, más intensidad"
+    description="Anillo vibrador cómodo, discreto y fácil de usar. Ideal para quienes quieren llevar su experiencia a otro nivel sin complicarse"
+    ctaLabel="Comprar ahora"
+    ctaHref="/producto/anillo-vibrador"
+    imagePosition="left"
   />
 
   <AboutUs />
