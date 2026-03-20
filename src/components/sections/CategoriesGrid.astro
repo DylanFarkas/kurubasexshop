@@ -7,6 +7,7 @@ import lubricantesBanner from "../../assets/banners/lubricantes-home-1.webp";
 import paraEllosBanner from "../../assets/banners/para-ellos-home-1.webp";
 import paraEllasBanner from "../../assets/banners/para-ellas-home-1.webp";
 import ofertasBanner from "../../assets/banners/ofertas-home-2.webp";
+import kurubaLogo from "../../assets/brand/logo-kuruba.png";
 
 const tiles = [
   // Kuruba - arriba en columna 1
@@ -186,9 +187,11 @@ const tiles = [
                 >
                   <div class="h-14 w-14 sm:h-16 sm:w-16 lg:h-18 lg:w-18 rounded-full border p-0.75 shadow-lg border-[#7a1f3a] bg-[#2a0f18]">
                     <div class="grid h-full w-full place-items-center overflow-hidden rounded-full bg-[#d9043a]">
-                      <img
-                        src="/imgs/brand/logo-kuruba.png"
+                      <Image
+                        src={kurubaLogo}
                         alt="Kuruba"
+                        widths={[160, 240, 320]}
+                        quality={72}
                         class="h-full w-full object-contain p-5"
                         loading="lazy"
                       />

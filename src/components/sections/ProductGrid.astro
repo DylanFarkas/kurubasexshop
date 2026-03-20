@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 import type { Product } from "../../types/product";
 
 interface Props {
@@ -27,20 +28,24 @@ const { products } = Astro.props;
 
     return (
       <article
-        class="product-card group relative flex flex-col overflow-hidden bg-white transition-colors duration-200"
+        class="product-card group relative flex flex-col overflow-hidden bg-transparent transition-colors duration-200"
         data-categories={categoryLabels}
         data-price={displayPrice}
         data-name={product.name}
       >
         {/* Image */}
-        <div class="relative aspect-square overflow-hidden bg-[#111110]">
+        <div class="relative aspect-square overflow-hidden bg-white">
           {product.image ? (
-            <img
+            <Image
               src={product.image}
               alt={product.name}
+              width={800}
+              height={800}
               loading="lazy"
               decoding="async"
-              class="block h-full w-full object-cover opacity-85 transition-all duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04] group-hover:opacity-100"
+              format="webp"
+              sizes="(max-width: 480px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              class="block h-full w-full object-cover transition-all duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04] group-hover:opacity-100"
             />
           ) : (
             <div class="flex h-full w-full items-center justify-center text-[#2a2520]">
@@ -94,7 +99,7 @@ const { products } = Astro.props;
 
           <a
             href={`/producto/${product.slug}`}
-            class="mt-auto block w-full cursor-pointer border border-[#1e1c18] bg-transparent px-4 py-2.75 text-center font-sans text-[12px] font-normal uppercase tracking-[0.18em] text-neutral-700 no-underline transition-all duration-200 group-hover:border-[#3a3020] group-hover:text-[#8a806a] hover:border-[#b4704a] hover:bg-[#120d0a] hover:text-[#c4855a]"
+            class="mt-auto block w-full cursor-pointer border border-[#1e1c18] bg-transparent px-4 py-2.75 text-center font-sans text-[12px] font-normal uppercase tracking-[0.18em] text-neutral-900 no-underline transition-all duration-200 group-hover:border-[#3a3020] group-hover:text-neutral-700 hover:border-[#b4704a] hover:bg-[#120d0a] hover:text-[#c4855a]"
           >
             Ver producto
           </a>

@@ -12,6 +12,14 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   output: 'server', // Modo servidor con SSR por defecto
   adapter: vercel(),
+  image: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
+      }
+    ]
+  },
   
   vite: {
     plugins: [tailwindcss()]

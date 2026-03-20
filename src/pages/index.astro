@@ -7,6 +7,9 @@ import AboutUs from "../components/sections/AboutUs.astro";
 import Feedback from "../components/sections/Feedback.astro";
 import OrganizationSchema from "../components/seo/OrganizationSchema.astro";
 import WellnessBanners from "../components/sections/WellnessBanners.astro";
+import bannerImg1 from "../assets/banners/img1.webp";
+import bannerImg2 from "../assets/banners/img2.webp";
+import bannerImg5 from "../assets/banners/img5.webp";
 ---
 
 <BaseLayout
@@ -21,7 +24,7 @@ import WellnessBanners from "../components/sections/WellnessBanners.astro";
 
   <WellnessBanners
     variant="overlay"
-    imageSrc="/imgs/banners/img5.webp"
+    imageSrc={bannerImg5}
     imageAlt="Producto de bienestar íntimo en una escena elegante y cálida"
     eyebrow="Descubre nuevas sensaciones"
     title="Conecta con lo que te hace sentir bien"
@@ -35,7 +38,7 @@ import WellnessBanners from "../components/sections/WellnessBanners.astro";
 
   <WellnessBanners
     variant="split"
-    imageSrc="/imgs/banners/img2.webp"
+    imageSrc={bannerImg2}
     imageAlt="Mujer en un momento íntimo de autocuidado y descanso"
     eyebrow="Bienestar íntimo"
     title="Tu placer también es autocuidado"
@@ -50,7 +53,7 @@ import WellnessBanners from "../components/sections/WellnessBanners.astro";
 
   <WellnessBanners
     variant="overlay"
-    imageSrc="/imgs/banners/img1.webp"
+    imageSrc={bannerImg1}
     imageAlt="Escena minimalista con enfoque en confianza y exploración íntima"
     eyebrow="Confianza total"
     title="Compra sin tabúes"

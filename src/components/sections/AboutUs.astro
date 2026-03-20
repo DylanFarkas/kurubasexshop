@@ -1,5 +1,9 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import paolaLazoImage from "../../assets/brand/paola-lazo.webp";
+import senIntimoImage from "../../assets/brand/sen-intimo.webp";
+import kurubaMarkImage from "../../assets/brand/kuruba-mark.webp";
 
 /**
  * AboutSection.astro
@@ -14,15 +18,19 @@ const email = "kurubasexshop@gmail.com";
     <header
       class="flex items-center justify-center md:justify-end gap-10 md:gap-30 h-20 md:h-24"
     >
-      <img
-        src="/imgs/brand/paola-lazo.webp"
+      <Image
+        src={paolaLazoImage}
         alt="Paola Lazo"
+        widths={[320, 480, 640]}
+        quality={72}
         class="h-10 md:h-15 w-auto object-contain"
         loading="lazy"
       />
-      <img
-        src="/imgs/brand/sen-intimo.webp"
+      <Image
+        src={senIntimoImage}
         alt="Sen Íntimo"
+        widths={[320, 480, 640]}
+        quality={72}
         class="h-14 md:h-20 w-auto object-contain"
         loading="lazy"
       />
@@ -111,9 +119,11 @@ const email = "kurubasexshop@gmail.com";
 
       <!-- Derecha -->
       <div class="flex justify-center md:justify-end">
-        <img
-          src="/imgs/brand/kuruba-mark.webp"
+        <Image
+          src={kurubaMarkImage}
           alt="Kuruba Sexshop"
+          widths={[320, 480, 768]}
+          quality={72}
           class="w-60 sm:w-65 md:w-75 xl:w-80 2xl:w-120"
 
           loading="lazy"

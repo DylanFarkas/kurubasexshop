@@ -5,6 +5,8 @@ import FilterPanel from "../components/ui/FilterPanel.astro";
 import { supabase } from "../lib/supabase";
 import type { Product } from "../types/product";
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import shopHeroImage from "../assets/category/prueba4.jpg";
 
 const { data: products, error } = await supabase
   .from("products")
@@ -40,7 +42,6 @@ const { data: categories } = await supabase
   .order("order_position");
 
 const activeCategoriesCount = (categories || []).length;
-const shopHeroImage = "/imgs/category/prueba4.jpg";
 ---
 
 <BaseLayout
@@ -52,11 +53,15 @@ const shopHeroImage = "/imgs/category/prueba4.jpg";
     <!-- HERO -->
     <section class="relative overflow-hidden border-b border-[#1e1c18] bg-[#0a0a0a] px-8 pt-20 pb-18">
       <div class="absolute inset-0 z-0" aria-hidden="true">
-        <img
+        <Image
           src={shopHeroImage}
           alt=""
+          widths={[768, 1024, 1536, 1920]}
+          quality={68}
           loading="eager"
           decoding="async"
+          fetchpriority="high"
+          sizes="100vw"
           class="h-full w-full object-cover opacity-[0.38]"
         />
         <div class="absolute inset-0 z-1 bg-linear-to-b from-[rgba(10,10,10,0.55)] to-[rgba(10,10,10,0.86)]"></div>
@@ -134,7 +139,7 @@ const shopHeroImage = "/imgs/category/prueba4.jpg";
         </button>
       </div>
 
-      <div class="border-x border-b border-[#d3d3d3] bg-[#d3d3d3]">
+      <div class="border-[#d3d3d3] bg-[#d3d3d3]">
         <ProductGrid products={mappedProducts} />
       </div>
     </div>

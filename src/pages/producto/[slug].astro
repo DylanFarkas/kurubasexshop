@@ -4,6 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { formatPrice, formatTextToHtml } from '../../utils/formatters';
 import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
 import ProductSchema from '../../components/seo/ProductSchema.astro';
 
 // SSR: Renderizado del lado del servidor (dinámico)
@@ -41,7 +42,8 @@ const mappedProduct: Product = {
 const galleryImages = [
   mappedProduct.image,
   ...(mappedProduct.images || [])
-].filter(Boolean);
+].filter((img): img is string => typeof img === 'string' && img.length > 0);
+const mainGalleryImage = galleryImages[0] ?? null;
 
 const displayPrice = mappedProduct.final_price || mappedProduct.price;
 const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct > 0;
@@ -68,23 +70,45 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
       <div class="space-y-4">
-        <div class="aspect-square max-w-lg overflow-hidden rounded-3xl border border-[#ddd4c8] bg-[#f2ece2]">
-          <img
-            id="main-image"
-            src={mappedProduct.image || '/placeholder.png'}
-            alt={mappedProduct.name}
-            class="w-full h-full object-cover"
-          />
+        <div class="aspect-square max-w-lg overflow-hidden rounded-xl border border-[#ddd4c8] bg-white">
+          {mainGalleryImage ? (
+            <Image
+              id="main-image"
+              src={mainGalleryImage}
+              alt={mappedProduct.name}
+              width={1000}
+              height={1000}
+              loading="eager"
+              decoding="async"
+              format="webp"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              class="w-full h-full object-cover"
+            />
+          ) : (
+            <div id="main-image" class="flex h-full w-full items-center justify-center text-[#8b8a83]">
+              <Icon name="photo" class="h-14 w-14" />
+            </div>
+          )}
         </div>
         
         {galleryImages.length > 1 && (
           <div class="grid grid-cols-4 w-full gap-4">
-            {galleryImages.map((img, i) => (
+            {galleryImages.map((img: string, i) => (
               <button
                 class="thumbnail-btn aspect-square overflow-hidden rounded-lg border border-[#d8d2c8] transition hover:border-[#b4704a]"
                 data-image={img}
               >
-                <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full rounded-lg object-cover" />
+                <Image
+                  src={img}
+                  alt={`${mappedProduct.name} ${i + 1}`}
+                  width={280}
+                  height={280}
+                  loading="lazy"
+                  decoding="async"
+                  format="webp"
+                  sizes="(max-width: 768px) 20vw, 10vw"
+                  class="w-full h-full rounded-lg object-cover"
+                />
               </button>
             ))}
           </div>
@@ -288,13 +312,13 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     }
 
     // Cambio de imagen en galería
-    const mainImage = document.getElementById('main-image') as HTMLImageElement;
+    const mainImage = document.getElementById('main-image') as HTMLImageElement | null;
     const thumbnails = document.querySelectorAll('.thumbnail-btn');
     
     thumbnails.forEach(btn => {
       btn.addEventListener('click', () => {
         const newSrc = (btn as HTMLElement).dataset.image;
-        if (newSrc && mainImage) {
+        if (newSrc && mainImage instanceof HTMLImageElement) {
           mainImage.src = newSrc;
         }
       });

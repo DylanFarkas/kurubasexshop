@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 import type { Product } from "../../types/product";
 import type { ProductCardVariant } from "../../types/productCard";
 
@@ -21,6 +22,8 @@ const v: Required<ProductCardVariant> = {
   iconClass: variant.iconClass ?? "text-neutral-900",
   badgeClass: variant.badgeClass ?? "bg-black text-white",
 };
+
+const productImage = product.image ?? product.images?.[0] ?? null;
 ---
 
 <a
@@ -36,14 +39,23 @@ const v: Required<ProductCardVariant> = {
   ]}
 >
   <div class:list={["aspect-4/5", v.mediaClass]}>
-    {
-    <img
-      src={product.image ?? product.images?.[0] ?? "/placeholder.png"}
-      alt={product.name}
-      class="h-full w-full object-cover"
-      loading="lazy"
-    />
-    }
+    {productImage ? (
+      <Image
+        src={productImage}
+        alt={product.name}
+        width={640}
+        height={800}
+        loading="lazy"
+        decoding="async"
+        format="webp"
+        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 55vw, 31vw"
+        class="h-full w-full object-cover"
+      />
+    ) : (
+      <div class="flex h-full w-full items-center justify-center text-neutral-500">
+        <Icon name="photo" class="h-10 w-10" />
+      </div>
+    )}
   </div>
 
   <div class="p-3 md:p-4 flex items-center justify-between gap-3 md:gap-4">
