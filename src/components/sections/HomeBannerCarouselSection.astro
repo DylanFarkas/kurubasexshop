@@ -1,0 +1,42 @@
+---
+import BannerCarousel from "../banners/BannerCarousel";
+import { supabase } from "../../lib/supabase";
+import { DEFAULT_HOME_BANNER_SETTINGS } from "../../types/homeBanner";
+
+const { data: homeBanners, error: homeBannersError } = await supabase
+  .from('home_banners')
+  .select('id, image_url, target_url, sort_order, is_active')
+  .eq('is_active', true)
+  .order('sort_order', { ascending: true });
+
+if (homeBannersError) {
+  console.error('Error fetching home banners in HomeBannerCarouselSection:', homeBannersError);
+}
+
+const { data: homeBannerSettingsRow, error: homeBannerSettingsError } = await supabase
+  .from('home_banner_settings')
+  .select('autoplay_enabled, autoplay_interval_ms, mobile_height_px, desktop_height_px')
+  .eq('singleton_key', true)
+  .maybeSingle();
+
+if (homeBannerSettingsError) {
+  console.error('Error fetching home banner settings in HomeBannerCarouselSection:', homeBannerSettingsError);
+}
+
+const homeBannerSettings = homeBannerSettingsRow || DEFAULT_HOME_BANNER_SETTINGS;
+---
+
+{(homeBanners?.length || 0) > 0 && (
+  <section class="w-full bg-[#0a0a0a] px-5 md:px-8">
+    <div class="mx-auto w-full max-w-300">
+      <BannerCarousel
+        client:load
+        items={homeBanners || []}
+        autoplayEnabled={homeBannerSettings.autoplay_enabled}
+        autoplayIntervalMs={homeBannerSettings.autoplay_interval_ms}
+        mobileHeightPx={homeBannerSettings.mobile_height_px}
+        desktopHeightPx={homeBannerSettings.desktop_height_px}
+      />
+    </div>
+  </section>
+)}

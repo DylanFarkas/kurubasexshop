@@ -37,3 +37,50 @@ export const categorySchema = z.object({
   order_position: z.number().int().min(0).optional(),
   active: z.boolean().optional(),
 });
+
+const externalSecureUrlRegex = /^https:\/\/\S+$/i;
+
+function isValidBannerTargetUrl(value: string): boolean {
+  return value.startsWith('/') || externalSecureUrlRegex.test(value);
+}
+
+export const bannerTargetUrlSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') return value;
+    const trimmed = value.trim();
+    return trimmed.length === 0 ? null : trimmed;
+  },
+  z
+    .string()
+    .max(500, 'La URL de destino no puede superar 500 caracteres')
+    .refine(isValidBannerTargetUrl, 'Usa una ruta interna (/ruta) o URL externa segura (https://...)')
+    .nullable()
+    .optional()
+);
+
+export const homeBannerSchema = z.object({
+  id: z.string().uuid().optional(),
+  image_url: z.string().url('La URL de imagen no es valida'),
+  public_id: z.string().min(1, 'El public_id de Cloudinary es requerido'),
+  target_url: bannerTargetUrlSchema,
+  sort_order: z.number().int().min(0, 'El orden debe ser mayor o igual a 0'),
+  is_active: z.boolean(),
+});
+
+export const homeBannerSettingsInputSchema = z.object({
+  autoplay_enabled: z.boolean(),
+  autoplay_interval_ms: z.number().int().min(1000, 'El intervalo minimo es 1000ms').max(30000, 'El intervalo maximo es 30000ms'),
+  mobile_height_px: z.number().int().min(160, 'La altura movil minima es 160px').max(800, 'La altura movil maxima es 800px'),
+  desktop_height_px: z.number().int().min(200, 'La altura desktop minima es 200px').max(1000, 'La altura desktop maxima es 1000px'),
+});
+
+export const homeBannersSaveSchema = z.object({
+  items: z.array(homeBannerSchema).max(100, 'Maximo 100 banners por solicitud'),
+  deleted: z.array(
+    z.object({
+      id: z.string().uuid('ID de banner invalido'),
+      public_id: z.string().optional(),
+    })
+  ).optional().default([]),
+  settings: homeBannerSettingsInputSchema.optional(),
+});

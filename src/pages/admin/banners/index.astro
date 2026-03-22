@@ -1,0 +1,47 @@
+---
+import BaseAdminLayout from '../../../layouts/BaseAdminLayout.astro';
+import HomeBannersManager from '../../../components/admin/HomeBannersManager';
+import { supabaseAdmin } from '../../../lib/supabaseAdmin';
+import { DEFAULT_HOME_BANNER_SETTINGS, type HomeBanner, type HomeBannerSettingsInput } from '../../../types/homeBanner';
+
+export const prerender = false;
+
+const { data, error } = await supabaseAdmin
+  .from('home_banners')
+  .select('*')
+  .order('sort_order', { ascending: true });
+
+const { data: settingsData, error: settingsError } = await supabaseAdmin
+  .from('home_banner_settings')
+  .select('autoplay_enabled, autoplay_interval_ms, mobile_height_px, desktop_height_px')
+  .eq('singleton_key', true)
+  .maybeSingle();
+
+if (error) {
+  console.error('Error fetching home banners:', error);
+}
+
+if (settingsError) {
+  console.error('Error fetching home banner settings:', settingsError);
+}
+
+const initialItems = (data || []) as HomeBanner[];
+const initialSettings: HomeBannerSettingsInput = settingsData
+  ? {
+      autoplay_enabled: settingsData.autoplay_enabled,
+      autoplay_interval_ms: settingsData.autoplay_interval_ms,
+      mobile_height_px: settingsData.mobile_height_px,
+      desktop_height_px: settingsData.desktop_height_px,
+    }
+  : DEFAULT_HOME_BANNER_SETTINGS;
+---
+
+<BaseAdminLayout title="Banners Home">
+  <div class="mb-6">
+    <p class="text-sm text-gray-600 dark:text-gray-400">
+      Gestiona el carrusel principal de la home. Los cambios se guardan solo al presionar "Guardar cambios".
+    </p>
+  </div>
+
+  <HomeBannersManager client:load initialItems={initialItems} initialSettings={initialSettings} />
+</BaseAdminLayout>
