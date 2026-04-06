@@ -5,13 +5,7 @@ import { supabase } from '../../lib/supabase';
 import FilterPanel from "../../components/ui/FilterPanel.astro";
 import type { Product } from '../../types/product';
 import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
-import type { ImageMetadata } from "astro";
-import juguetesHero from "../../assets/category/juguetes.webp";
-import lubricantesHero from "../../assets/category/para-ellas.webp";
-import paraEllasHero from "../../assets/category/prueba3.jpg";
-import paraEllosHero from "../../assets/category/prueba2.jpg";
-import ofertasHero from "../../assets/category/prueba4.jpg";
+import bannerProductosHero from "../../assets/category/banner-productos.jpg";
 
 // SSR: Renderizado del lado del servidor (dinámico)
 export const prerender = false;
@@ -30,7 +24,9 @@ if (isOffersPage) {
     id: 'ofertas',
     label: 'Ofertas',
     slug: 'ofertas',
-    active: true
+    active: true,
+    banner_image_url: null,
+    banner_public_id: null,
   };
   
   // Fetch productos con descuento
@@ -138,15 +134,11 @@ const seoData = categoryDescriptions[slug as string] || {
   keywords: `${category.label.toLowerCase()}, productos eróticos, sexshop colombia`
 };
 
-const categoryHeroImages: Record<string, ImageMetadata> = {
-  'juguetes': juguetesHero,
-  'lubricantes': lubricantesHero,
-  'para-ellas': paraEllasHero,
-  'para-ellos': paraEllosHero,
-  'ofertas': ofertasHero
-};
-
-const categoryHeroImage = categoryHeroImages[slug as string] || ofertasHero;
+const fallbackCategoryHero = bannerProductosHero.src;
+const categoryHeroImage = category.banner_image_url || fallbackCategoryHero;
+const categoryHeroAlt = isOffersPage
+  ? 'Banner de ofertas de Kuruba SexShop'
+  : `Banner de la categoria ${category.label}`;
 ---
 
 <BaseLayout 
@@ -157,16 +149,13 @@ const categoryHeroImage = categoryHeroImages[slug as string] || ofertasHero;
   <main class="min-h-screen bg-white pb-20">
     <section class="relative overflow-hidden border-b border-[#1e1c18] bg-[#0a0a0a] px-8 pt-20 pb-18">
       <div class="absolute inset-0 z-0" aria-hidden="true">
-        <Image
+        <img
           src={categoryHeroImage}
-          alt=""
-          widths={[768, 1024, 1536, 1920]}
-          quality={68}
+          alt={categoryHeroAlt}
           loading="eager"
           decoding="async"
           fetchpriority="high"
-          sizes="100vw"
-          class="h-full w-full object-cover opacity-[0.38]"
+          class="h-full w-full object-cover opacity-[0.90]"
         />
         <div class="absolute inset-0 z-1 bg-linear-to-b from-[rgba(10,10,10,0.55)] to-[rgba(10,10,10,0.86)]"></div>
         <div class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_90%_70%_at_75%_40%,rgba(180,80,50,0.07)_0%,transparent_65%)]"></div>

@@ -36,6 +36,8 @@ export const categorySchema = z.object({
   slug: z.string().min(2, 'El slug debe tener al menos 2 caracteres'),
   order_position: z.number().int().min(0).optional(),
   active: z.boolean().optional(),
+  banner_image_url: z.string().url('URL de banner invalida').nullable().optional(),
+  banner_public_id: z.string().min(1, 'public_id de banner invalido').nullable().optional(),
 });
 
 const externalSecureUrlRegex = /^https:\/\/\S+$/i;

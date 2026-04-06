@@ -1,15 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ImageUploaderProps {
   onImageUploaded: (url: string) => void;
+  onUploadComplete?: (result: { url: string; publicId: string }) => void;
   currentImage?: string;
   label?: string;
+  folder?: string;
 }
 
-export default function ImageUploader({ onImageUploaded, currentImage, label = 'Subir Imagen' }: ImageUploaderProps) {
+export default function ImageUploader({
+  onImageUploaded,
+  onUploadComplete,
+  currentImage,
+  label = 'Subir Imagen',
+  folder = 'kuruba/products',
+}: ImageUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | undefined>(currentImage);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPreview(currentImage);
+  }, [currentImage]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -41,7 +53,7 @@ export default function ImageUploader({ onImageUploaded, currentImage, label = '
       const formData = new FormData();
       formData.append('file', file);
       formData.append('upload_preset', uploadPreset);
-      formData.append('folder', 'kuruba/products');
+      formData.append('folder', folder);
 
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
@@ -60,9 +72,15 @@ export default function ImageUploader({ onImageUploaded, currentImage, label = '
       }
 
       const imageUrl = data.secure_url;
+      const publicId = data.public_id;
+
+      if (!publicId) {
+        throw new Error('Cloudinary no devolvio public_id');
+      }
       
       setPreview(imageUrl);
       onImageUploaded(imageUrl);
+      onUploadComplete?.({ url: imageUrl, publicId });
     } catch (err) {
       console.error('Error uploading image:', err);
       setError(err instanceof Error ? err.message : 'Error al subir la imagen');

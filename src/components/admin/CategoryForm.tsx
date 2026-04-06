@@ -4,12 +4,15 @@ import { z } from 'zod';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import type { Category } from '../../types/category';
+import ImageUploader from './ImageUploader';
 
 const categoryFormSchema = z.object({
   label: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
   slug: z.string().min(2, 'El slug debe tener al menos 2 caracteres'),
   order_position: z.number().int().min(0, 'La posición debe ser un número positivo'),
   active: z.boolean(),
+  banner_image_url: z.string().url('URL de banner invalida').nullable().optional(),
+  banner_public_id: z.string().min(1, 'public_id de banner invalido').nullable().optional(),
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
@@ -31,13 +34,19 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
       slug: category.slug,
       order_position: category.order_position,
       active: category.active,
+      banner_image_url: category.banner_image_url || null,
+      banner_public_id: category.banner_public_id || null,
     } : {
       label: '',
       slug: '',
       order_position: 0,
       active: true,
+      banner_image_url: null,
+      banner_public_id: null,
     }
   });
+
+  const bannerPreviewUrl = watch('banner_image_url');
 
   // Auto-generar slug del label
   const label = watch('label');
@@ -96,6 +105,59 @@ export default function CategoryForm({ category, onSuccess }: CategoryFormProps)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <div>
+        <ImageUploader
+          label="Banner de categoria"
+          currentImage={bannerPreviewUrl || undefined}
+          folder="kuruba/categories"
+          onImageUploaded={(url) => {
+            setValue('banner_image_url', url, { shouldDirty: true });
+          }}
+          onUploadComplete={({ publicId }) => {
+            setValue('banner_public_id', publicId, { shouldDirty: true });
+          }}
+        />
+        {bannerPreviewUrl && (
+          <button
+            type="button"
+            onClick={() => {
+              setValue('banner_image_url', null, { shouldDirty: true });
+              setValue('banner_public_id', null, { shouldDirty: true });
+            }}
+            className="mt-3 inline-flex items-center rounded-lg border border-red-200 dark:border-red-700 px-3 py-1.5 text-sm font-semibold text-red-700 dark:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          >
+            Eliminar banner
+          </button>
+        )}
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          Este banner se muestra como portada en la pagina publica de la categoria.
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
+          Previsualizacion del banner
+        </label>
+        {bannerPreviewUrl ? (
+          <div className="relative h-40 sm:h-52 w-full overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-black">
+            <img
+              src={bannerPreviewUrl}
+              alt={`Preview de banner para ${watch('label') || 'categoria'}`}
+              className="h-full w-full object-cover opacity-70"
+            />
+            <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/65" />
+            <div className="absolute inset-x-0 bottom-0 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-pink-300">Kuruba SexShop</p>
+              <p className="mt-1 text-xl font-serif text-white">{watch('label') || 'Categoria'}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+            Aun no hay banner seleccionado para previsualizar.
+          </div>
+        )}
+      </div>
+
       <div>
         <label className="block text-sm font-semibold mb-2 text-gray-900 dark:text-gray-100">
           Nombre de la categoría *

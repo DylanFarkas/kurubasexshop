@@ -34,6 +34,8 @@ export const POST: APIRoute = async ({ request }) => {
         slug: validatedData.slug,
         order_position: validatedData.order_position ?? nextPosition,
         active: validatedData.active ?? true,
+        banner_image_url: validatedData.banner_image_url ?? null,
+        banner_public_id: validatedData.banner_public_id ?? null,
       })
       .select()
       .single();

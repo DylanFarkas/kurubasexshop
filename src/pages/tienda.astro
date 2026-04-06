@@ -6,7 +6,7 @@ import { supabase } from "../lib/supabase";
 import type { Product } from "../types/product";
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
-import shopHeroImage from "../assets/category/prueba4.jpg";
+import shopHeroImage from "../assets/category/banner-productos.jpg";
 
 const { data: products, error } = await supabase
   .from("products")
@@ -62,7 +62,7 @@ const activeCategoriesCount = (categories || []).length;
           decoding="async"
           fetchpriority="high"
           sizes="100vw"
-          class="h-full w-full object-cover opacity-[0.38]"
+          class="h-full w-full object-cover opacity-[0.90]"
         />
         <div class="absolute inset-0 z-1 bg-linear-to-b from-[rgba(10,10,10,0.55)] to-[rgba(10,10,10,0.86)]"></div>
         <div class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_90%_70%_at_75%_40%,rgba(180,80,50,0.07)_0%,transparent_65%)]"></div>

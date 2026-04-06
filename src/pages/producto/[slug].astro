@@ -6,6 +6,7 @@ import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
 import { Image } from 'astro:assets';
 import ProductSchema from '../../components/seo/ProductSchema.astro';
+import ProductGrid from '../../components/sections/ProductGrid.astro';
 
 // SSR: Renderizado del lado del servidor (dinámico)
 export const prerender = false;
@@ -33,11 +34,75 @@ if (error || !product) {
   return Astro.redirect('/404');
 }
 
-const mappedProduct: Product = {
-  ...product,
-  categories: product.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
-  category_ids: product.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
-};
+const mapProductWithCategories = (item: any): Product => ({
+  ...item,
+  categories: item.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+  category_ids: item.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
+});
+
+const mappedProduct: Product = mapProductWithCategories(product);
+
+const currentCategoryIds = mappedProduct.category_ids || [];
+let relatedProducts: Product[] = [];
+
+if (currentCategoryIds.length > 0) {
+  const { data: relatedProductsData } = await supabase
+    .from('products')
+    .select(`
+      *,
+      product_categories!inner (
+        category_id,
+        categories (
+          id,
+          label,
+          slug
+        )
+      )
+    `)
+    .in('product_categories.category_id', currentCategoryIds)
+    .eq('active', true)
+    .neq('id', mappedProduct.id)
+    .order('featured', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(24);
+
+  relatedProducts = Array.from(
+    new Map((relatedProductsData || []).map((item: any) => [item.id, item])).values(),
+  )
+    .map((item: any) => {
+      const normalized = mapProductWithCategories(item);
+      const sharedCategories = normalized.category_ids?.filter((id) =>
+        currentCategoryIds.includes(id),
+      ).length || 0;
+
+      return { normalized, sharedCategories };
+    })
+    .sort((a, b) => b.sharedCategories - a.sharedCategories)
+    .slice(0, 4)
+    .map((entry) => entry.normalized);
+}
+
+if (relatedProducts.length === 0) {
+  const { data: fallbackProductsData } = await supabase
+    .from('products')
+    .select(`
+      *,
+      product_categories (
+        categories (
+          id,
+          label,
+          slug
+        )
+      )
+    `)
+    .eq('active', true)
+    .neq('id', mappedProduct.id)
+    .order('featured', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  relatedProducts = (fallbackProductsData || []).map(mapProductWithCategories).slice(0, 4);
+}
 
 const galleryImages = [
   mappedProduct.image,
@@ -248,6 +313,25 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         </div>
       </div>
     </div>
+
+    {relatedProducts.length > 0 && (
+      <section class="mt-16 border-t border-[#ddd4c8] pt-12">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="mb-2 font-sans text-[11px] uppercase tracking-[0.3em] text-[#8b8a83]">Recomendados para ti</p>
+            <h2 class="font-serif text-[1.8rem] font-normal tracking-wide text-[#1e1c18]">También te puede interesar</h2>
+          </div>
+          <a
+            href="/tienda"
+            class="inline-flex border border-[#2a2520] px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-[#1e1c18] transition-colors duration-200 hover:border-[#b4704a] hover:text-[#b4704a]"
+          >
+            Ver catálogo completo
+          </a>
+        </div>
+
+        <ProductGrid products={relatedProducts} />
+      </section>
+    )}
   </main>
 
   <style>
