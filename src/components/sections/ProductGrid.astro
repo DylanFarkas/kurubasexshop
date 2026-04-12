@@ -14,7 +14,7 @@ const { products } = Astro.props;
   id="products-grid"
   class="grid gap-5 bg-white grid-cols-[repeat(auto-fill,minmax(240px,1fr))] max-[480px]:grid-cols-2"
 >
-  {products.map((product) => {
+  {products.map((product, index) => {
     const displayPrice =
       product.final_price && product.final_price > 0
         ? product.final_price
@@ -25,10 +25,19 @@ const { products } = Astro.props;
       product.categories?.map((c) => c.label).join(",") || "";
     const firstCat = product.categories?.[0]?.label ?? null;
     const extraCats = (product.categories?.length ?? 0) - 1;
+    const quickProductData = {
+      productId: product.id,
+      name: product.name,
+      slug: product.slug,
+      price: product.price,
+      ...(product.final_price && { finalPrice: product.final_price }),
+      image: product.image || product.images?.[0] || "/imgs/brand/logo-kuruba.png",
+    };
 
     return (
       <article
-        class="product-card group relative flex flex-col overflow-hidden bg-transparent transition-colors duration-200"
+        class="product-card reveal-on-scroll reveal-scale group relative flex flex-col overflow-hidden bg-transparent transition-colors duration-200"
+        style={`--reveal-delay: ${Math.min((index % 8) * 55, 360)}ms;`}
         data-categories={categoryLabels}
         data-price={displayPrice}
         data-name={product.name}
@@ -54,7 +63,7 @@ const { products } = Astro.props;
           )}
 
           {hasDiscount && (
-            <span class="absolute top-3.5 right-3.5 px-2.25 py-1.25 font-sans text-[9px] font-medium uppercase leading-none tracking-[0.16em] bg-black text-white">
+            <span class="reveal-on-scroll absolute top-3.5 right-3.5 px-2.25 py-1.25 font-sans text-[9px] font-medium uppercase leading-none tracking-[0.16em] bg-black text-white" style={`--reveal-delay: ${Math.min((index % 8) * 55 + 120, 420)}ms;`}>
               -{product.discount_pct}%
             </span>
           )}
@@ -103,6 +112,16 @@ const { products } = Astro.props;
           >
             Ver producto
           </a>
+
+          <div class="mt-2.5">
+            <button
+              type="button"
+              class="quick-add-trigger w-full cursor-pointer border border-[#1e1c18] bg-transparent px-3 py-2 text-[10px] uppercase tracking-[0.16em] text-[#1e1c18] transition-colors duration-200 hover:border-[#FF6800] hover:text-[#FF6800]"
+              data-product={JSON.stringify(quickProductData)}
+            >
+              Añadir al carrito
+            </button>
+          </div>
         </div>
       </article>
     );
@@ -120,3 +139,42 @@ const { products } = Astro.props;
     </span>
   </div>
 </div>
+
+<script>
+  import { useCartStore } from '../../stores/cartStore';
+
+  function setTemporarySuccess(button: HTMLButtonElement, original: string) {
+    button.textContent = '✓ Anadido';
+    button.classList.add('border-[#2f6f45]', 'text-[#2f6f45]');
+
+    setTimeout(() => {
+      button.textContent = original;
+      button.classList.remove('border-[#2f6f45]', 'text-[#2f6f45]');
+    }, 1400);
+  }
+
+  function addToCart(product: any, button: HTMLButtonElement) {
+    if (!product) return;
+
+    useCartStore.getState().addItem({
+      productId: product.productId,
+      name: product.name,
+      slug: product.slug,
+      price: product.price,
+      ...(product.finalPrice && { finalPrice: product.finalPrice }),
+      image: product.image,
+      quantity: 1,
+    });
+
+    setTemporarySuccess(button, button.textContent || 'Anadir');
+  }
+
+  document.querySelectorAll('.quick-add-trigger').forEach((element) => {
+    element.addEventListener('click', () => {
+      const button = element as HTMLButtonElement;
+      const raw = button.dataset.product;
+      if (!raw) return;
+      addToCart(JSON.parse(raw), button);
+    });
+  });
+</script>

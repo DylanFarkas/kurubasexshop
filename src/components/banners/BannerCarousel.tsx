@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import type { HomeBanner } from '../../types/homeBanner';
 
 type BannerCarouselProps = {
@@ -29,25 +29,6 @@ function isExternalUrl(url: string): boolean {
   return /^https:\/\//i.test(url);
 }
 
-function getClosestSlideIndex(scroller: HTMLDivElement): number {
-  const slides = Array.from(scroller.children) as HTMLElement[];
-  if (slides.length === 0) return 0;
-
-  const currentLeft = scroller.scrollLeft;
-  let closestIndex = 0;
-  let closestDistance = Number.POSITIVE_INFINITY;
-
-  slides.forEach((slide, index) => {
-    const distance = Math.abs(slide.offsetLeft - currentLeft);
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestIndex = index;
-    }
-  });
-
-  return closestIndex;
-}
-
 export default function BannerCarousel({
   items,
   disableLinks = false,
@@ -57,9 +38,6 @@ export default function BannerCarousel({
   desktopHeightPx = DEFAULT_DESKTOP_HEIGHT_PX,
   className = '',
 }: BannerCarouselProps) {
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const scrollEndTimeoutRef = useRef<number | null>(null);
-  const shouldJumpRef = useRef(false);
   const [displayIndex, setDisplayIndex] = useState(0);
 
   const sortedItems = useMemo(
@@ -72,13 +50,7 @@ export default function BannerCarousel({
     [sortedItems]
   );
 
-  const carouselItems = useMemo(
-    () => (activeItems.length > 1 ? [...activeItems, activeItems[0]] : activeItems),
-    [activeItems]
-  );
-
-  const currentIndex =
-    activeItems.length > 1 && displayIndex === activeItems.length ? 0 : displayIndex;
+  const currentIndex = displayIndex;
 
   const safeAutoplayIntervalMs = clamp(
     Math.round(autoplayIntervalMs),
@@ -99,34 +71,21 @@ export default function BannerCarousel({
   const carouselStyle = {
     '--banner-mobile-height': `${safeMobileHeightPx}px`,
     '--banner-desktop-height': `${safeDesktopHeightPx}px`,
+    '--banner-mobile-height-fluid': `clamp(${MIN_MOBILE_HEIGHT_PX}px, 58vw, ${safeMobileHeightPx}px)`,
+    '--banner-desktop-height-fluid': `clamp(${MIN_DESKTOP_HEIGHT_PX}px, 42vw, ${safeDesktopHeightPx}px)`,
+    '--banner-max-height-vh': '72vh',
   } as CSSProperties;
 
   const goToNext = () => {
     if (activeItems.length <= 1) return;
 
-    setDisplayIndex((prev) => {
-      if (prev >= activeItems.length) {
-        return 1;
-      }
-
-      return prev + 1;
-    });
+    setDisplayIndex((prev) => (prev + 1) % activeItems.length);
   };
 
   const goToPrevious = () => {
     if (activeItems.length <= 1) return;
 
-    setDisplayIndex((prev) => {
-      if (prev === 0) {
-        return activeItems.length - 1;
-      }
-
-      if (prev > activeItems.length - 1) {
-        return activeItems.length - 1;
-      }
-
-      return prev - 1;
-    });
+    setDisplayIndex((prev) => (prev === 0 ? activeItems.length - 1 : prev - 1));
   };
 
   useEffect(() => {
@@ -135,29 +94,11 @@ export default function BannerCarousel({
       return;
     }
 
-    const maxDisplayIndex = activeItems.length > 1 ? activeItems.length : 0;
+    const maxDisplayIndex = activeItems.length - 1;
     if (displayIndex > maxDisplayIndex) {
-      setDisplayIndex(activeItems.length > 1 ? activeItems.length - 1 : 0);
+      setDisplayIndex(Math.max(maxDisplayIndex, 0));
     }
   }, [activeItems.length, displayIndex]);
-
-  useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-
-    const targetSlide = scroller.children.item(displayIndex) as HTMLElement | null;
-    const targetLeft = targetSlide ? targetSlide.offsetLeft : displayIndex * scroller.clientWidth;
-    const behavior: ScrollBehavior = shouldJumpRef.current ? 'auto' : 'smooth';
-
-    scroller.scrollTo({
-      left: targetLeft,
-      behavior,
-    });
-
-    if (shouldJumpRef.current) {
-      shouldJumpRef.current = false;
-    }
-  }, [displayIndex, activeItems.length]);
 
   useEffect(() => {
     if (!autoplayEnabled || activeItems.length <= 1) return;
@@ -169,40 +110,6 @@ export default function BannerCarousel({
 
     return () => window.clearInterval(interval);
   }, [activeItems.length, autoplayEnabled, safeAutoplayIntervalMs]);
-
-  useEffect(() => {
-    return () => {
-      if (scrollEndTimeoutRef.current) {
-        window.clearTimeout(scrollEndTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  const handleScroll = () => {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-
-    if (scrollEndTimeoutRef.current) {
-      window.clearTimeout(scrollEndTimeoutRef.current);
-    }
-
-    scrollEndTimeoutRef.current = window.setTimeout(() => {
-      const nextIndex = getClosestSlideIndex(scroller);
-      const maxDisplayIndex = activeItems.length > 1 ? activeItems.length : 0;
-
-      if (nextIndex < 0 || nextIndex > maxDisplayIndex) {
-        return;
-      }
-
-      if (activeItems.length > 1 && nextIndex === activeItems.length) {
-        shouldJumpRef.current = true;
-        setDisplayIndex(0);
-        return;
-      }
-
-      setDisplayIndex(nextIndex);
-    }, 120);
-  };
 
   if (activeItems.length === 0) {
     return (
@@ -218,19 +125,15 @@ export default function BannerCarousel({
       style={carouselStyle}
     >
       <div
-        ref={scrollerRef}
-        className="flex snap-x snap-mandatory overflow-x-auto rounded-2xl"
-        style={{ scrollbarWidth: 'none' }}
-        onScroll={handleScroll}
+        className="relative h-[min(var(--banner-mobile-height-fluid),var(--banner-max-height-vh))] overflow-hidden rounded-2xl bg-[#11100f] md:h-[min(var(--banner-desktop-height-fluid),var(--banner-max-height-vh))]"
       >
-        {carouselItems.map((item, itemIndex) => {
-          const isTrailingClone = activeItems.length > 1 && itemIndex === activeItems.length;
-          const key = isTrailingClone ? `${item.id}-clone` : item.id;
+        {activeItems.map((item, itemIndex) => {
+          const isVisible = itemIndex === currentIndex;
           const content = (
             <img
               src={item.image_url}
               alt="Banner promocional"
-              className="h-(--banner-mobile-height) w-full shrink-0 snap-center object-cover md:h-(--banner-desktop-height)"
+              className="h-full w-full object-contain object-center md:object-cover"
               loading="lazy"
               decoding="async"
             />
@@ -238,7 +141,11 @@ export default function BannerCarousel({
 
           if (!item.target_url || disableLinks) {
             return (
-              <div key={key} className="w-full shrink-0 basis-full snap-start bg-[#11100f]">
+              <div
+                key={item.id}
+                className={`absolute inset-0 transition-opacity duration-500 ease-out ${isVisible ? 'opacity-100 z-1' : 'opacity-0 z-0 pointer-events-none'}`}
+                aria-hidden={!isVisible}
+              >
                 {content}
               </div>
             );
@@ -248,11 +155,13 @@ export default function BannerCarousel({
 
           return (
             <a
-              key={key}
+              key={item.id}
               href={item.target_url}
-              className="block w-full shrink-0 basis-full snap-start bg-[#11100f]"
+              className={`absolute inset-0 block transition-opacity duration-500 ease-out ${isVisible ? 'opacity-100 z-1' : 'opacity-0 z-0 pointer-events-none'}`}
               target={external ? '_blank' : undefined}
               rel={external ? 'noopener noreferrer' : undefined}
+              aria-hidden={!isVisible}
+              tabIndex={isVisible ? 0 : -1}
             >
               {content}
             </a>

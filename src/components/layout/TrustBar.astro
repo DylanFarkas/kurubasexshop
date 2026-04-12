@@ -1,0 +1,87 @@
+---
+const trustMessages = [
+  {
+    icon: "shield-check",
+    title: "Envio discreto",
+    description: "Empaque neutro y reservado en todo el pais.",
+  },
+  {
+    icon: "credit-card",
+    title: "Pago seguro",
+    description: "Canales verificados y compra protegida.",
+  },
+  {
+    icon: "messages-square",
+    title: "Asesoria profesional",
+    description: "Acompanamiento por WhatsApp antes y despues de tu compra.",
+  },
+  {
+    icon: "refresh-cw",
+    title: "Cambios faciles",
+    description: "Te guiamos rapido si necesitas ajuste o soporte.",
+  },
+];
+---
+
+<div
+  id="trustbar"
+  class="fixed inset-x-0 bottom-0 z-45 border-t border-[#2a2520] bg-[#0f0e0d]/98 backdrop-blur"
+  aria-live="polite"
+>
+  <div class="mx-auto flex h-13 w-full max-w-300 items-center justify-between gap-4 px-4 sm:px-8">
+    <div class="relative flex min-w-0 flex-1 items-center">
+      {
+        trustMessages.map((item, index) => (
+          <p
+            class:list={[
+              "trustbar-message absolute left-0 right-0 flex items-center gap-2.5 text-[11px] uppercase tracking-[0.2em] text-[#f0ece4] transition-all duration-400",
+              index === 0 ? "opacity-100" : "pointer-events-none opacity-0",
+            ]}
+            data-index={index}
+          >
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[#3a3129] bg-[#151311] text-[#ff6800]">
+              <span class="text-[10px]">●</span>
+            </span>
+            <span class="truncate">{item.title}</span>
+            <span class="hidden text-[#8b8a83] md:inline">{item.description}</span>
+          </p>
+        ))
+      }
+    </div>
+
+    <a
+      href="https://wa.me/573102994686"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="shrink-0 border border-[#3a3129] bg-[#14110f] px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a]"
+    >
+      WhatsApp
+    </a>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    const bar = document.getElementById("trustbar");
+    if (!bar) return;
+
+    const messages = Array.from(bar.querySelectorAll(".trustbar-message"));
+    if (messages.length <= 1) return;
+
+    let current = 0;
+
+    function setActive(next) {
+      messages.forEach((message, index) => {
+        const active = index === next;
+        message.classList.toggle("opacity-100", active);
+        message.classList.toggle("opacity-0", !active);
+        message.classList.toggle("pointer-events-none", !active);
+      });
+    }
+
+    setInterval(() => {
+      current = (current + 1) % messages.length;
+      setActive(current);
+    }, 4200);
+  })();
+</script>

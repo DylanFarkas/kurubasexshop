@@ -121,13 +121,16 @@ const productDescription = mappedProduct.description
 
 const categoryLabels = (mappedProduct.categories || []).map(c => c.label).join(', ');
 const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${categoryLabels ? `, ${categoryLabels}` : ''}, sexshop colombia`;
+const stickyShortName = mappedProduct.name.length > 44
+  ? `${mappedProduct.name.slice(0, 41)}...`
+  : mappedProduct.name;
 ---
 
 <BaseLayout
   title={productTitle}
   description={productDescription}
   keywords={productKeywords}
-  image={mappedProduct.image || '/imgs/brand/logo-kuruba.png'}
+  image={mappedProduct.image || '/imgs/brand/kuruba.webp'}
   type="product"
 >
   {mappedProduct.image && <ProductSchema product={mappedProduct} slot="head" />}
@@ -182,7 +185,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
 
       <div class="space-y-4">
         {mappedProduct.categories && mappedProduct.categories.length > 0 && (
-          <div class="flex flex-wrap gap-2">
+          <div class="reveal-on-scroll flex flex-wrap gap-2" style="--reveal-delay: 40ms;">
             {mappedProduct.categories.map((cat) => (
               <a
                 href={`/categoria/${cat.slug}`}
@@ -194,9 +197,9 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           </div>
         )}
         
-        <h1 class="font-sans text-4xl font-normal tracking-wide">{mappedProduct.name}</h1>
+        <h1 class="reveal-on-scroll font-sans text-4xl font-normal tracking-wide" style="--reveal-delay: 100ms;">{mappedProduct.name}</h1>
         
-        <div class="flex items-baseline gap-3">
+        <div class="reveal-on-scroll flex items-baseline gap-3" style="--reveal-delay: 160ms;">
           <span class="text-4xl font-semibold">{formatPrice(displayPrice)}</span>
           {hasDiscount && (
             <>
@@ -238,7 +241,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             </div>
           </div>
         
-        <div class="space-y-3">
+        <div class="reveal-on-scroll space-y-3" style="--reveal-delay: 220ms;">
           <button
             id="add-to-cart"
             data-product={JSON.stringify({
@@ -332,6 +335,37 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         <ProductGrid products={relatedProducts} />
       </section>
     )}
+
+    <aside
+      id="product-sticky-bar"
+      class="pointer-events-none fixed inset-x-2 bottom-14 z-44 translate-y-4 border border-[#2a2520] bg-[#0f0f0e]/97 p-3 opacity-0 shadow-2xl transition-all duration-250 sm:inset-x-6 sm:bottom-16 md:inset-x-auto md:right-6 md:w-107.5"
+      aria-live="polite"
+    >
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <p class="truncate text-[10px] uppercase tracking-[0.2em] text-[#8b8a83]">{stickyShortName}</p>
+          <div class="mt-1 flex items-center gap-2">
+            <span class="font-semibold text-[#f0ece4]">{formatPrice(displayPrice)}</span>
+            {hasDiscount && (
+              <>
+                <span class="text-xs text-[#8b8a83] line-through">{formatPrice(mappedProduct.price)}</span>
+                <span class="border border-[#fa0644]/40 bg-[#fa0644]/12 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[#fa0644]">
+                  -{mappedProduct.discount_pct}%
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        <button
+          id="sticky-add-to-cart"
+          type="button"
+          class="shrink-0 cursor-pointer border border-[#2a2520] bg-[#14110f] px-3.5 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a]"
+        >
+          Anadir al carrito
+        </button>
+      </div>
+    </aside>
   </main>
 
   <style>
@@ -412,6 +446,8 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     const quantityInput = document.getElementById('quantity') as HTMLInputElement;
     const decreaseBtn = document.getElementById('decrease-qty');
     const increaseBtn = document.getElementById('increase-qty');
+    const stickyBar = document.getElementById('product-sticky-bar');
+    const stickyAddToCartBtn = document.getElementById('sticky-add-to-cart') as HTMLButtonElement | null;
     
     decreaseBtn?.addEventListener('click', () => {
       const currentValue = parseInt(quantityInput.value) || 1;
@@ -433,28 +469,56 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
       }
     });
     
-    // Añadir al carrito
-    const addToCartBtn = document.getElementById('add-to-cart');
-    addToCartBtn?.addEventListener('click', () => {
-      const productData = addToCartBtn.dataset.product;
-      if (productData) {
-        const product = JSON.parse(productData);
-        const quantity = parseInt(quantityInput?.value || '1');
-        
-        useCartStore.getState().addItem({
-          ...product,
-          quantity: quantity,
-        });
-        
-        const originalText = addToCartBtn.textContent;
-        addToCartBtn.textContent = '✓ Añadido al carrito';
-        addToCartBtn.classList.add('bg-green-600', 'text-white', 'border-green-700');
-        
-        setTimeout(() => {
-          addToCartBtn.textContent = originalText;
-          addToCartBtn.classList.remove('bg-green-600', 'text-white', 'border-green-700');
-        }, 2000);
+    function addProductToCart(targetButton: HTMLButtonElement, quantity: number) {
+      const productData = targetButton.dataset.product || addToCartBtn?.dataset.product;
+      if (!productData) {
+        return;
       }
+
+      const product = JSON.parse(productData);
+
+      useCartStore.getState().addItem({
+        ...product,
+        quantity,
+      });
+
+      const originalText = targetButton.textContent;
+      targetButton.textContent = '✓ Anadido';
+      targetButton.classList.add('bg-green-600', 'text-white', 'border-green-700');
+
+      setTimeout(() => {
+        targetButton.textContent = originalText;
+        targetButton.classList.remove('bg-green-600', 'text-white', 'border-green-700');
+      }, 1700);
+    }
+
+    // Añadir al carrito
+    const addToCartBtn = document.getElementById('add-to-cart') as HTMLButtonElement | null;
+    addToCartBtn?.addEventListener('click', () => {
+      const quantity = parseInt(quantityInput?.value || '1');
+      addProductToCart(addToCartBtn, quantity);
     });
+
+    stickyAddToCartBtn?.addEventListener('click', () => {
+      const quantity = parseInt(quantityInput?.value || '1');
+      addProductToCart(stickyAddToCartBtn, quantity);
+    });
+
+    function toggleStickyBar() {
+      if (!stickyBar || !addToCartBtn) return;
+      const triggerRect = addToCartBtn.getBoundingClientRect();
+      const shouldShow = triggerRect.bottom < 0;
+
+      stickyBar.classList.toggle('opacity-0', !shouldShow);
+      stickyBar.classList.toggle('translate-y-4', !shouldShow);
+      stickyBar.classList.toggle('pointer-events-none', !shouldShow);
+      stickyBar.classList.toggle('opacity-100', shouldShow);
+      stickyBar.classList.toggle('translate-y-0', shouldShow);
+      stickyBar.classList.toggle('pointer-events-auto', shouldShow);
+    }
+
+    window.addEventListener('scroll', toggleStickyBar, { passive: true });
+    window.addEventListener('resize', toggleStickyBar);
+    toggleStickyBar();
   </script>
 </BaseLayout>
