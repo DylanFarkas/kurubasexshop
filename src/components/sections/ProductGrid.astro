@@ -144,7 +144,7 @@ const { products } = Astro.props;
   import { useCartStore } from '../../stores/cartStore';
 
   function setTemporarySuccess(button: HTMLButtonElement, original: string) {
-    button.textContent = '✓ Anadido';
+    button.textContent = '✓ Añadido';
     button.classList.add('border-[#2f6f45]', 'text-[#2f6f45]');
 
     setTimeout(() => {
