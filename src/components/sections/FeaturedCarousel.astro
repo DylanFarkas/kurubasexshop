@@ -69,11 +69,11 @@ const blocks = (categories || [])
   }));
 ---
 
-<section class="bg-white dark:bg-black w-full py-10 md:py-10">
-  <div class="w-full px-5 md:px-25">
-    <div class="mb-8 flex justify-center text-center">
+<section class="w-full border-[#1a1a18] bg-[#0a0a0a] py-14 md:py-16">
+  <div class="mx-auto w-full max-w-300 px-8">
+    <div class="mb-12 flex justify-center text-center">
       <h2
-        class="text-rose-500 font-semibold tracking-[0.25rem] uppercase text-lg md:text-xl"
+        class="font-serif text-[13px] uppercase tracking-[0.5em] text-[#ff6800]"
       >
         Lo más vendido
       </h2>
@@ -81,7 +81,7 @@ const blocks = (categories || [])
 
     {
       blocks.length > 0 ? (
-        <div class="space-y-20">
+        <div class="space-y-18 md:space-y-20">
           {blocks.map((b, i) => (
             <ProductCarousel
               id={`carousel-${i}-${b.key.toLowerCase().replace(/\s+/g, "-")}`}
@@ -96,7 +96,7 @@ const blocks = (categories || [])
           ))}
         </div>
       ) : (
-        <div class="text-center py-12 text-gray-500">
+        <div class="py-12 text-center text-[#8b8a83]">
           <p>No hay productos destacados disponibles en este momento</p>
         </div>
       )

@@ -1,65 +1,88 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Hero from '../components/sections/Hero.astro';
-import CategoriesGrid from '../components/sections/CategoriesGrid.astro';
-import FeaturedCarousel from '../components/sections/FeaturedCarousel.astro';
-import { supabase } from '../lib/supabase';
-import AboutUs from '../components/sections/AboutUs.astro';
-import Feedback from '../components/sections/Feedback.astro';
-import OrganizationSchema from '../components/seo/OrganizationSchema.astro';
-
-const { data: categories } = await supabase
-  .from('categories')
-  .select('*')
-  .eq('active', true)
-  .order('order_position');
-
-const featuredByCategory = new Map();
-
-if (categories) {
-  for (const category of categories) {
-    const { data: products } = await supabase
-      .from('products')
-      .select(`
-        *,
-        product_categories!inner (
-          category_id,
-          categories (
-            id,
-            label,
-            slug
-          )
-        )
-      `)
-      .eq('product_categories.category_id', category.id)
-      .eq('active', true)
-      .eq('featured', true)
-      .limit(8);
-    
-    if (products && products.length > 0) {
-      featuredByCategory.set(category.slug, {
-        category: category.label,
-        products: products.map(p => ({
-          ...p,
-          categories: p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
-          category_ids: p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
-        })),
-      });
-    }
-  }
-}
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/sections/Hero.astro";
+import CategoriesGrid from "../components/sections/CategoriesGrid.astro";
+import FeaturedCarousel from "../components/sections/FeaturedCarousel.astro";
+import AboutUs from "../components/sections/AboutUs.astro";
+import Feedback from "../components/sections/Feedback.astro";
+import OrganizationSchema from "../components/seo/OrganizationSchema.astro";
+import WellnessBanners from "../components/sections/WellnessBanners.astro";
+import HomeBannerCarouselSection from "../components/sections/HomeBannerCarouselSection.astro";
+import bannerImg1 from "../assets/banners/img1.webp";
+import bannerImg2 from "../assets/banners/anillo-vibrador-banner.webp";
+import bannerImg5 from "../assets/banners/img5.webp";
+import bannerImg6 from "../assets/banners/brillo-labial-banner.webp";
+import TrustBar from "../components/layout/TrustBar.astro";
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Kuruba Sexshop Colombia | Juguetes, Lubricantes y Más ✨"
   description="🔥 Tu sexshop de confianza en Colombia. Descubre juguetes eróticos, lubricantes premium y productos de bienestar íntimo. ✅ Envíos discretos ✅ Compra 100% segura. ¡El placer que mereces!"
   keywords="sexshop colombia, juguetes eróticos, juguetes para adultos, lubricantes, vibradores, sexshop online, tienda erótica, productos íntimos"
-  image="/imgs/brand/logo-kuruba-og.svg"
+  image="/imgs/brand/kuruba.webp"
 >
   <OrganizationSchema slot="head" />
   <Hero />
+
+  <HomeBannerCarouselSection />
+  
   <CategoriesGrid />
-  <FeaturedCarousel featuredByCategory={Object.fromEntries(featuredByCategory)} />
+
+  <WellnessBanners
+    variant="overlay"
+    imageSrc={bannerImg5}
+    imageAlt="Producto de bienestar íntimo en una escena elegante y cálida"
+    eyebrow="Descubre nuevas sensaciones"
+    title="Conecta con lo que te hace sentir bien"
+    subtitle="Placer consciente, femenino y moderno"
+    description="Responde a lo que tu cuerpo necesita hoy y descubre opciones diseñadas para acompañarte con suavidad, confianza y calidad."
+    ctaLabel="Descubrir"
+    ctaHref="/tienda"
+  />
+
+  <FeaturedCarousel />
+
+  <WellnessBanners
+    variant="split"
+    imageSrc={bannerImg6}
+    imageAlt="Labios con brillo natural y acabado seductor"
+    eyebrow="Toque irresistible"
+    title="Labios que hablan por ti"
+    subtitle="Brillo, sabor y actitud"
+    description="Un acabado jugoso que resalta tu belleza natural, con un delicioso toque a frutos rojos que invita a disfrutar cada momento. Ligero, fácil de aplicar y simplemente irresistible."
+    ctaLabel="Descubrir"
+    ctaHref="/producto/brillo-labial"
+    splitImageMinHeightClass="min-h-130 md:min-h-140 lg:min-h-200"
+    imageObjectPositionClass="object-top"
+  />
+
   <Feedback />
+
+  <!-- <WellnessBanners
+    variant="overlay"
+    imageSrc={bannerImg1}
+    imageAlt="Escena minimalista con enfoque en confianza y exploración íntima"
+    eyebrow="Confianza total"
+    title="Compra sin tabúes"
+    subtitle="Privacidad, apoyo y productos seleccionados"
+    description="Desde lubricantes premium hasta juguetes para explorar, te acompañamos con envíos discretos y una experiencia clara de principio a fin."
+    ctaLabel="Ver catálogo"
+    ctaHref="/tienda"
+    imagePosition="right"
+  /> -->
+
+  <WellnessBanners
+    variant="split"
+    imageSrc={bannerImg2}
+    imageAlt="Momento íntimo de conexión y bienestar"
+    eyebrow="Favorito de parejas"
+    title="Eleva el placer en cada momento"
+    subtitle="Más duración, más intensidad"
+    description="Anillo vibrador cómodo, discreto y fácil de usar. Ideal para quienes quieren llevar su experiencia a otro nivel sin complicarse"
+    ctaLabel="Comprar ahora"
+    ctaHref="/producto/anillo-vibrador"
+    imagePosition="right"
+  />
+
   <AboutUs />
 </BaseLayout>

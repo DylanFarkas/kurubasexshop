@@ -1,5 +1,9 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import paolaLazoImage from "../../assets/brand/paola-lazo.webp";
+import senIntimoImage from "../../assets/brand/sen-intimo.webp";
+import kurubaMarkImage from "../../assets/brand/kuruba-mark.webp";
 
 /**
  * AboutSection.astro
@@ -8,21 +12,25 @@ const phone = "3102994686";
 const email = "kurubasexshop@gmail.com";
 ---
 
-<section id="nosotros" class="w-full bg-white dark:bg-black min-h-dvh">
+<section id="nosotros" class="w-full min-h-dvh border-[#1a1a18] bg-[#0a0a0a]">
   <div class="mx-auto max-w-7xl 2xl:max-w-425 px-6 md:px-10 lg:px-16 py-10 md:py-14">
     <!-- Header: logos arriba a la derecha -->
     <header
       class="flex items-center justify-center md:justify-end gap-10 md:gap-30 h-20 md:h-24"
     >
-      <img
-        src="/imgs/brand/paola-lazo.webp"
+      <Image
+        src={paolaLazoImage}
         alt="Paola Lazo"
+        widths={[320, 480, 640]}
+        quality={72}
         class="h-10 md:h-15 w-auto object-contain"
         loading="lazy"
       />
-      <img
-        src="/imgs/brand/sen-intimo.webp"
+      <Image
+        src={senIntimoImage}
         alt="Sen Íntimo"
+        widths={[320, 480, 640]}
+        quality={72}
         class="h-14 md:h-20 w-auto object-contain"
         loading="lazy"
       />
@@ -35,11 +43,11 @@ const email = "kurubasexshop@gmail.com";
       <!-- Izquierda -->
       <div class="max-w-xl xl:max-w-2xl 2xl:max-w-3xl">
 
-        <h2 class="text-[28px] md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold text-rose-500">
+        <h2 class="font-serif text-[28px] md:text-3xl xl:text-4xl 2xl:text-5xl tracking-wide text-[#f0ece4]">
           Conócenos
         </h2>
 
-        <p class="mt-6 text-neutral-700 dark:text-neutral-300 leading-relaxed text-base xl:text-lg 2xl:text-xl">
+        <p class="mt-6 text-base font-sans leading-relaxed xl:text-lg 2xl:text-xl text-[#8b8a83]">
           Kuruba Sexshop es un espacio creado para vivir la sexualidad con
           información, confianza y bienestar. Respaldados por la Dra. Paola
           Lazo, unimos salud íntima y placer responsable en una selección
@@ -48,22 +56,22 @@ const email = "kurubasexshop@gmail.com";
           conocerte también es cuidarte
         </p>
 
-         <h2 class="text-[28px] md:text-3xl xl:text-4xl 2xl:text-5xl font-semibold text-rose-500 mt-10 xl:mt-30">
+         <h2 class="mt-10 font-serif text-[28px] md:text-3xl xl:mt-30 xl:text-4xl 2xl:text-5xl tracking-wide text-[#f0ece4]">
           Síguenos
         </h2>
 
         <!-- Pill social -->
         <div
-          class="mt-5 inline-flex items-center gap-4 rounded-full bg-rose-500 px-5 py-3"
+          class="mt-5 inline-flex items-center gap-4 border px-5 py-3 border-[#2a2520] bg-[#14110f]"
         >
           <a
             href="https://www.instagram.com/kurubasexshop?igsh=dG1jcTdkb2U1eWQy"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
-            class="h-8 w-8 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 transition"
+            class="grid h-8 w-8 place-items-center transition-colors duration-200 bg-white/8 text-[#f0ece4] hover:bg-white/16"
           >
-            <Icon name="instagram" class="h-5 w-5 text-white" />
+            <Icon name="instagram" class="h-5 w-5" />
           </a>
 
           <a
@@ -71,9 +79,9 @@ const email = "kurubasexshop@gmail.com";
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
-            class="h-8 w-8 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 transition"
+            class="grid h-8 w-8 place-items-center transition-colors duration-200 bg-white/8 text-[#f0ece4] hover:bg-white/16"
           >
-            <Icon name="facebook" class="h-5 w-5 text-white" />
+            <Icon name="facebook" class="h-5 w-5" />
           </a>
 
           <a
@@ -81,28 +89,28 @@ const email = "kurubasexshop@gmail.com";
             aria-label="TikTok"
             target="_blank"
             rel="noopener noreferrer"
-            class="h-8 w-8 grid place-items-center rounded-full bg-white/10 hover:bg-white/20 transition"
+            class="grid h-8 w-8 place-items-center transition-colors duration-200 bg-white/8 text-[#f0ece4] hover:bg-white/16"
           >
-            <Icon name="tiktok" class="h-5 w-5 text-white" />
+            <Icon name="tiktok" class="h-5 w-5" />
           </a>
         </div>
 
         <!-- Contacto -->
-        <div class="mt-8 space-y-3 text-neutral-800">
+        <div class="mt-8 space-y-3 text-[#f0ece4]">
           <p class="flex items-center gap-3">
-            <span class="text-neutral-500">
+            <span class="text-[#8b8a83]">
                 <Icon name="whatsapp" class="h-5 w-5" />
             </span>
-            <a href={`https://wa.me/57${phone}`} target="_blank" class="hover:underline dark:text-neutral-400">
+            <a href={`https://wa.me/57${phone}`} target="_blank" class="text-[#b4aea3] hover:text-[#f0ece4]">
               {phone}
             </a>
           </p>
 
           <p class="flex items-center gap-3">
-            <span class="text-neutral-500">
+            <span class="text-[#8b8a83]">
                 <Icon name="mail" class="h-5 w-5" />
             </span>
-            <a href={`mailto:${email}`} class="hover:underline dark:text-neutral-400">
+            <a href={`mailto:${email}`} class="text-[#b4aea3] hover:text-[#f0ece4]">
               {email}
             </a>
           </p>
@@ -111,9 +119,11 @@ const email = "kurubasexshop@gmail.com";
 
       <!-- Derecha -->
       <div class="flex justify-center md:justify-end">
-        <img
-          src="/imgs/brand/kuruba-mark.webp"
+        <Image
+          src={kurubaMarkImage}
           alt="Kuruba Sexshop"
+          widths={[320, 480, 768]}
+          quality={72}
           class="w-60 sm:w-65 md:w-75 xl:w-80 2xl:w-120"
 
           loading="lazy"

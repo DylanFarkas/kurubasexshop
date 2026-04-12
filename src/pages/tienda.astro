@@ -5,72 +5,145 @@ import FilterPanel from "../components/ui/FilterPanel.astro";
 import { supabase } from "../lib/supabase";
 import type { Product } from "../types/product";
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import shopHeroImage from "../assets/category/banner-productos.jpg";
 
 const { data: products, error } = await supabase
-    .from('products')
-    .select(`
-      *,
-      product_categories (
-        categories (
-          id,
-          label,
-          slug
-        )
+  .from("products")
+  .select(`
+    *,
+    product_categories (
+      categories (
+        id,
+        label,
+        slug
       )
-    `)
-    .eq('active', true)
-    .order('created_at', { ascending: false });
+    )
+  `)
+  .eq("active", true)
+  .order("created_at", { ascending: false });
 
-    if (error) {
-        console.error('Error fetching products:', error);
-    }
+if (error) {
+  console.error("Error fetching products:", error);
+}
 
-const mappedProducts: Product[] = (products || []).map(p => ({
+const mappedProducts: Product[] = (products || []).map((p) => ({
   ...p,
-  categories: p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
-  category_ids: p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
+  categories:
+    p.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+  category_ids:
+    p.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
 }));
 
 const { data: categories } = await supabase
-  .from('categories')
-  .select('*')
-  .eq('active', true)
-  .order('order_position');
+  .from("categories")
+  .select("*")
+  .eq("active", true)
+  .order("order_position");
+
+const activeCategoriesCount = (categories || []).length;
 ---
 
-<BaseLayout 
+<BaseLayout
   title="Tienda Online | Kuruba Sexshop"
-  description="🛍️ Explora nuestro catálogo completo: juguetes eróticos, vibradores, lubricantes y más. ✅ Precios especiales ✅ Envío discreto a toda Colombia ✅ Pago seguro. ¡Encuentra lo que buscas!"
+  description="🛍️ Explora nuestro catálogo completo: juguetes eróticos, vibradores, lubricantes y más. ✅ Precios especiales ✅ Envío discreto a toda Colombia ✅ Pago seguro."
   keywords="tienda erótica, catálogo sexshop, comprar juguetes sexuales, productos eróticos colombia, sexshop online, tienda para adultos"
 >
-    <main class="pt-24 pb-16 min-h-screen bg-white">
-        <div class="container mx-auto px-4 md:px-8">
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-neutral-200 pb-8">
-                <div>
-                    <span class="text-rose-600 font-bold text-sm tracking-wider uppercase mb-2 block">Catálogo Completo</span>
-                    <h1 class="text-3xl md:text-5xl font-bold text-neutral-900 mb-4 tracking-tight">
-                        Nuestra Selección
-                    </h1>
-                    <p class="text-neutral-500 max-w-2xl text-lg leading-relaxed">
-                        Explora nuestra colección premium de juguetes y accesorios íntimos. Calidad y placer garantizado en cada pedido
-                    </p>
-                    <p class="text-sm text-neutral-400 mt-2">
-                        <span id="product-count">{mappedProducts.length}</span> productos disponibles
-                    </p>
-                </div>
-                
-                <button
-                    id="open-filters"
-                    class="group flex items-center justify-center gap-3 px-8 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap cursor-pointer"
-                >
-                    <span class="mr-1">Filtros</span>
-                    <Icon name="filter" />
-                </button>
-            </div>
+  <main class="min-h-screen bg-white pb-20">
+    <!-- HERO -->
+    <section class="relative overflow-hidden border-b border-[#1e1c18] bg-[#0a0a0a] px-8 pt-20 pb-18">
+      <div class="absolute inset-0 z-0" aria-hidden="true">
+        <Image
+          src={shopHeroImage}
+          alt=""
+          widths={[768, 1024, 1536, 1920]}
+          quality={68}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          sizes="100vw"
+          class="h-full w-full object-cover opacity-[0.90]"
+        />
+        <div class="absolute inset-0 z-1 bg-linear-to-b from-[rgba(10,10,10,0.55)] to-[rgba(10,10,10,0.86)]"></div>
+        <div class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_90%_70%_at_75%_40%,rgba(180,80,50,0.07)_0%,transparent_65%)]"></div>
+      </div>
 
-            <ProductGrid products={mappedProducts} />
+      <div class="relative z-2 mx-auto max-w-300">
+        <div class="reveal-on-scroll mb-[1.6rem] flex items-center gap-3 font-sans text-[12px] font-normal uppercase tracking-[0.3em] text-[#fa0644] before:inline-block before:h-px before:w-7 before:shrink-0 before:bg-current before:content-['']" style="--reveal-delay: 40ms;">
+          Kuruba SexShop
         </div>
-        
-        <FilterPanel categories={categories || []} />
-    </main>
+
+        <h1 class="reveal-on-scroll mb-[1.4rem] max-w-175 font-serif text-[clamp(2.2rem,5vw,4rem)] tracking-wide leading-[1.1] text-[#f0ece4]" style="--reveal-delay: 110ms;">
+          Placer con <em class="italic text-[#FE6700]">discreción</em>,<br />
+          entregado en toda Colombia
+        </h1>
+
+        <p class="reveal-on-scroll mb-[2.8rem] max-w-120 font-sans text-[15px] tracking-wide font-light leading-[1.75] text-[#d4cdc1]" style="--reveal-delay: 180ms;">
+          Una selección cuidada para tu bienestar íntimo. Envío discreto garantizado y experiencia de compra segura.
+        </p>
+
+        <div class="reveal-on-scroll flex flex-wrap items-center gap-[2.8rem] max-sm:gap-[1.8rem]" style="--reveal-delay: 240ms;">
+          <div class="flex flex-col gap-1">
+            <span id="product-count" class="font-serif text-[1.7rem] font-normal leading-none text-[#f0ece4]">
+              {mappedProducts.length}
+            </span>
+            <span class="font-sans text-[12px] uppercase tracking-[0.25em] text-[#8b8a83]">
+              Productos
+            </span>
+          </div>
+
+          <div class="h-9 w-px shrink-0 bg-[#1e1c18] max-sm:hidden"></div>
+
+          <div class="flex flex-col gap-1">
+            <span class="font-serif text-[1.7rem] font-normal leading-none text-[#f0ece4]">
+              {activeCategoriesCount}
+            </span>
+            <span class="font-sans text-[12px] uppercase tracking-[0.25em] text-[#8b8a83]">
+              Categorías
+            </span>
+          </div>
+
+          <div class="h-9 w-px shrink-0 bg-[#1e1c18] max-sm:hidden"></div>
+
+          <div class="flex flex-col gap-1">
+            <span class="font-serif text-[1.7rem] font-normal leading-none text-[#f0ece4]">
+              100%
+            </span>
+            <span class="font-sans text-[12px] uppercase tracking-[0.25em] text-[#8b8a83]">
+              Envío discreto
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATALOG -->
+    <div class="mx-auto max-w-300 px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6 border-[#1a1a18] py-12 pb-[2.2rem] max-sm:pt-8">
+        <div>
+          <p class="mb-2 font-sans text-[12px] uppercase tracking-[0.3em] text-[#000000]">
+            Catálogo completo
+          </p>
+          <h2 class="font-serif text-[2rem] tracking-widest font-normal leading-none text-[#000000] max-sm:text-[1.6rem]">
+            Selección premium
+          </h2>
+        </div>
+
+        <button
+          id="open-filters"
+          class="inline-flex cursor-pointer items-center gap-2.5 border border-[#2a2520] bg-transparent px-6 py-2.75 font-sans tracking-[5px] text-[12px] font-normal uppercase text-black transition-colors duration-200 hover:border-[#b4704a]"
+          aria-label="Abrir filtros"
+        >
+          <Icon name="filter" size={20} />
+          Filtrar catálogo
+        </button>
+      </div>
+
+      <div class="border-[#d3d3d3] bg-[#d3d3d3]">
+        <ProductGrid products={mappedProducts} />
+      </div>
+    </div>
+  </main>
+
+  <FilterPanel categories={categories || []} />
 </BaseLayout>

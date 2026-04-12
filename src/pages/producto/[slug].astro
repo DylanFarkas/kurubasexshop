@@ -4,7 +4,9 @@ import { supabase } from '../../lib/supabase';
 import { formatPrice, formatTextToHtml } from '../../utils/formatters';
 import type { Product } from '../../types/product';
 import { Icon } from 'astro-icon/components';
+import { Image } from 'astro:assets';
 import ProductSchema from '../../components/seo/ProductSchema.astro';
+import ProductGrid from '../../components/sections/ProductGrid.astro';
 
 // SSR: Renderizado del lado del servidor (dinámico)
 export const prerender = false;
@@ -32,16 +34,81 @@ if (error || !product) {
   return Astro.redirect('/404');
 }
 
-const mappedProduct: Product = {
-  ...product,
-  categories: product.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
-  category_ids: product.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
-};
+const mapProductWithCategories = (item: any): Product => ({
+  ...item,
+  categories: item.product_categories?.map((pc: any) => pc.categories).filter(Boolean) || [],
+  category_ids: item.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
+});
+
+const mappedProduct: Product = mapProductWithCategories(product);
+
+const currentCategoryIds = mappedProduct.category_ids || [];
+let relatedProducts: Product[] = [];
+
+if (currentCategoryIds.length > 0) {
+  const { data: relatedProductsData } = await supabase
+    .from('products')
+    .select(`
+      *,
+      product_categories!inner (
+        category_id,
+        categories (
+          id,
+          label,
+          slug
+        )
+      )
+    `)
+    .in('product_categories.category_id', currentCategoryIds)
+    .eq('active', true)
+    .neq('id', mappedProduct.id)
+    .order('featured', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(24);
+
+  relatedProducts = Array.from(
+    new Map((relatedProductsData || []).map((item: any) => [item.id, item])).values(),
+  )
+    .map((item: any) => {
+      const normalized = mapProductWithCategories(item);
+      const sharedCategories = normalized.category_ids?.filter((id) =>
+        currentCategoryIds.includes(id),
+      ).length || 0;
+
+      return { normalized, sharedCategories };
+    })
+    .sort((a, b) => b.sharedCategories - a.sharedCategories)
+    .slice(0, 4)
+    .map((entry) => entry.normalized);
+}
+
+if (relatedProducts.length === 0) {
+  const { data: fallbackProductsData } = await supabase
+    .from('products')
+    .select(`
+      *,
+      product_categories (
+        categories (
+          id,
+          label,
+          slug
+        )
+      )
+    `)
+    .eq('active', true)
+    .neq('id', mappedProduct.id)
+    .order('featured', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  relatedProducts = (fallbackProductsData || []).map(mapProductWithCategories).slice(0, 4);
+}
 
 const galleryImages = [
   mappedProduct.image,
   ...(mappedProduct.images || [])
-].filter(Boolean);
+].filter((img): img is string => typeof img === 'string' && img.length > 0);
+const mainGalleryImage = galleryImages[0] ?? null;
 
 const displayPrice = mappedProduct.final_price || mappedProduct.price;
 const hasDiscount = !!mappedProduct.discount_pct && mappedProduct.discount_pct > 0;
@@ -54,37 +121,62 @@ const productDescription = mappedProduct.description
 
 const categoryLabels = (mappedProduct.categories || []).map(c => c.label).join(', ');
 const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${categoryLabels ? `, ${categoryLabels}` : ''}, sexshop colombia`;
+const stickyShortName = mappedProduct.name.length > 44
+  ? `${mappedProduct.name.slice(0, 41)}...`
+  : mappedProduct.name;
 ---
 
-<BaseLayout 
+<BaseLayout
   title={productTitle}
   description={productDescription}
   keywords={productKeywords}
-  image={mappedProduct.image || '/imgs/brand/logo-kuruba.png'}
+  image={mappedProduct.image || '/imgs/brand/kuruba.webp'}
   type="product"
 >
   {mappedProduct.image && <ProductSchema product={mappedProduct} slot="head" />}
-  <main class="container mx-auto px-4 pt-20 pb-16">
+  <main class="container mx-auto px-4 pt-20 pb-16 text-[#1e1c18] bg-[white] font-sans">
     <div class="grid md:grid-cols-2 md:gap-10 lg:gap-5">
       <!-- Galería de imágenes -->
       <div class="space-y-4">
-        <div class="aspect-square max-w-lg rounded-3xl overflow-hidden bg-gray-100 dark:bg-black dark:border-gray-700 dark:border-3">
-          <img
-            id="main-image"
-            src={mappedProduct.image || '/placeholder.png'}
-            alt={mappedProduct.name}
-            class="w-full h-full object-cover"
-          />
+        <div class="aspect-square max-w-lg overflow-hidden rounded-xl border border-[#ddd4c8] bg-white">
+          {mainGalleryImage ? (
+            <Image
+              id="main-image"
+              src={mainGalleryImage}
+              alt={mappedProduct.name}
+              width={1000}
+              height={1000}
+              loading="eager"
+              decoding="async"
+              format="webp"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              class="w-full h-full object-cover"
+            />
+          ) : (
+            <div id="main-image" class="flex h-full w-full items-center justify-center text-[#8b8a83]">
+              <Icon name="photo" class="h-14 w-14" />
+            </div>
+          )}
         </div>
         
         {galleryImages.length > 1 && (
           <div class="grid grid-cols-4 w-full gap-4">
-            {galleryImages.map((img, i) => (
+            {galleryImages.map((img: string, i) => (
               <button
-                class="aspect-square rounded-lg overflow-hidden border border-transparent hover:border-pink-500 texttransition thumbnail-btn"
+                class="thumbnail-btn aspect-square overflow-hidden rounded-lg border border-[#d8d2c8] transition hover:border-[#b4704a]"
                 data-image={img}
               >
-                <img src={img} alt={`${mappedProduct.name} ${i + 1}`} class="w-full h-full rounded-lg object-cover" />
+                <Image
+                  src={img}
+                  alt={`${mappedProduct.name} ${i + 1}`}
+                  width={280}
+                  height={280}
+                  loading="lazy"
+                  decoding="async"
+                  format="webp"
+                  sizes="(max-width: 768px) 20vw, 10vw"
+                  class="w-full h-full rounded-lg object-cover"
+                />
               </button>
             ))}
           </div>
@@ -93,11 +185,11 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
 
       <div class="space-y-4">
         {mappedProduct.categories && mappedProduct.categories.length > 0 && (
-          <div class="flex flex-wrap gap-2">
+          <div class="reveal-on-scroll flex flex-wrap gap-2" style="--reveal-delay: 40ms;">
             {mappedProduct.categories.map((cat) => (
               <a
                 href={`/categoria/${cat.slug}`}
-                class="inline-block px-3 py-1 text-sm bg-pink-50 text-pink-600 rounded-full hover:bg-pink-100 transition"
+                class="inline-block rounded-full border border-[#d8d2c8] bg-white px-3 py-1 text-sm text-neutral-700 transition hover:border-[#b4704a] hover:text-[#b4704a]"
               >
                 {cat.label}
               </a>
@@ -105,14 +197,14 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           </div>
         )}
         
-        <h1 class="text-4xl font-bold dark:text-white">{mappedProduct.name}</h1>
+        <h1 class="reveal-on-scroll font-sans text-4xl font-normal tracking-wide" style="--reveal-delay: 100ms;">{mappedProduct.name}</h1>
         
-        <div class="flex items-baseline gap-3">
-          <span class="text-4xl font-bold dark:text-neutral-300">{formatPrice(displayPrice)}</span>
+        <div class="reveal-on-scroll flex items-baseline gap-3" style="--reveal-delay: 160ms;">
+          <span class="text-4xl font-semibold">{formatPrice(displayPrice)}</span>
           {hasDiscount && (
             <>
-              <span class="text-xl text-gray-400 line-through">{formatPrice(mappedProduct.price)}</span>
-              <span class="px-2 py-1 bg-pink-100 text-pink-600 rounded text-sm font-semibold">
+              <span class="text-xl text-[#8b8a83] line-through">{formatPrice(mappedProduct.price)}</span>
+              <span class="rounded border border-[#fa0644]/40 bg-[#fa0644]/10 px-2 py-1 text-sm font-semibold text-[#fa0644]">
                 -{mappedProduct.discount_pct}%
               </span>
             </>
@@ -120,12 +212,12 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
         </div>
         
           <div class="flex items-center gap-5">
-            <label for="quantity" class="font-semibold text-gray-700 dark:text-gray-300">Cantidad:</label>
-            <div class="flex items-center bg-white dark:bg-black dark:text-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
+            <label for="quantity" class="font-semibold uppercase tracking-widest text-[#5b5144]">Cantidad:</label>
+            <div class="flex items-center rounded-full border border-[#d8d2c8] bg-white px-2 py-1 shadow-sm">
               <button
                 id="decrease-qty"
                 type="button"
-                class="w-10 h-10 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 hover:from-pink-300 hover:to-pink-500 focus:outline-none cursor-pointer"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#d4c8b8] bg-white text-2xl font-bold transition hover:border-[#b4704a] hover:text-[#b4704a] focus:outline-none"
                 aria-label="Disminuir cantidad"
                 >
                 <Icon name="minus" size={20} />
@@ -135,13 +227,13 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
                 type="number"
                 min="1"
                 value="1"
-                class="w-14 text-center py-2 mx-2 border-none bg-transparent text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-pink-300 transition"
+                class="mx-2 w-14 border-none bg-transparent py-2 text-center text-lg font-semibold text-[#1e1c18] transition focus:outline-none"
                 style="appearance: none;"
               />
               <button
                 id="increase-qty"
                 type="button"
-                class="w-10 h-10 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 hover:from-pink-300 hover:to-pink-500 focus:outline-none cursor-pointer"
+                class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-[#d4c8b8] bg-white text-2xl font-bold transition hover:border-[#b4704a] hover:text-[#b4704a] focus:outline-none"
                 aria-label="Aumentar cantidad"
               >
               <Icon name="plus" size={20} />
@@ -149,7 +241,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             </div>
           </div>
         
-        <div class="space-y-3">
+        <div class="reveal-on-scroll space-y-3" style="--reveal-delay: 220ms;">
           <button
             id="add-to-cart"
             data-product={JSON.stringify({
@@ -160,25 +252,25 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
               ...(mappedProduct.final_price && { finalPrice: mappedProduct.final_price }),
               image: mappedProduct.image,
             })}
-            class="w-full py-4 bg-white dark:bg-black dark:text-neutral-300 dark:border-neutral-300 dark:hover:text-black text-gray-800 border-2 border-b-6 border-gray-900 rounded-lg font-semibold hover:bg-pink-200 transition cursor-pointer"
+            class="w-full cursor-pointer border border-[#2a2520] bg-transparent py-4 font-medium uppercase tracking-[0.16em] text-[#1e1c18] transition duration-200 hover:border-[#b4704a] hover:text-[#b4704a]"
           >
             Añadir al carrito
           </button>
           
           <a
             href="/tienda"
-            class="block w-full py-4 border-2 border-gray-300 dark:text-neutral-300 text-center rounded-lg font-semibold hover:border-pink-600 hover:text-pink-600 transition"
+            class="block w-full border border-[#c8c1b7] py-4 text-center font-medium uppercase tracking-[0.16em] text-[#5b5144] transition hover:border-[#b4704a] hover:text-[#b4704a]"
           >
             Seguir comprando
           </a>
         </div>
 
         {mappedProduct.description && (
-          <div class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+          <div class="overflow-hidden rounded-xl border border-[#d8d2c8] bg-white shadow-sm transition-shadow duration-300 hover:shadow-md">
             <button
               id="description-toggle"
               type="button"
-              class="w-full dark:bg-black dark:text-neutral-300 px-6 py-4 flex items-center justify-between text-left font-semibold text-gray-900 transition-colors duration-200 cursor-pointer"
+              class="flex w-full cursor-pointer items-center justify-between px-6 py-4 text-left font-semibold text-[#1e1c18] transition-colors duration-200"
               aria-expanded="false"
               aria-controls="description-content"
             >
@@ -192,7 +284,7 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
             </button>
             <div
               id="description-content"
-              class="description-panel px-6 dark:bg-black text-gray-600 dark:text-gray-200 leading-relaxed overflow-hidden"
+              class="description-panel overflow-hidden px-6 leading-relaxed text-[#4b4339]"
               style="max-height: 0; opacity: 0;"
             >
               <div 
@@ -203,27 +295,77 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
           </div>
         )}
         
-        <div class="space-y-2 text-sm text-gray-800 pt-8">
-          <div class="flex justify-center items-center border-t w-full border-gray-400 mb-6"></div>
-          <p class="flex items-center dark:text-neutral-400">
+        <div class="space-y-2 pt-8 text-sm text-[#3f382f]">
+          <div class="mb-6 flex w-full items-center justify-center border-t border-[#cfc6b8]"></div>
+          <p class="flex items-center">
             <Icon name="check" size={16} class="mr-2 text-green-500" />
             Producto bajo pedido (sin límite de stock)
           </p>
-          <p class="flex items-center dark:text-neutral-400">
+          <p class="flex items-center">
             <Icon name="check" size={16} class="mr-2 text-green-500" />
             Envío discreto
           </p>
-          <p class="flex items-center dark:text-neutral-400">
+          <p class="flex items-center">
             <Icon name="check" size={16} class="mr-2 text-green-500" />
             Pago seguro
           </p>
-          <p class="flex items-center dark:text-neutral-400">
+          <p class="flex items-center">
             <Icon name="check" size={16} class="mr-2 text-green-500" />
             Atención personalizada
           </p>
         </div>
       </div>
     </div>
+
+    {relatedProducts.length > 0 && (
+      <section class="mt-16 border-t border-[#ddd4c8] pt-12">
+        <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p class="mb-2 font-sans text-[11px] uppercase tracking-[0.3em] text-[#8b8a83]">Recomendados para ti</p>
+            <h2 class="font-serif text-[1.8rem] font-normal tracking-wide text-[#1e1c18]">También te puede interesar</h2>
+          </div>
+          <a
+            href="/tienda"
+            class="inline-flex border border-[#2a2520] px-4 py-2 text-[11px] uppercase tracking-[0.24em] text-[#1e1c18] transition-colors duration-200 hover:border-[#b4704a] hover:text-[#b4704a]"
+          >
+            Ver catálogo completo
+          </a>
+        </div>
+
+        <ProductGrid products={relatedProducts} />
+      </section>
+    )}
+
+    <aside
+      id="product-sticky-bar"
+      class="pointer-events-none fixed inset-x-2 bottom-14 z-44 translate-y-4 border border-[#2a2520] bg-[#0f0f0e]/97 p-3 opacity-0 shadow-2xl transition-all duration-250 sm:inset-x-6 sm:bottom-16 md:inset-x-auto md:right-6 md:w-107.5"
+      aria-live="polite"
+    >
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <p class="truncate text-[10px] uppercase tracking-[0.2em] text-[#8b8a83]">{stickyShortName}</p>
+          <div class="mt-1 flex items-center gap-2">
+            <span class="font-semibold text-[#f0ece4]">{formatPrice(displayPrice)}</span>
+            {hasDiscount && (
+              <>
+                <span class="text-xs text-[#8b8a83] line-through">{formatPrice(mappedProduct.price)}</span>
+                <span class="border border-[#fa0644]/40 bg-[#fa0644]/12 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-[#fa0644]">
+                  -{mappedProduct.discount_pct}%
+                </span>
+              </>
+            )}
+          </div>
+        </div>
+
+        <button
+          id="sticky-add-to-cart"
+          type="button"
+          class="shrink-0 cursor-pointer border border-[#2a2520] bg-[#14110f] px-3.5 py-2 text-[10px] uppercase tracking-[0.18em] text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a]"
+        >
+          Anadir al carrito
+        </button>
+      </div>
+    </aside>
   </main>
 
   <style>
@@ -288,13 +430,13 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     }
 
     // Cambio de imagen en galería
-    const mainImage = document.getElementById('main-image') as HTMLImageElement;
+    const mainImage = document.getElementById('main-image') as HTMLImageElement | null;
     const thumbnails = document.querySelectorAll('.thumbnail-btn');
     
     thumbnails.forEach(btn => {
       btn.addEventListener('click', () => {
         const newSrc = (btn as HTMLElement).dataset.image;
-        if (newSrc && mainImage) {
+        if (newSrc && mainImage instanceof HTMLImageElement) {
           mainImage.src = newSrc;
         }
       });
@@ -304,6 +446,8 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
     const quantityInput = document.getElementById('quantity') as HTMLInputElement;
     const decreaseBtn = document.getElementById('decrease-qty');
     const increaseBtn = document.getElementById('increase-qty');
+    const stickyBar = document.getElementById('product-sticky-bar');
+    const stickyAddToCartBtn = document.getElementById('sticky-add-to-cart') as HTMLButtonElement | null;
     
     decreaseBtn?.addEventListener('click', () => {
       const currentValue = parseInt(quantityInput.value) || 1;
@@ -325,29 +469,56 @@ const productKeywords = `${mappedProduct.name}, comprar ${mappedProduct.name}${c
       }
     });
     
-    // Añadir al carrito
-    const addToCartBtn = document.getElementById('add-to-cart');
-    addToCartBtn?.addEventListener('click', () => {
-      const productData = addToCartBtn.dataset.product;
-      if (productData) {
-        const product = JSON.parse(productData);
-        const quantity = parseInt(quantityInput?.value || '1');
-        
-        useCartStore.getState().addItem({
-          ...product,
-          quantity: quantity,
-        });
-        
-        const originalText = addToCartBtn.textContent;
-        addToCartBtn.textContent = '✓ Añadido al carrito';
-        addToCartBtn.classList.add('bg-green-600');
-        
-        setTimeout(() => {
-          addToCartBtn.textContent = originalText;
-          addToCartBtn.classList.remove('bg-green-600');
-          addToCartBtn.classList.add('bg-pink-600');
-        }, 2000);
+    function addProductToCart(targetButton: HTMLButtonElement, quantity: number) {
+      const productData = targetButton.dataset.product || addToCartBtn?.dataset.product;
+      if (!productData) {
+        return;
       }
+
+      const product = JSON.parse(productData);
+
+      useCartStore.getState().addItem({
+        ...product,
+        quantity,
+      });
+
+      const originalText = targetButton.textContent;
+      targetButton.textContent = '✓ Anadido';
+      targetButton.classList.add('bg-green-600', 'text-white', 'border-green-700');
+
+      setTimeout(() => {
+        targetButton.textContent = originalText;
+        targetButton.classList.remove('bg-green-600', 'text-white', 'border-green-700');
+      }, 1700);
+    }
+
+    // Añadir al carrito
+    const addToCartBtn = document.getElementById('add-to-cart') as HTMLButtonElement | null;
+    addToCartBtn?.addEventListener('click', () => {
+      const quantity = parseInt(quantityInput?.value || '1');
+      addProductToCart(addToCartBtn, quantity);
     });
+
+    stickyAddToCartBtn?.addEventListener('click', () => {
+      const quantity = parseInt(quantityInput?.value || '1');
+      addProductToCart(stickyAddToCartBtn, quantity);
+    });
+
+    function toggleStickyBar() {
+      if (!stickyBar || !addToCartBtn) return;
+      const triggerRect = addToCartBtn.getBoundingClientRect();
+      const shouldShow = triggerRect.bottom < 0;
+
+      stickyBar.classList.toggle('opacity-0', !shouldShow);
+      stickyBar.classList.toggle('translate-y-4', !shouldShow);
+      stickyBar.classList.toggle('pointer-events-none', !shouldShow);
+      stickyBar.classList.toggle('opacity-100', shouldShow);
+      stickyBar.classList.toggle('translate-y-0', shouldShow);
+      stickyBar.classList.toggle('pointer-events-auto', shouldShow);
+    }
+
+    window.addEventListener('scroll', toggleStickyBar, { passive: true });
+    window.addEventListener('resize', toggleStickyBar);
+    toggleStickyBar();
   </script>
 </BaseLayout>
