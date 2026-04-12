@@ -1,5 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 import type { Product } from "../../types/product";
 import type { ProductCardVariant } from "../../types/productCard";
 
@@ -21,6 +22,11 @@ const v: Required<ProductCardVariant> = {
   iconClass: variant.iconClass ?? "text-neutral-900",
   badgeClass: variant.badgeClass ?? "bg-black text-white",
 };
+
+const productImage = product.image ?? product.images?.[0] ?? null;
+const primaryCategoryLabel = product.categories?.[0]?.label ?? null;
+const displayPrice = product.final_price ?? product.price;
+const hasDiscount = typeof product.discount_pct === "number" && product.discount_pct > 0;
 ---
 
 <a
@@ -30,39 +36,77 @@ const v: Required<ProductCardVariant> = {
         ? "snap-start min-w-[45%] sm:min-w-[55%] md:min-w-[38%] lg:min-w-[31%]"
         : "snap-start min-w-[80%] sm:min-w-[55%] md:min-w-[38%] lg:min-w-[31%]", 
       "max-w-[320px] sm:max-w-95 md:max-w-105",
-      "rounded-2xl border bg-white transition hover:-translate-y-1", 
-      "duration-300 ease-in-out overflow-hidden flex flex-col",
+      "group rounded-2xl border border-[#1e1c18] bg-[#0a0a0a] transition duration-300 ease-in-out overflow-hidden flex flex-col",
+      "hover:-translate-y-1 hover:border-[#b4704a]",
     v.cardClass
   ]}
 >
-  <div class:list={["aspect-4/5", v.mediaClass]}>
-    {
-    <img
-      src={product.image ?? product.images?.[0] ?? "/placeholder.png"}
-      alt={product.name}
-      class="h-full w-full object-cover"
-      loading="lazy"
-    />
-    }
+  <div class:list={["relative aspect-4/5 overflow-hidden", v.mediaClass]}>
+    {productImage ? (
+      <Image
+        src={productImage}
+        alt={product.name}
+        width={640}
+        height={800}
+        loading="lazy"
+        decoding="async"
+        format="webp"
+        sizes="(max-width: 640px) 80vw, (max-width: 1024px) 55vw, 31vw"
+        class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+      />
+    ) : (
+      <div class="flex h-full w-full items-center justify-center text-neutral-500">
+        <Icon name="photo" class="h-10 w-10" />
+      </div>
+    )}
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-[rgba(0,0,0,0.45)] to-transparent"></div>
+    {hasDiscount && (
+      <span class:list={[
+        "absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]",
+        v.badgeClass,
+      ]}>
+        -{product.discount_pct}%
+      </span>
+    )}
   </div>
 
-  <div class="p-3 md:p-4 flex items-center justify-between gap-3 md:gap-4">
-    <p class:list={["font-semibold text-base md:text-lg line-clamp-2 flex-1", v.titleClass]}>
-      {product.name}
-    </p>
+  <div class="p-3 md:p-4 flex flex-col gap-3">
+    <div class="flex items-start justify-between gap-3 md:gap-4">
+      <p class:list={["font-semibold text-base text-white md:text-lg line-clamp-2 flex-1", v.titleClass]}>
+        {product.name}
+      </p>
 
-    <button
-      class:list={[
-        "flex justify-center items-center rounded-full transition shrink-0",
-        "w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-12",
-        v.buttonClass
-      ]}
-      type="button"
-      aria-label={`Ver ${product.name}`}
-    >
-      <span class:list={[v.iconClass]}>
-        <Icon name="arrow" size="15" />
+      <span
+        class:list={[
+          "flex justify-center items-center rounded-full transition shrink-0",
+          "w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12",
+          "group-hover:translate-x-0.5",
+          v.buttonClass,
+        ]}
+        aria-hidden="true"
+      >
+        <span class:list={[v.iconClass]}>
+          <Icon name="arrow" size="15" />
+        </span>
       </span>
-    </button>
+    </div>
+
+    <div class="flex items-end justify-between gap-3">
+      {primaryCategoryLabel ? (
+        <span class="line-clamp-1 text-[11px] font-sans uppercase tracking-[0.18em] text-[#8b8a83]">
+          {primaryCategoryLabel}
+        </span>
+      ) : (
+        <span class="text-[11px] font-sans uppercase tracking-[0.18em] text-[#8b8a83]">
+          Producto destacado
+        </span>
+      )}
+
+      <div class="text-right">
+        <p class="font-serif text-base md:text-lg leading-none text-[#f0ece4]">
+          ${displayPrice.toLocaleString("es-CO")}
+        </p>
+      </div>
+    </div>
   </div>
 </a>

@@ -20,6 +20,14 @@ export const PATCH: APIRoute = async ({ request, url }) => {
     }
 
     const body = await request.json();
+
+    if (typeof body.banner_image_url === 'string' && body.banner_image_url.trim() === '') {
+      body.banner_image_url = null;
+    }
+
+    if (typeof body.banner_public_id === 'string' && body.banner_public_id.trim() === '') {
+      body.banner_public_id = null;
+    }
     
     // Auto-generar slug si se cambió el label pero no el slug
     if (body.label && !body.slug) {

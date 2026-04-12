@@ -24,17 +24,17 @@ export default function CartItem({ item }: { item: CartItemType }) {
       <div className="flex-1 min-w-0">
         <a
           href={`/producto/${item.slug}`}
-          className="font-semibold hover:text-pink-600 transition line-clamp-2"
+          className="font-semibold hover:text-neutral-800 transition duration-300 line-clamp-2"
         >
           {item.name}
         </a>
         <p className="text-gray-600 text-sm mt-1">{formatPrice(price)}</p>
 
         <div className="flex items-center gap-3 mt-2">
-          <div className="flex items-center bg-white shadow-lg border border-pink-200 rounded-full px-2 py-1">
+          <div className="flex items-center bg-white border border-neutral-300 rounded-full px-2 py-1">
             <button
               onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-              className="w-9 h-9 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-9 h-9 flex items-center justify-center bg-neutral-300 font-bold text-2xl rounded-full shadow transition hover:scale-105 focus:outline-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={item.quantity <= 1}
               aria-label="Disminuir cantidad"
             >
@@ -47,7 +47,7 @@ export default function CartItem({ item }: { item: CartItemType }) {
             </span>
             <button
               onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-              className="w-9 h-9 flex items-center justify-center bg-pink-200 font-bold text-2xl rounded-full shadow transition hover:scale-105 focus:outline-none cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center bg-neutral-300 font-bold text-2xl rounded-full shadow transition hover:scale-105 focus:outline-none cursor-pointer"
               aria-label="Aumentar cantidad"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5">

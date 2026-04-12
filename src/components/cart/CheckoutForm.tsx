@@ -118,29 +118,29 @@ export default function CheckoutForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Sección de información personal */}
       <div className="space-y-5">
-        <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
-          <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-2 border-b border-[#ece4d8] pb-3">
+          <svg className="h-5 w-5 text-[#ff6800]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
           </svg>
-          <h3 className="font-bold text-gray-900">Información Personal</h3>
+          <h3 className="font-bold text-[#1f1b17]">Información Personal</h3>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Nombre completo <span className="text-pink-600">*</span>
+          <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+            Nombre completo <span className="text-[#ff6800]">*</span>
           </label>
           <div className="relative">
             <input
               {...register('customer_name')}
               type="text"
-              className={`w-full px-4 py-3 pl-11 border-2 rounded-xl transition-all ${
+              className={`w-full rounded-xl border-2 px-4 py-3 pl-11 text-[#1f1b17] placeholder:text-[#9a9287] transition-all ${
                 errors.customer_name 
                   ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
-                  : 'border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100'
+                  : 'border-[#ddd4c7] focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]'
               }`}
               placeholder="Ej: María García López"
             />
-            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
           </div>
@@ -155,21 +155,21 @@ export default function CheckoutForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Teléfono / WhatsApp <span className="text-pink-600">*</span>
+          <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+            Teléfono / WhatsApp <span className="text-[#ff6800]">*</span>
           </label>
           <div className="relative">
             <input
               {...register('customer_phone')}
               type="tel"
-              className={`w-full px-4 py-3 pl-11 border-2 rounded-xl transition-all ${
+              className={`w-full rounded-xl border-2 px-4 py-3 pl-11 text-[#1f1b17] placeholder:text-[#9a9287] transition-all ${
                 errors.customer_phone 
                   ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
-                  : 'border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100'
+                  : 'border-[#ddd4c7] focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]'
               }`}
               placeholder="3001234567"
             />
-            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
             </svg>
           </div>
@@ -181,27 +181,27 @@ export default function CheckoutForm() {
               {errors.customer_phone.message}
             </p>
           )}
-          <p className="text-gray-500 text-xs mt-2 ml-1">
+          <p className="mt-2 ml-1 text-xs text-[#7d7265]">
             Te contactaremos por este número para confirmar tu pedido
           </p>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Correo electrónico <span className="text-gray-400">(opcional)</span>
+          <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+            Correo electrónico <span className="text-[#9a9287]">(opcional)</span>
           </label>
           <div className="relative">
             <input
               {...register('customer_email')}
               type="email"
-              className={`w-full px-4 py-3 pl-11 border-2 rounded-xl transition-all ${
+              className={`w-full rounded-xl border-2 px-4 py-3 pl-11 text-[#1f1b17] placeholder:text-[#9a9287] transition-all ${
                 errors.customer_email 
                   ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
-                  : 'border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100'
+                  : 'border-[#ddd4c7] focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]'
               }`}
               placeholder="correo@ejemplo.com"
             />
-            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
           </div>
@@ -217,17 +217,17 @@ export default function CheckoutForm() {
       </div>
 
       <div className="space-y-5 pt-6">
-        <div className="flex items-center gap-2 pb-3 border-b border-gray-200">
-          <svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center gap-2 border-b border-[#ece4d8] pb-3">
+          <svg className="h-5 w-5 text-[#ff6800]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
           </svg>
-          <h3 className="font-bold text-gray-900">Dirección de Entrega</h3>
+          <h3 className="font-bold text-[#1f1b17]">Dirección de Entrega</h3>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Departamento <span className="text-pink-600">*</span>
+          <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+            Departamento <span className="text-[#ff6800]">*</span>
           </label>
           <div className="relative">
             <select
@@ -237,11 +237,11 @@ export default function CheckoutForm() {
                 handleDepartmentChange(e);
               }}
               disabled={loadingDepartments}
-              className={`w-full px-4 py-3 pl-11 border-2 rounded-xl transition-all appearance-none bg-white ${
+              className={`w-full appearance-none rounded-xl border-2 bg-white px-4 py-3 pl-11 text-[#1f1b17] transition-all ${
                 errors.customer_department 
                   ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
-                  : 'border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100'
-              } disabled:bg-gray-50 disabled:cursor-not-allowed`}
+                  : 'border-[#ddd4c7] focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]'
+              } disabled:cursor-not-allowed disabled:bg-[#f8f5f0]`}
             >
               <option value="">
                 {loadingDepartments ? 'Cargando departamentos...' : 'Selecciona tu departamento'}
@@ -252,10 +252,10 @@ export default function CheckoutForm() {
                 </option>
               ))}
             </select>
-            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="pointer-events-none absolute left-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
             </svg>
-            <svg className="w-5 h-5 text-gray-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="pointer-events-none absolute right-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
             </svg>
           </div>
@@ -270,18 +270,18 @@ export default function CheckoutForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Municipio / Ciudad <span className="text-pink-600">*</span>
+          <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+            Municipio / Ciudad <span className="text-[#ff6800]">*</span>
           </label>
           <div className="relative">
             <select
               {...register('customer_city')}
               disabled={!selectedDepartmentId || loadingCities}
-              className={`w-full px-4 py-3 pl-11 border-2 rounded-xl transition-all appearance-none bg-white ${
+              className={`w-full appearance-none rounded-xl border-2 bg-white px-4 py-3 pl-11 text-[#1f1b17] transition-all ${
                 errors.customer_city 
                   ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
-                  : 'border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100'
-              } disabled:bg-gray-50 disabled:cursor-not-allowed`}
+                  : 'border-[#ddd4c7] focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]'
+              } disabled:cursor-not-allowed disabled:bg-[#f8f5f0]`}
             >
               <option value="">
                 {!selectedDepartmentId 
@@ -297,10 +297,10 @@ export default function CheckoutForm() {
                 </option>
               ))}
             </select>
-            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="pointer-events-none absolute left-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
             </svg>
-            <svg className="w-5 h-5 text-gray-400 absolute right-3 top-3.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="pointer-events-none absolute right-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"/>
             </svg>
           </div>
@@ -315,21 +315,21 @@ export default function CheckoutForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Dirección completa <span className="text-pink-600">*</span>
+          <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+            Dirección completa <span className="text-[#ff6800]">*</span>
           </label>
           <div className="relative">
             <input
               {...register('customer_address')}
               type="text"
-              className={`w-full px-4 py-3 pl-11 border-2 rounded-xl transition-all ${
+              className={`w-full rounded-xl border-2 px-4 py-3 pl-11 text-[#1f1b17] placeholder:text-[#9a9287] transition-all ${
                 errors.customer_address 
                   ? 'border-red-300 focus:border-red-500 focus:ring-4 focus:ring-red-100' 
-                  : 'border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-100'
+                  : 'border-[#ddd4c7] focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]'
               }`}
               placeholder="Calle 123 #45-67, Torre 2, Apto 801"
             />
-            <svg className="w-5 h-5 text-gray-400 absolute left-3 top-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="absolute left-3 top-3.5 h-5 w-5 text-[#9a9287]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
           </div>
@@ -341,24 +341,24 @@ export default function CheckoutForm() {
               {errors.customer_address.message}
             </p>
           )}
-          <p className="text-gray-500 text-xs mt-2 ml-1">
-            <MapPin className="inline-block mr-1 w-4 h-4 mb-1" />
+          <p className="mt-2 ml-1 text-xs text-[#7d7265]">
+            <MapPin className="mb-1 mr-1 inline-block h-4 w-4 text-[#ff6800]" />
             Incluye: calle/carrera, número, torre/apto, barrio y referencias importantes
           </p>
         </div>
       </div>
 
       <div className="pt-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Notas o instrucciones especiales <span className="text-gray-400">(opcional)</span>
+        <label className="mb-2 block text-sm font-semibold text-[#4f453a]">
+          Notas o instrucciones especiales <span className="text-[#9a9287]">(opcional)</span>
         </label>
         <textarea
           {...register('notes')}
           rows={4}
-          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-pink-500 focus:ring-4 focus:ring-pink-100 transition-all resize-none"
+          className="w-full resize-none rounded-xl border-2 border-[#ddd4c7] px-4 py-3 text-[#1f1b17] placeholder:text-[#9a9287] transition-all focus:border-[#ff6800] focus:ring-4 focus:ring-[#ffe6d1]"
           placeholder="Ej: Llamar antes de entregar, portería con horario especial, dejar con el portero..."
         />
-        <p className="text-gray-500 text-xs mt-2 ml-1">
+        <p className="mt-2 ml-1 text-xs text-[#7d7265]">
           Comparte cualquier información que nos ayude con la entrega
         </p>
       </div>
@@ -367,7 +367,7 @@ export default function CheckoutForm() {
         <button
           type="submit"
           disabled={isSubmitting || items.length === 0}
-          className="w-full py-4 bg-white text-gray-800 rounded-xl font-bold text-lg hover:-translate-y-1 border border-b-6 border-gray-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform duration-300 flex items-center justify-center gap-3 cursor-pointer"
+          className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-[#2a2520] bg-[#1b1713] py-4 text-[15px] font-semibold uppercase tracking-[0.18em] text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a] hover:bg-[#221b16] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isSubmitting ? (
             <>
@@ -388,15 +388,15 @@ export default function CheckoutForm() {
         </button>
         
         {items.length === 0 && (
-          <p className="text-center text-sm text-gray-500 mt-3">
+          <p className="mt-3 text-center text-sm text-[#7d7265]">
             Agrega productos a tu carrito para continuar
           </p>
         )}
       </div>
 
-      <div className="pt-4 border-t border-gray-200">
-        <p className="text-xs text-gray-500 text-center">
-          <Lock className="inline-block mr-1 w-4 h-4 mb-1" />
+      <div className="border-t border-[#ece4d8] pt-4">
+        <p className="text-center text-xs text-[#7d7265]">
+          <Lock className="mb-1 mr-1 inline-block h-4 w-4 text-[#ff6800]" />
           Al finalizar tu pedido, aceptas nuestra política de privacidad. Tus datos están seguros y solo se usan para procesar tu compra.
         </p>
       </div>

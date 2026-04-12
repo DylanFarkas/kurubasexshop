@@ -8,10 +8,10 @@ export const categoryThemes: Record<string, ProductCardVariant> = {
     iconClass: "text-pink-900",
   },
   Lubricantes: {
-    cardClass: "border-sky-200 hover:border-sky-300",
+    cardClass: "dark:border-neutral-700 border-neutral-200",
     mediaClass: "bg-sky-50",
-    buttonClass: "bg-sky-200 hover:bg-sky-300",
-    iconClass: "text-sky-900",
+    buttonClass: "bg-neutral-100 dark:bg-white",
+    iconClass: "text-black",
   },
   Lencería: {
     cardClass: "border-rose-200 hover:border-rose-300",

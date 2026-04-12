@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import FilterPanel from "../../components/ui/FilterPanel.astro";
 import type { Product } from '../../types/product';
 import { Icon } from "astro-icon/components";
+import bannerProductosHero from "../../assets/category/banner-productos.jpg";
 
 // SSR: Renderizado del lado del servidor (dinámico)
 export const prerender = false;
@@ -23,7 +24,9 @@ if (isOffersPage) {
     id: 'ofertas',
     label: 'Ofertas',
     slug: 'ofertas',
-    active: true
+    active: true,
+    banner_image_url: null,
+    banner_public_id: null,
   };
   
   // Fetch productos con descuento
@@ -130,6 +133,12 @@ const seoData = categoryDescriptions[slug as string] || {
   description: `Descubre nuestra selección de ${category.label.toLowerCase()}. Productos de calidad con envío discreto a toda Colombia. ¡Compra segura!`,
   keywords: `${category.label.toLowerCase()}, productos eróticos, sexshop colombia`
 };
+
+const fallbackCategoryHero = bannerProductosHero.src;
+const categoryHeroImage = category.banner_image_url || fallbackCategoryHero;
+const categoryHeroAlt = isOffersPage
+  ? 'Banner de ofertas de Kuruba SexShop'
+  : `Banner de la categoria ${category.label}`;
 ---
 
 <BaseLayout 
@@ -137,40 +146,92 @@ const seoData = categoryDescriptions[slug as string] || {
   description={seoData.description}
   keywords={seoData.keywords}
 >
-  <main class="pt-24 pb-16 min-h-screen bg-white">
-    <div class="container mx-auto px-4 md:px-8">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-neutral-200 pb-8">
-        <div>
-          <span class="text-rose-600 font-bold text-sm tracking-wider uppercase mb-2 block">{category.label}</span>
-          <h1 class="text-3xl md:text-5xl font-bold text-neutral-900 mb-4 tracking-tight">
-            {category.label}
-          </h1>
-          <p class="text-neutral-500 max-w-2xl text-lg leading-relaxed">
-            {isOffersPage 
-              ? 'Aprovecha nuestros mejores descuentos y promociones especiales'
-              : `Descubre nuestra selección exclusiva de ${category.label.toLowerCase()}`
-            }
-          </p>
-          <p class="text-sm text-neutral-400 mt-2">
-            <span id="product-count">{mappedProducts.length}</span> {isOffersPage ? 'productos en oferta' : 'productos disponibles'}
-          </p>
+  <main class="min-h-screen bg-white pb-20">
+    <section class="relative overflow-hidden border-b border-[#1e1c18] bg-[#0a0a0a] px-8 pt-20 pb-18">
+      <div class="absolute inset-0 z-0" aria-hidden="true">
+        <img
+          src={categoryHeroImage}
+          alt={categoryHeroAlt}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          class="h-full w-full object-cover opacity-[0.90]"
+        />
+        <div class="absolute inset-0 z-1 bg-linear-to-b from-[rgba(10,10,10,0.55)] to-[rgba(10,10,10,0.86)]"></div>
+        <div class="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(ellipse_90%_70%_at_75%_40%,rgba(180,80,50,0.07)_0%,transparent_65%)]"></div>
+      </div>
+
+      <div class="relative z-2 mx-auto max-w-300">
+        <div class="reveal-on-scroll mb-[1.6rem] flex items-center gap-3 font-sans text-[12px] font-normal uppercase tracking-[0.3em] text-[#fa0644] before:inline-block before:h-px before:w-7 before:shrink-0 before:bg-current before:content-['']" style="--reveal-delay: 40ms;">
+          Kuruba SexShop
         </div>
-        
+
+        <h1 class="reveal-on-scroll mb-[1.4rem] max-w-175 font-serif text-[clamp(2.2rem,5vw,4rem)] tracking-wide leading-[1.1] text-[#f0ece4]" style="--reveal-delay: 110ms;">
+          {isOffersPage ? 'Ofertas destacadas' : category.label}
+        </h1>
+
+        <p class="reveal-on-scroll mb-[2.8rem] max-w-120 font-sans text-[15px] tracking-wide font-light leading-[1.75] text-[#d4cdc1]" style="--reveal-delay: 180ms;">
+          {isOffersPage 
+            ? 'Aprovecha nuestros mejores descuentos y promociones especiales con disponibilidad limitada.'
+            : `Descubre nuestra selección exclusiva de ${category.label.toLowerCase()} con envío discreto a toda Colombia.`
+          }
+        </p>
+
+        <div class="reveal-on-scroll flex flex-wrap items-center gap-[2.8rem] max-sm:gap-[1.8rem]" style="--reveal-delay: 240ms;">
+          <div class="flex flex-col gap-1">
+            <span id="product-count" class="font-serif text-[1.7rem] font-normal leading-none text-[#f0ece4]">
+              {mappedProducts.length}
+            </span>
+            <span class="font-sans text-[12px] uppercase tracking-[0.25em] text-[#8b8a83]">
+              {isOffersPage ? 'En oferta' : 'Productos'}
+            </span>
+          </div>
+
+          <div class="h-9 w-px shrink-0 bg-[#1e1c18] max-sm:hidden"></div>
+
+          <div class="flex flex-col gap-1">
+            <span class="font-serif text-[1.7rem] font-normal leading-none text-[#f0ece4]">
+              100%
+            </span>
+            <span class="font-sans text-[12px] uppercase tracking-[0.25em] text-[#8b8a83]">
+              Envío discreto
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-300 px-8">
+      <div class="flex flex-wrap items-end justify-between gap-6 border-[#1a1a18] py-12 pb-[2.2rem] max-sm:pt-8">
+        <div>
+          <p class="mb-2 font-sans text-[12px] uppercase tracking-[0.3em] text-[#000000]">
+            {isOffersPage ? 'Promociones activas' : 'Catálogo por categoría'}
+          </p>
+          <h2 class="font-serif text-[2rem] tracking-widest font-normal leading-none text-[#000000] max-sm:text-[1.6rem]">
+            {category.label}
+          </h2>
+        </div>
+
         <button
           id="open-filters"
-          class="group flex items-center justify-center gap-3 px-8 py-3 bg-neutral-900 text-white font-semibold rounded-full hover:bg-neutral-800 transition-all shadow-sm hover:shadow-md active:scale-95 whitespace-nowrap cursor-pointer"
+          class="inline-flex cursor-pointer items-center gap-2.5 border border-[#2a2520] bg-transparent px-6 py-2.75 font-sans tracking-[5px] text-[12px] font-normal uppercase text-black transition-colors duration-200 hover:border-[#b4704a]"
+          aria-label="Abrir filtros"
         >
-          <span class="mr-1">Filtros</span>
-          <Icon name="filter" />
+          <Icon name="filter" size={20} />
+          Filtrar catálogo
         </button>
       </div>
 
       {mappedProducts.length > 0 ? (
-        <ProductGrid products={mappedProducts} />
+        <div class="">
+          <ProductGrid products={mappedProducts} />
+        </div>
       ) : (
-        <div class="text-center py-16 text-gray-500">
-          <p>{isOffersPage ? 'No hay productos en oferta en este momento' : 'No hay productos disponibles en esta categoría'}</p>
-          <a href="/tienda" class="text-pink-600 hover:underline mt-4 inline-block">
+        <div class="px-8 py-20 text-center text-[#1e1c18]">
+          <p class="font-serif text-[1.1rem] italic">
+            {isOffersPage ? 'No hay productos en oferta en este momento' : 'No hay productos disponibles en esta categoría'}
+          </p>
+          <a href="/tienda" class="mt-4 inline-block font-sans text-[12px] uppercase tracking-[0.22em] text-black hover:text-[#b4704a]">
             Ver todos los productos
           </a>
         </div>

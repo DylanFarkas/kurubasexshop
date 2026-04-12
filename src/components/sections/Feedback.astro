@@ -39,19 +39,19 @@ const reviews = [
 const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
 ---
 
-<section id="reviews" class="w-full bg-white">
+<section id="reviews" class="w-full border-[#1a1a18] bg-[#0a0a0a]">
   <div class="mx-auto w-full max-w-7xl 2xl:max-w-425 px-6 md:px-10 lg:px-16 py-14 md:py-20">
     <!-- Header -->
     <div class="flex flex-col items-center text-center">
-      <p class="text-rose-500 font-semibold tracking-[0.25em] text-xs md:text-sm">
+      <p class="font-sans text-[12px] uppercase tracking-[0.3em] text-[#ff6800]">
         FEEDBACK
       </p>
 
-      <h2 class="mt-4 text-3xl md:text-4xl xl:text-5xl font-semibold text-neutral-900">
+      <h2 class="mt-4 font-serif text-3xl md:text-4xl xl:text-5xl tracking-wide text-[#f0ece4]">
         Reseñas reales, experiencias reales
       </h2>
 
-      <p class="mt-4 max-w-2xl text-neutral-600 text-base md:text-lg">
+      <p class="mt-4 max-w-2xl text-base md:text-lg text-[#8b8a83]">
         Lo más importante: que te sientas cómoda, segura y bien acompañada. Esto es lo que dicen quienes ya compraron.
       </p>
     </div>
@@ -60,16 +60,16 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
     <div class="mt-10 md:mt-14 grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-10 items-center">
       <!-- Left: product / decoration -->
       <div class="relative">
-        <div class="rounded-2xl border border-neutral-200 bg-white p-8 md:p-10 overflow-hidden">
+        <div class="overflow-hidden border p-8 md:p-10 border-[#2a2520] bg-[#11100f]">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-sm font-medium text-neutral-900">Más vendidos</p>
-              <p class="mt-2 text-neutral-600 text-sm">
+              <p class="text-sm font-medium text-[#f0ece4]">Más vendidos</p>
+              <p class="mt-2 text-sm text-[#8b8a83]">
                 Selección curada para autocuidado e intimidad, con envío discreto.
               </p>
             </div>
 
-            <span class="inline-flex items-center rounded-full bg-rose-500/10 text-rose-600 px-3 py-1 text-xs font-semibold shrink-0">
+            <span class="inline-flex items-center border px-3 py-1 text-xs font-semibold text-[#ff6800] shrink-0 border-[#2a2520] bg-[#14110f]">
               +4.8 ★ promedio
             </span>
           </div>
@@ -89,7 +89,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
           <div class="mt-8 flex flex-col gap-3">
             <a
               href="/tienda"
-              class="inline-flex items-center justify-center rounded-full bg-rose-500 px-5 py-3 text-white font-semibold hover:bg-rose-600 transition duration-300"
+              class="inline-flex items-center justify-center border px-5 py-3 font-sans text-[12px] uppercase tracking-[0.22em] transition-colors duration-200 hover:border-[#b4704a] border-[#2a2520] bg-[#14110f] text-[#f0ece4]"
             >
               Ver productos
             </a>
@@ -97,7 +97,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
               href="https://wa.me/573102994686"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center justify-center rounded-full border border-neutral-200 px-5 py-3 text-neutral-900 font-semibold hover:bg-neutral-50 transition duration-300"
+              class="inline-flex items-center justify-center border bg-transparent px-5 py-3 font-sans text-[12px] uppercase tracking-[0.22em] transition-colors duration-200 hover:border-[#b4704a] border-[#2a2520] text-[#8b8a83] hover:text-[#f0ece4]"
             >
               Hablar con asesoría
             </a>
@@ -105,7 +105,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
         </div>
 
         <!-- soft glow -->
-        <div class="pointer-events-none absolute -inset-6 -z-10 bg-[radial-gradient(circle_at_30%_20%,rgba(244,63,94,0.18),transparent_55%)]"></div>
+        <div class="pointer-events-none absolute -inset-6 -z-10 bg-[radial-gradient(circle_at_30%_20%,rgba(180,112,74,0.2),transparent_55%)]"></div>
       </div>
 
       <!-- Right: reviews -->
@@ -113,7 +113,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
         <!-- Desktop grid -->
         <div class="hidden md:grid grid-cols-1 xl:grid-cols-3 gap-6">
           {reviews.map((r) => (
-            <article class="group rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+            <article class="group border p-6 transition-colors duration-200 border-[#2a2520] bg-[#11100f] hover:border-[#3a3129]">
               <div class="flex items-start justify-between gap-3">
                 <!-- Left (avatar + name) -->
                 <div class="flex items-center gap-3 min-w-0">
@@ -124,7 +124,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                     loading="lazy"
                   />
                   <div class="leading-tight min-w-0">
-                    <p class="text-sm font-semibold text-neutral-900 flex items-center gap-2 min-w-0">
+                    <p class="text-sm font-semibold flex items-center gap-2 min-w-0 text-[#f0ece4]">
                       <span class="truncate">{r.name}</span>
                       {/* {r.verified && (
                         <span class="inline-flex items-center rounded-full bg-emerald-500/10 text-emerald-700 px-2 py-0.5 text-[11px] font-semibold shrink-0">
@@ -132,7 +132,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                         </span>
                       )} */}
                     </p>
-                    <p class="text-xs text-neutral-500 truncate">{r.handle}</p>
+                    <p class="text-xs truncate text-[#8b8a83]">{r.handle}</p>
                   </div>
                 </div>
 
@@ -142,7 +142,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                     <svg
                       class:list={[
                         "h-4 w-4",
-                        on ? "text-amber-400" : "text-neutral-200",
+                        on ? "text-[#c4855a]" : "text-[#302a24]",
                       ]}
                       viewBox="0 0 24 24"
                       fill="currentColor"
@@ -154,12 +154,12 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                 </div>
               </div>
 
-              <p class="mt-4 text-sm text-neutral-700 leading-relaxed">
+              <p class="mt-4 text-sm leading-relaxed text-[#b4aea3]">
                 “{r.text}”
               </p>
 
-              <div class="mt-5 flex items-center justify-between text-xs text-neutral-500">
-                <span class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1">
+              <div class="mt-5 flex items-center justify-between text-xs text-[#8b8a83]">
+                <span class="inline-flex items-center border px-3 py-1 border-[#2a2520] bg-[#14110f]">
                   {r.product}
                 </span>
                 <span class="opacity-0 group-hover:opacity-100 transition">
@@ -173,13 +173,13 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
         <!-- Mobile carousel -->
         <div class="md:hidden">
           <div class="flex items-center justify-between gap-3">
-            <p class="text-sm font-semibold text-neutral-900">Opiniones</p>
+            <p class="text-sm font-semibold text-[#f0ece4]">Opiniones</p>
 
             <div class="flex items-center gap-2">
               <button
                 type="button"
                 data-prev
-                class="h-10 w-10 rounded-full border border-neutral-200 grid place-items-center hover:bg-neutral-50 transition"
+                class="grid h-10 w-10 place-items-center border transition-colors duration-200 hover:border-[#b4704a] border-[#2a2520] text-[#8b8a83] hover:text-[#f0ece4]"
                 aria-label="Anterior"
               >
                 ←
@@ -187,7 +187,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
               <button
                 type="button"
                 data-next
-                class="h-10 w-10 rounded-full border border-neutral-200 grid place-items-center hover:bg-neutral-50 transition"
+                class="grid h-10 w-10 place-items-center border transition-colors duration-200 hover:border-[#b4704a] border-[#2a2520] text-[#8b8a83] hover:text-[#f0ece4]"
                 aria-label="Siguiente"
               >
                 →
@@ -200,7 +200,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
             class="mt-4 flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {reviews.map((r) => (
-              <article class="snap-start shrink-0 w-[85%] rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm">
+              <article class="snap-start shrink-0 w-[85%] border p-6 border-[#2a2520] bg-[#11100f]">
                 <div class="flex items-start justify-between gap-3">
                   <div class="flex items-center gap-3 min-w-0">
                     <img
@@ -210,7 +210,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                       loading="lazy"
                     />
                     <div class="leading-tight min-w-0">
-                      <p class="text-sm font-semibold text-neutral-900 flex items-center gap-2 min-w-0">
+                      <p class="text-sm font-semibold flex items-center gap-2 min-w-0 text-[#f0ece4]">
                         <span class="truncate">{r.name}</span>
                         {r.verified && (
                           <span class="inline-flex items-center rounded-full bg-emerald-500/10 text-emerald-700 px-2 py-0.5 text-[11px] font-semibold shrink-0">
@@ -218,7 +218,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                           </span>
                         )}
                       </p>
-                      <p class="text-xs text-neutral-500 truncate">{r.handle}</p>
+                      <p class="text-xs truncate text-[#8b8a83]">{r.handle}</p>
                     </div>
                   </div>
 
@@ -227,7 +227,7 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                       <svg
                         class:list={[
                           "h-4 w-4",
-                          on ? "text-amber-400" : "text-neutral-200",
+                          on ? "text-[#c4855a]" : "text-[#302a24]",
                         ]}
                         viewBox="0 0 24 24"
                         fill="currentColor"
@@ -239,12 +239,12 @@ const Stars = (n: number) => Array.from({ length: 5 }, (_, i) => i < n);
                   </div>
                 </div>
 
-                <p class="mt-4 text-sm text-neutral-700 leading-relaxed">
+                <p class="mt-4 text-sm leading-relaxed text-[#b4aea3]">
                   “{r.text}”
                 </p>
 
-                <div class="mt-5 text-xs text-neutral-500">
-                  <span class="inline-flex items-center rounded-full bg-neutral-100 px-3 py-1">
+                <div class="mt-5 text-xs text-[#8b8a83]">
+                  <span class="inline-flex items-center border px-3 py-1 border-[#2a2520] bg-[#14110f]">
                     {r.product}
                   </span>
                 </div>

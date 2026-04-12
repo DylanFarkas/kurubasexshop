@@ -1,5 +1,4 @@
 ---
-import { Icon } from "astro-icon/components";
 import type { Product } from "../../types/product";
 import type { ProductCardVariant } from "../../types/productCard";
 import ProductCard from "../ui/ProductCard.astro";
@@ -21,18 +20,23 @@ const {
 };
 ---
 
-<section class="w-full mb-15">
-  <div class="flex items-end justify-between gap-4 mb-4">
+<section class="w-full mb-15 font-sans">
+  <div class="mb-5 flex items-end justify-between gap-4 border-b border-[#1e1c18] pb-5">
     <div>
-      <p class="text-xs tracking-widest uppercase text-neutral-500">{subtitle}</p>
-      <h2 class="text-xl md:text-2xl font-semibold text-neutral-900">{title}</h2>
+      <p class="mb-2 text-[11px] uppercase tracking-[0.3em] text-[#8b8a83]">{subtitle}</p>
+      <h2 class="font-serif text-[1.4rem] font-normal tracking-[0.18em] text-[#f0ece4] md:text-[1.8rem]">{title}</h2>
     </div>
 
     <div class="flex items-center gap-2">
-      <a href={href} class="text-sm font-medium text-neutral-900 hover:underline hidden sm:block">Ver todo</a>
+      <a
+        href={href}
+        class="hidden border border-[#2a2520] px-4 py-2 text-[11px] uppercase tracking-[0.26em] text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a] sm:inline-flex"
+      >
+        Ver todo
+      </a>
 
       <button
-        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
+        class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[#2a2520] text-lg text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a] md:h-10 md:w-10 md:text-xl"
         data-prev={id}
         aria-label={`Anterior ${title}`}
         type="button"
@@ -40,7 +44,7 @@ const {
         ‹
       </button>
       <button
-        class="inline-flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full border border-neutral-200 hover:border-neutral-300 cursor-pointer text-lg md:text-xl"
+        class="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[#2a2520] text-lg text-[#f0ece4] transition-colors duration-200 hover:border-[#b4704a] md:h-10 md:w-10 md:text-xl"
         data-next={id}
         aria-label={`Siguiente ${title}`}
         type="button"
@@ -53,7 +57,7 @@ const {
   <div
     id={id}
     class:list={[
-      "relative overflow-x-auto scroll-smooth overflow-visible pt-5",
+      "relative overflow-x-auto overflow-y-visible scroll-smooth pt-5",
       products.length <= 2 ? "" : "-mx-4 px-4"
     ]}
     style="scrollbar-width: none;"
