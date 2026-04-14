@@ -14,6 +14,7 @@ const tiles = [
   {
     label: "",
     slug: "kuruba",
+    href: "/",
     type: "brand",
     col: "col-span-2 lg:col-span-3",
     row: "row-span-2 lg:row-span-2",
@@ -123,7 +124,7 @@ const tiles = [
       {
         tiles.map((t) => (
           <a
-            href={`/categoria/${t.slug}`}
+            href={t.href ?? `/categoria/${t.slug}`}
             class={`group relative rounded-2xl sm:rounded-3xl
               ${t.type === "brand" ? "overflow-visible" : "overflow-hidden"}
               ${t.bg ?? ""} ${t.col} ${t.row} ${t.position}

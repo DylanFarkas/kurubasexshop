@@ -9,19 +9,19 @@
             </h2>
             <p class="max-w-110 text-sm leading-relaxed text-[#b4aea3]">
                 Te acompanamos con una experiencia cercana y segura para que compres con tranquilidad.
-                Envio discreto, atencion personalizada y respaldo en todo el proceso.
+                Envío discreto, atención personalizada y respaldo en todo el proceso.
             </p>
 
             <div class="grid gap-2 text-xs uppercase tracking-[0.2em] text-[#8b8a83] sm:grid-cols-2">
                 <span class="inline-flex items-center gap-2 border border-[#2a2520] bg-[#14110f] px-3 py-2">Compra segura</span>
-                <span class="inline-flex items-center gap-2 border border-[#2a2520] bg-[#14110f] px-3 py-2">Envio discreto</span>
+                <span class="inline-flex items-center gap-2 border border-[#2a2520] bg-[#14110f] px-3 py-2">Envío discreto</span>
                 <span class="inline-flex items-center gap-2 border border-[#2a2520] bg-[#14110f] px-3 py-2">Asesoria experta</span>
-                <span class="inline-flex items-center gap-2 border border-[#2a2520] bg-[#14110f] px-3 py-2">Cambios faciles</span>
+                <span class="inline-flex items-center gap-2 border border-[#2a2520] bg-[#14110f] px-3 py-2">Cambios fáciles</span>
             </div>
         </section>
 
         <section class="lg:col-span-2">
-            <h3 class="mb-4 font-sans text-[11px] uppercase tracking-[0.28em] text-[#ff6800]">Enlaces rapidos</h3>
+            <h3 class="mb-4 font-sans text-[11px] uppercase tracking-[0.28em] text-[#ff6800]">Enlaces rápidos</h3>
             <ul class="space-y-3 text-sm text-[#d4cdc1]">
                 <li><a href="/" class="transition-colors duration-200 hover:text-[#f0ece4]">Inicio</a></li>
                 <li><a href="/tienda" class="transition-colors duration-200 hover:text-[#f0ece4]">Tienda</a></li>
@@ -31,23 +31,27 @@
         </section>
 
         <section class="space-y-5 lg:col-span-3">
-            <h3 class="font-sans text-[11px] uppercase tracking-[0.28em] text-[#ff6800]">Ayuda y politicas</h3>
+            <h3 class="font-sans text-[11px] uppercase tracking-[0.28em] text-[#ff6800]">Ayuda y políticas</h3>
 
             <div class="space-y-3 text-sm">
                 <article class="border border-[#2a2520] bg-[#11100f] p-3">
-                    <h4 class="mb-1 uppercase tracking-[0.16em] text-[#f0ece4]">Envios</h4>
-                    <p class="text-[#8b8a83]">Despachos discretos a Colombia con confirmacion por WhatsApp.</p>
+                    <h4 class="mb-1 uppercase tracking-[0.16em] text-[#f0ece4]">Envíos</h4>
+                    <p class="text-[#8b8a83]">Despachos discretos a Colombia con confirmación por WhatsApp.</p>
                 </article>
 
-                <article class="border border-[#2a2520] bg-[#11100f] p-3">
-                    <h4 class="mb-1 uppercase tracking-[0.16em] text-[#f0ece4]">Devoluciones y cambios</h4>
-                    <p class="text-[#8b8a83]">Te orientamos segun tu caso para resolver cambios de forma agil.</p>
-                </article>
+                <a href="/politica-cambios-devoluciones">
+                    <article class="border border-[#2a2520] bg-[#11100f] p-3 hover:bg-[#1a1a18] transition-colors duration-200">
+                        <h4 class="mb-1 uppercase tracking-[0.16em] text-[#f0ece4]">Devoluciones y cambios</h4>
+                        <p class="text-[#8b8a83]">Te orientamos según tu caso para resolver cambios de forma ágil.</p>
+                    </article>
+                </a>
 
-                <article class="border border-[#2a2520] bg-[#11100f] p-3">
-                    <h4 class="mb-1 uppercase tracking-[0.16em] text-[#f0ece4]">Privacidad y tratamiento de datos</h4>
-                    <p class="text-[#8b8a83]">Tus datos se usan solo para gestionar pedidos y soporte.</p>
-                </article>
+                <a href="/guia-cuidado-mantenimiento">
+                    <article class="border border-[#2a2520] bg-[#11100f] p-3 hover:bg-[#1a1a18] transition-colors duration-200">
+                        <h4 class="mb-1 uppercase tracking-[0.16em] text-[#f0ece4]">Guía de cuidado y mantenimiento</h4>
+                        <p class="text-[#8b8a83]">Recomendaciones de limpieza, uso y almacenamiento para tus productos.</p>
+                    </article>
+                </a>
             </div>
         </section>
 
@@ -65,7 +69,7 @@
             </div>
 
             <div>
-                <p class="mb-2 text-xs uppercase tracking-[0.2em] text-[#8b8a83]">Metodos de pago</p>
+                <p class="mb-2 text-xs uppercase tracking-[0.2em] text-[#8b8a83]">Métodos de pago</p>
                 <div class="flex flex-wrap gap-2 text-[11px] uppercase tracking-[0.14em] text-[#d4cdc1]">
                     <span class="border border-[#2a2520] bg-[#14110f] px-2.5 py-1.5">Transferencia</span>
                     <span class="border border-[#2a2520] bg-[#14110f] px-2.5 py-1.5">Nequi</span>
@@ -83,17 +87,3 @@
         </div>
     </div>
 </footer>
-
-<script is:inline>
-    (function () {
-        const form = document.getElementById("footer-newsletter");
-        const feedback = document.getElementById("newsletter-feedback");
-        if (!form || !feedback) return;
-
-        form.addEventListener("submit", function (event) {
-            event.preventDefault();
-            feedback.classList.remove("hidden");
-            form.reset();
-        });
-    })();
-</script>
