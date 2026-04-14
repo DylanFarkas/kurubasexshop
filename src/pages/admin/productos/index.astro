@@ -12,6 +12,8 @@ const url = new URL(Astro.request.url);
 const page = Math.max(1, Number(url.searchParams.get('page') ?? '1'));
 const pageSize = Math.max(1, Number(url.searchParams.get('pageSize') ?? '10'));
 const searchQuery = url.searchParams.get('search') ?? '';
+const statusParam = url.searchParams.get('status') ?? 'all';
+const statusFilter = ['all', 'active', 'inactive'].includes(statusParam) ? statusParam : 'all';
 
 const pageSizeOptions = [5, 10, 15];
 
@@ -37,6 +39,14 @@ let productsQuery = supabaseAdmin
 
 if (searchQuery) {
   productsQuery = productsQuery.ilike('name', `%${searchQuery}%`);
+}
+
+if (statusFilter === 'active') {
+  productsQuery = productsQuery.eq('active', true);
+}
+
+if (statusFilter === 'inactive') {
+  productsQuery = productsQuery.eq('active', false);
 }
 
 productsQuery = productsQuery
@@ -74,6 +84,11 @@ function pageHref(p: number) {
   if (searchQuery) {
     u.searchParams.set('search', searchQuery);
   }
+  if (statusFilter !== 'all') {
+    u.searchParams.set('status', statusFilter);
+  } else {
+    u.searchParams.delete('status');
+  }
   return u.pathname + u.search;
 }
 
@@ -84,6 +99,19 @@ function pageSizeHref(size: number) {
   if (searchQuery) {
     u.searchParams.set('search', searchQuery);
   }
+  if (statusFilter !== 'all') {
+    u.searchParams.set('status', statusFilter);
+  } else {
+    u.searchParams.delete('status');
+  }
+  return u.pathname + u.search;
+}
+
+function clearFiltersHref() {
+  const u = new URL(Astro.request.url);
+  u.searchParams.delete('search');
+  u.searchParams.delete('status');
+  u.searchParams.set('page', '1');
   return u.pathname + u.search;
 }
 
@@ -116,30 +144,61 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
   {/* Barra de búsqueda */}
   <div class="mb-6">
     <form method="get" class="relative">
-      <div class="relative">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-          <Icon name="search" class="w-5 h-5 text-gray-400" />
+      <div class="flex flex-col sm:flex-row gap-3">
+        <div class="relative flex-1">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+            <Icon name="search" class="w-5 h-5 text-gray-400" />
+          </div>
+          <input
+            type="text"
+            name="search"
+            value={searchQuery}
+            placeholder="Buscar productos por nombre..."
+            class="w-full pl-11 pr-24 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
+          />
+          {searchQuery && (
+            <a
+              href={statusFilter === 'all' ? '/admin/productos' : `/admin/productos?status=${statusFilter}`}
+              class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              title="Limpiar búsqueda"
+            >
+              <Icon name="close" class="w-5 h-5" />
+            </a>
+          )}
         </div>
-        <input
-          type="text"
-          name="search"
-          value={searchQuery}
-          placeholder="Buscar productos por nombre..."
-          class="w-full pl-11 pr-24 py-3 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-        />
-        {searchQuery && (
-          <a
-            href="/admin/productos"
-            class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-            title="Limpiar búsqueda"
+
+        <div class="sm:w-56">
+          <label for="statusFilter" class="sr-only">Filtrar por estado</label>
+          <select
+            id="statusFilter"
+            name="status"
+            class="w-full py-3 px-4 border border-gray-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-all"
           >
-            <Icon name="close" class="w-5 h-5" />
+            <option value="all" selected={statusFilter === 'all'}>Todos los estados</option>
+            <option value="active" selected={statusFilter === 'active'}>Solo activos</option>
+            <option value="inactive" selected={statusFilter === 'inactive'}>Solo inactivos</option>
+          </select>
+        </div>
+
+        {(searchQuery || statusFilter !== 'all') && (
+          <a
+            href={clearFiltersHref()}
+            class="inline-flex items-center justify-center px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+          >
+            Limpiar filtros
           </a>
         )}
       </div>
-      {searchQuery && (
+      {(searchQuery || statusFilter !== 'all') && (
         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Mostrando resultados para: <span class="font-semibold text-gray-900 dark:text-gray-100">"{searchQuery}"</span>
+          {searchQuery && (
+            <>
+              Mostrando resultados para: <span class="font-semibold text-gray-900 dark:text-gray-100">"{searchQuery}"</span>
+            </>
+          )}
+          {searchQuery && statusFilter !== 'all' && <span> • </span>}
+          {statusFilter === 'active' && <span>Filtro: <span class="font-semibold text-gray-900 dark:text-gray-100">Solo activos</span></span>}
+          {statusFilter === 'inactive' && <span>Filtro: <span class="font-semibold text-gray-900 dark:text-gray-100">Solo inactivos</span></span>}
         </p>
       )}
     </form>
@@ -495,6 +554,7 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
   // Search form auto-submit on change
   const searchForm = document.querySelector('form[method="get"]') as HTMLFormElement;
   const searchInput = searchForm?.querySelector('input[name="search"]') as HTMLInputElement;
+  const statusSelect = searchForm?.querySelector('select[name="status"]') as HTMLSelectElement;
 
   if (searchInput) {
     // Auto-submit on Enter key
@@ -505,6 +565,11 @@ const pages = Array.from({ length: end - start + 1 }, (_, i) => start + i);
       }
     });
   }
+
+  // Auto-submit when status filter changes
+  statusSelect?.addEventListener('change', () => {
+    searchForm.submit();
+  });
 
   const deleteModal = document.getElementById('deleteModal');
   const productNameEl = document.getElementById('productName');
