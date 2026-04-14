@@ -71,7 +71,7 @@ export default function BannerCarousel({
   const carouselStyle = {
     '--banner-mobile-height': `${safeMobileHeightPx}px`,
     '--banner-desktop-height': `${safeDesktopHeightPx}px`,
-    '--banner-mobile-height-fluid': `clamp(${MIN_MOBILE_HEIGHT_PX}px, 58vw, ${safeMobileHeightPx}px)`,
+    '--banner-mobile-height-fluid': `clamp(${MIN_MOBILE_HEIGHT_PX}px, 30vw, ${safeMobileHeightPx}px)`,
     '--banner-desktop-height-fluid': `clamp(${MIN_DESKTOP_HEIGHT_PX}px, 42vw, ${safeDesktopHeightPx}px)`,
     '--banner-max-height-vh': '72vh',
   } as CSSProperties;
@@ -125,7 +125,7 @@ export default function BannerCarousel({
       style={carouselStyle}
     >
       <div
-        className="relative h-[min(var(--banner-mobile-height-fluid),var(--banner-max-height-vh))] overflow-hidden rounded-2xl bg-[#11100f] md:h-[min(var(--banner-desktop-height-fluid),var(--banner-max-height-vh))]"
+        className="relative h-[min(var(--banner-mobile-height-fluid),var(--banner-max-height-vh))] overflow-hidden rounded-2xl  md:h-[min(var(--banner-desktop-height-fluid),var(--banner-max-height-vh))]"
       >
         {activeItems.map((item, itemIndex) => {
           const isVisible = itemIndex === currentIndex;

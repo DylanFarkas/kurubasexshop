@@ -1,97 +1,168 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const { order } = Astro.url.searchParams;
+const order = Astro.url.searchParams.get('order');
 const orderId = order ? `#${order}` : '';
 ---
 
 <BaseLayout title="Pedido Confirmado - Kuruba Sexshop">
-  <main class="container mx-auto px-4 pt-32 pb-16">
-    <div class="max-w-2xl mx-auto text-center">
-      <div class="mb-8">
-        <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
-          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-        
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">
-          ¡Pedido Confirmado!
-        </h1>
-        
-        {orderId && (
-          <p class="text-lg text-gray-600">
-            Orden {orderId}
-          </p>
-        )}
-      </div>
+  <main class="relative overflow-hidden bg-white pt-28 pb-20 md:pt-32">
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div class="absolute left-1/2 top-0 h-72 w-2xl -translate-x-1/2 bg-[radial-gradient(circle_at_top,rgba(255,104,0,0.13),transparent_72%)]"></div>
+    </div>
 
-      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8 text-left">
-        <h2 class="text-xl font-bold mb-4">¿Qué sigue?</h2>
-        
-        <div class="space-y-4">
-          <div class="flex items-start gap-3">
-            <div class="shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold">
-              1
-            </div>
+    <div class="mx-auto w-full max-w-300 px-5 sm:px-8">
+      <section class="mx-auto max-w-4xl border border-[#e9e4db] bg-white">
+        <div class="border-b border-[#ece4d8] px-6 pb-7 pt-8 sm:px-9">
+          <nav class="mb-5 flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-[#7d7265]">
+            <a href="/" class="transition-colors duration-200 hover:text-[#1f1b17]">Inicio</a>
+            <span aria-hidden="true">/</span>
+            <span class="text-[#ff6800]">Confirmacion</span>
+          </nav>
+
+          <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
-              <p class="font-semibold">Hemos abierto WhatsApp</p>
-              <p class="text-gray-600 text-sm">
-                Envía el mensaje prellenado para confirmar tu pedido con nuestro equipo.
+              <span class="inline-flex items-center gap-2 border border-[#e3d6c6] bg-[#fdf6ee] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.19em] text-[#8a4a28]">
+                <span class="h-2 w-2 rounded-full bg-[#ff6800]"></span>
+                Compra Recibida
+              </span>
+              <h1 class="mt-4 font-serif text-[clamp(2rem,5vw,3.2rem)] leading-[1.07] tracking-wide text-[#1f1b17]">
+                Pedido confirmado
+              </h1>
+              <p class="mt-3 max-w-125 text-[15px] leading-[1.85] tracking-wide text-[#6b6258]">
+                Gracias por comprar en Kuruba. Ya recibimos tu solicitud y continuamos por WhatsApp para coordinar la entrega.
               </p>
             </div>
-          </div>
 
-          <div class="flex items-start gap-3">
-            <div class="shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold">
-              2
-            </div>
-            <div>
-              <p class="font-semibold">Coordinamos el envío</p>
-              <p class="text-gray-600 text-sm">
-                Nuestro equipo confirmará tu pedido y coordinaremos la entrega.
-              </p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3">
-            <div class="shrink-0 w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center text-pink-600 font-bold">
-              3
-            </div>
-            <div>
-              <p class="font-semibold">Recibe tu pedido</p>
-              <p class="text-gray-600 text-sm">
-                Envío discreto y seguro directamente a tu dirección.
-              </p>
-            </div>
+            <!-- <div class="order-badge shrink-0 border border-[#e2d6c7] bg-[#faf6ef] px-5 py-4">
+              <p class="text-[10px] uppercase tracking-[0.24em] text-[#7d7265]">Numero de orden</p>
+              <p class="mt-2 text-2xl font-semibold tracking-wide text-[#1f1b17]">{orderId || 'Pendiente'}</p>
+            </div> -->
           </div>
         </div>
-      </div>
 
-      <div class="space-y-4">
-        <a
-          href="/tienda"
-          class="inline-block px-8 py-3 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition"
-        >
-          Seguir Comprando
-        </a>
-        
-        <p class="text-gray-600">
-          ¿Tienes preguntas? <a href="#" class="text-pink-600 hover:underline">Contáctanos</a>
-        </p>
-      </div>
+        <div class="grid gap-7 px-6 py-8 sm:px-9 lg:grid-cols-[1.2fr_0.8fr]">
+          <article class="border border-[#ece4d8] bg-white p-6 sm:p-7">
+            <h2 class="font-serif text-[1.7rem] leading-tight tracking-wide text-[#1f1b17]">Que sigue ahora</h2>
+
+            <div class="mt-6 space-y-5">
+              <div class="step-row flex items-start gap-4">
+                <div class="step-index mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ffd4b8] bg-[#fff3e9] text-sm font-semibold text-[#8a4a28]">1</div>
+                <div>
+                  <p class="font-semibold tracking-wide text-[#2a241e]">Mensaje de confirmacion</p>
+                  <p class="mt-1 text-sm leading-relaxed tracking-wide text-[#6b6258]">
+                    Te abrimos WhatsApp con tu pedido para confirmar disponibilidad y resolver cualquier duda.
+                  </p>
+                </div>
+              </div>
+
+              <div class="step-row flex items-start gap-4">
+                <div class="step-index mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ffd4b8] bg-[#fff3e9] text-sm font-semibold text-[#8a4a28]">2</div>
+                <div>
+                  <p class="font-semibold tracking-wide text-[#2a241e]">Coordinacion de envio</p>
+                  <p class="mt-1 text-sm leading-relaxed tracking-wide text-[#6b6258]">
+                    Confirmamos direccion, costo de envio y tiempo estimado segun tu ciudad.
+                  </p>
+                </div>
+              </div>
+
+              <div class="step-row flex items-start gap-4">
+                <div class="step-index mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#ffd4b8] bg-[#fff3e9] text-sm font-semibold text-[#8a4a28]">3</div>
+                <div>
+                  <p class="font-semibold tracking-wide text-[#2a241e]">Entrega discreta</p>
+                  <p class="mt-1 text-sm leading-relaxed tracking-wide text-[#6b6258]">
+                    Recibes tu pedido en empaque neutro, con acompanamiento de nuestro equipo.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <aside class="flex flex-col gap-4 border border-[#ece4d8] bg-[#faf7f2] p-6 sm:p-7">
+            <div class="inline-flex h-14 w-14 items-center justify-center rounded-full border border-[#dbe7db] bg-[#eff8f0]">
+              <svg class="check-icon h-8 w-8 text-[#2d7b3f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <div>
+              <h3 class="font-serif text-2xl leading-tight tracking-wide text-[#1f1b17]">Todo listo</h3>
+              <p class="mt-2 text-sm leading-relaxed tracking-wide text-[#6b6258]">
+                Si no se abrio WhatsApp automaticamente, puedes escribirnos ahora y te ayudamos al instante.
+              </p>
+            </div>
+
+            <div class="mt-2 flex flex-col gap-3">
+              <a
+                href="https://wa.me/573102994686"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center border border-[#b4704a] bg-[#1f1b17] px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#f0ece4] transition-colors duration-200 hover:bg-[#2b241d]"
+              >
+                Ir a WhatsApp
+              </a>
+              <a
+                href="/tienda"
+                class="inline-flex items-center justify-center border border-[#dccfbe] bg-white px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#2a241e] transition-colors duration-200 hover:bg-[#f7f1e9]"
+              >
+                Seguir Comprando
+              </a>
+            </div>
+          </aside>
+        </div>
+      </section>
     </div>
   </main>
 </BaseLayout>
 
 <style>
-  @keyframes checkmark {
-    0% { opacity: 0; transform: scale(0.5); }
-    50% { opacity: 1; transform: scale(1.1); }
-    100% { transform: scale(1); }
+  @keyframes checkPop {
+    0% {
+      opacity: 0;
+      transform: scale(0.72);
+    }
+    55% {
+      opacity: 1;
+      transform: scale(1.09);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
-  svg {
-    animation: checkmark 0.5s ease-out;
+  @keyframes stepIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .check-icon {
+    animation: checkPop 520ms ease-out;
+  }
+
+  .order-badge,
+  .step-row {
+    animation: stepIn 420ms ease-out both;
+  }
+
+  .step-row:nth-of-type(2) {
+    animation-delay: 90ms;
+  }
+
+  .step-row:nth-of-type(3) {
+    animation-delay: 170ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .check-icon,
+    .order-badge,
+    .step-row {
+      animation: none;
+    }
   }
 </style>

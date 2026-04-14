@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout
+  title="Política de Cambios y Devoluciones - Kuruba SexShop"
+  description="Conoce la Política de Cambios y Devoluciones de Kuruba SexShop: garantías, retracto, exclusiones por higiene y privacidad en retornos."
+>
+  <main class="relative min-h-screen overflow-hidden bg-white pb-24 pt-20 font-sans">
+    <div class="relative mx-auto max-w-4xl px-6 md:px-10">
+      <nav class="mb-8 flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[#7d7265]">
+        <a href="/" class="transition-colors duration-200 hover:text-[#1f1b17]">Inicio</a>
+        <span aria-hidden="true" class="opacity-40">/</span>
+        <span class="text-[#e55a00]">Política de Cambios y Devoluciones</span>
+      </nav>
+
+      <header class="mb-10 border-b border-[#e9e4db] pb-10">
+        <div class="mb-5 h-0.5 w-10 bg-[#ff6800]"></div>
+        <h1 class="font-serif text-[clamp(1.8rem,4vw,2.8rem)] font-normal leading-[1.1] tracking-wide text-[#1f1b17]">
+          Política de Cambios<br>y Devoluciones
+        </h1>
+        <p class="mt-4 max-w-xl text-[15px] leading-[1.85] tracking-wide text-[#6b6258]">
+          En Kuruba sexshop, nos esforzamos por ofrecerte productos de la mas alta calidad. Por razones de higiene y
+          proteccion de la salud, nuestra politica se rige bajo los siguientes terminos:
+        </p>
+      </header>
+
+      <div class="divide-y divide-[#e9e4db]">
+        <article class="grid grid-cols-1 gap-4 py-8 md:grid-cols-[180px_1fr] md:gap-8">
+          <span class="text-[11px] font-medium uppercase tracking-[0.2em] text-[#e55a00] md:pt-1">01</span>
+          <div>
+            <h2 class="font-serif text-[1.2rem] font-normal leading-snug text-[#1f1b17]">
+              Garantía por Defectos de Fabrica
+            </h2>
+            <p class="mt-4 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Si el producto presenta un fallo técnico o de funcionamiento (motores, baterías, componentes electrónicos),
+              cuentas con un plazo de 30 días calendario tras la recepción del pedido para hacer efectiva la garantía.
+            </p>
+            <p class="mt-3 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Procedimiento: Deberás contactarnos a través de WhatsApp enviando un video que demuestre el fallo.
+            </p>
+            <p class="mt-3 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Solucion: Una vez verificado el defecto, procederemos al cambio por un producto nuevo o, en caso de no
+              haber stock, al reembolso total del dinero.
+            </p>
+          </div>
+        </article>
+
+        <article class="grid grid-cols-1 gap-4 py-8 md:grid-cols-[180px_1fr] md:gap-8">
+          <span class="text-[11px] font-medium uppercase tracking-[0.2em] text-[#e55a00] md:pt-1">02</span>
+          <div>
+            <h2 class="font-serif text-[1.2rem] font-normal leading-snug text-[#1f1b17]">
+              Productos de Uso Íntimo (Exclusiones)
+            </h2>
+            <p class="mt-4 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Por razones de seguridad biológica y sanitaria, no se aceptan cambios ni devoluciones de los siguientes
+              artículos si el sello de seguridad o el empaque original ha sido abierto:
+            </p>
+            <ul class="mt-3 space-y-1">
+              {[
+                'Juguetes sexuales (vibradores, dildos, masturbadores, etc.).',
+                'Lencería, disfraces y arneses.',
+                'Cosmética (lubricantes, aceites, cremas, retardantes).',
+                'Artículos de BDSM que tengan contacto con fluidos o piel.',
+              ].map((item) => (
+                <li class="relative pl-5 text-[14.5px] leading-[1.8] text-[#5f584f] before:absolute before:left-0 before:text-[#e55a00] before:content-['–']">
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <div class="mt-4 border-l-2 border-[#e55a00] bg-[#faf6ef] px-4 py-3">
+              <p class="text-[13.5px] leading-[1.75] text-[#5f584f]">
+                Nota importante: Si el producto ha sido extraído de su empaque original, se considera usado y no puede ser
+                devuelto bajo ninguna circunstancia, a menos que presente un defecto de fábrica.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <article class="grid grid-cols-1 gap-4 py-8 md:grid-cols-[180px_1fr] md:gap-8">
+          <span class="text-[11px] font-medium uppercase tracking-[0.2em] text-[#e55a00] md:pt-1">03</span>
+          <div>
+            <h2 class="font-serif text-[1.2rem] font-normal leading-snug text-[#1f1b17]">
+              Derecho de Retracto (Cambio de opinion)
+            </h2>
+            <p class="mt-4 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Si recibiste el producto pero te arrepentiste de la compra, puedes solicitar la devolución dentro de los
+              primeros 5 dias hábiles posteriores a la entrega, siempre y cuando:
+            </p>
+            <ul class="mt-3 space-y-1">
+              {[
+                'El producto esté totalmente sellado y en su empaque original.',
+                'No presente señales de manipulación o daños en la caja.',
+                'El cliente asuma los costos de envío de retorno.',
+              ].map((item) => (
+                <li class="relative pl-5 text-[14.5px] leading-[1.8] text-[#5f584f] before:absolute before:left-0 before:text-[#e55a00] before:content-['–']">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+
+        <article class="grid grid-cols-1 gap-4 py-8 md:grid-cols-[180px_1fr] md:gap-8">
+          <span class="text-[11px] font-medium uppercase tracking-[0.2em] text-[#e55a00] md:pt-1">04</span>
+          <div>
+            <h2 class="font-serif text-[1.2rem] font-normal leading-snug text-[#1f1b17]">
+              Productos Incorrectos
+            </h2>
+            <p class="mt-4 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Si recibiste un artículo diferente al que solicitaste, por favor no lo abras. Notíficanos de inmediato para
+              gestionar el cambio sin ningún costo adicional para ti.
+            </p>
+          </div>
+        </article>
+
+        <article class="grid grid-cols-1 gap-4 py-8 md:grid-cols-[180px_1fr] md:gap-8">
+          <span class="text-[11px] font-medium uppercase tracking-[0.2em] text-[#e55a00] md:pt-1">05</span>
+          <div>
+            <h2 class="font-serif text-[1.2rem] font-normal leading-snug text-[#1f1b17]">
+              Privacidad en los Retornos
+            </h2>
+            <p class="mt-4 text-[14.5px] leading-[1.85] text-[#5f584f]">
+              Entendemos la importancia de tu privacidad. Todo proceso de devolución se manejará con total discreción:
+            </p>
+            <ul class="mt-3 space-y-1">
+              {[
+                'Los paquetes de retorno deben enviarse en cajas neutras, sin logos ni descripciones del contenido.',
+                'El remitente en las guías de transporte será Paola Lazo.',
+              ].map((item) => (
+                <li class="relative pl-5 text-[14.5px] leading-[1.8] text-[#5f584f] before:absolute before:left-0 before:text-[#e55a00] before:content-['–']">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
