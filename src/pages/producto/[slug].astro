@@ -40,6 +40,15 @@ const mapProductWithCategories = (item: any): Product => ({
   category_ids: item.product_categories?.map((pc: any) => pc.categories?.id).filter(Boolean) || [],
 });
 
+const shuffleArray = <T,>(items: T[]): T[] => {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
 const mappedProduct: Product = mapProductWithCategories(product);
 
 const currentCategoryIds = mappedProduct.category_ids || [];
@@ -64,9 +73,9 @@ if (currentCategoryIds.length > 0) {
     .neq('id', mappedProduct.id)
     .order('featured', { ascending: false })
     .order('created_at', { ascending: false })
-    .limit(24);
+    .limit(60);
 
-  relatedProducts = Array.from(
+  const normalizedCandidates = Array.from(
     new Map((relatedProductsData || []).map((item: any) => [item.id, item])).values(),
   )
     .map((item: any) => {
@@ -75,14 +84,47 @@ if (currentCategoryIds.length > 0) {
         currentCategoryIds.includes(id),
       ).length || 0;
 
-      return { normalized, sharedCategories };
+      return {
+        normalized,
+        sharedCategories,
+        featuredBoost: normalized.featured ? 2 : 0,
+      };
     })
-    .sort((a, b) => b.sharedCategories - a.sharedCategories)
-    .slice(0, 4)
-    .map((entry) => entry.normalized);
+    .filter((entry) => entry.sharedCategories > 0)
+    .sort((a, b) => {
+      if (b.sharedCategories !== a.sharedCategories) {
+        return b.sharedCategories - a.sharedCategories;
+      }
+      return b.featuredBoost - a.featuredBoost;
+    })
+    .slice(0, 18);
+
+  // Seleccion ponderada para evitar repetir siempre los mismos productos.
+  const candidatePool = [...normalizedCandidates];
+  while (candidatePool.length > 0 && relatedProducts.length < 4) {
+    const totalWeight = candidatePool.reduce(
+      (sum, item) => sum + item.sharedCategories * 4 + item.featuredBoost + 1,
+      0,
+    );
+    let threshold = Math.random() * totalWeight;
+    let selectedIndex = 0;
+
+    for (let i = 0; i < candidatePool.length; i += 1) {
+      threshold -= candidatePool[i].sharedCategories * 4 + candidatePool[i].featuredBoost + 1;
+      if (threshold <= 0) {
+        selectedIndex = i;
+        break;
+      }
+    }
+
+    const [selected] = candidatePool.splice(selectedIndex, 1);
+    if (selected) {
+      relatedProducts.push(selected.normalized);
+    }
+  }
 }
 
-if (relatedProducts.length === 0) {
+if (relatedProducts.length < 4) {
   const { data: fallbackProductsData } = await supabase
     .from('products')
     .select(`
@@ -99,9 +141,16 @@ if (relatedProducts.length === 0) {
     .neq('id', mappedProduct.id)
     .order('featured', { ascending: false })
     .order('created_at', { ascending: false })
-    .limit(4);
+    .limit(20);
 
-  relatedProducts = (fallbackProductsData || []).map(mapProductWithCategories).slice(0, 4);
+  const existingIds = new Set(relatedProducts.map((item) => item.id));
+  const randomFallback = shuffleArray(
+    (fallbackProductsData || [])
+      .map(mapProductWithCategories)
+      .filter((item) => !existingIds.has(item.id)),
+  );
+
+  relatedProducts = [...relatedProducts, ...randomFallback].slice(0, 4);
 }
 
 const galleryImages = [
