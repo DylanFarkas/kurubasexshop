@@ -266,9 +266,9 @@ const stickyShortName = mappedProduct.name.length > 44
         </div>
 
         {mappedProduct.description && (
-          <section class="pt-2">
+          <section class="reveal-on-scroll pt-2">
             {/* <h2 class="mb-3 text-base font-semibold text-[#1e1c18]">Descripción del producto</h2> */}
-            <div class="leading-relaxed text-[#4b4339]">
+            <div class="leading-relaxed text-neutral-800">
               <div
                 class="description-content-inner text-md"
                 set:html={formatTextToHtml(mappedProduct.description)}
