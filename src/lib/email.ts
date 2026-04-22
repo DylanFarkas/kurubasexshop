@@ -6,28 +6,14 @@ const resend = new Resend(import.meta.env.RESEND_API_KEY);
 
 const ADMIN_EMAIL = import.meta.env.PUBLIC_ADMIN_EMAIL;
 const SITE_URL = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
-
-// MODO TESTING: Usar email de Resend
-const FROM_EMAIL = 'onboarding@resend.dev';
-
-// Verificar si los emails están habilitados
-// ⚠️ IMPORTANTE: En Vercel, asegúrate de configurar PUBLIC_ENABLE_EMAILS=true
+const FROM_EMAIL = 'pedidos@kurubasexshop.com';
 const EMAILS_ENABLED = import.meta.env.PUBLIC_ENABLE_EMAILS === 'true';
-
-// Log de configuración para debugging
-console.log('📧 CONFIG EMAIL:', {
-  enabled: EMAILS_ENABLED,
-  envValue: import.meta.env.PUBLIC_ENABLE_EMAILS,
-  hasApiKey: !!import.meta.env.RESEND_API_KEY,
-  adminEmail: ADMIN_EMAIL,
-});
 
 /**
  * Envía email de confirmación al cliente
  */
 export async function sendOrderConfirmationToCustomer(order: Order) {
   if (!EMAILS_ENABLED) {
-    console.log('⚠️ Emails desactivados - No se envió email a cliente');
     return { success: true, skipped: true };
   }
 
@@ -40,14 +26,13 @@ export async function sendOrderConfirmationToCustomer(order: Order) {
     });
 
     if (error) {
-      console.error('❌ Error enviando email a cliente:', error);
+      console.error('Error enviando email de confirmacion al cliente');
       return { success: false, error };
     }
 
-    console.log('✅ Email enviado a cliente:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('❌ Error en sendOrderConfirmationToCustomer:', error);
+    console.error('Error en envio de email de confirmacion al cliente');
     return { success: false, error };
   }
 }
@@ -57,7 +42,6 @@ export async function sendOrderConfirmationToCustomer(order: Order) {
  */
 export async function sendOrderNotificationToAdmin(order: Order) {
   if (!EMAILS_ENABLED) {
-    console.log('⚠️ Emails desactivados - No se envió email a admin');
     return { success: true, skipped: true };
   }
 
@@ -70,14 +54,13 @@ export async function sendOrderNotificationToAdmin(order: Order) {
     });
 
     if (error) {
-      console.error('❌ Error enviando email a admin:', error);
+      console.error('Error enviando email de notificacion al admin');
       return { success: false, error };
     }
 
-    console.log('✅ Email enviado a admin:', data);
     return { success: true, data };
   } catch (error) {
-    console.error('❌ Error en sendOrderNotificationToAdmin:', error);
+    console.error('Error en envio de email de notificacion al admin');
     return { success: false, error };
   }
 }
@@ -138,7 +121,6 @@ function getCustomerEmailTemplate(order: Order): string {
           })}</p>
         </div>
 
-        <!-- NUEVO: Dirección de envío -->
         <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">📍 Dirección de Envío</h3>
         <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0;">
           <p style="margin: 5px 0;"><strong>Departamento:</strong> ${order.customer_department}</p>
@@ -147,24 +129,26 @@ function getCustomerEmailTemplate(order: Order): string {
         </div>
 
         <h3 style="color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-top: 30px;">📦 Productos</h3>
-        
-        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-          <thead>
-            <tr style="background: #f5f5f5;">
-              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">Producto</th>
-              <th style="padding: 10px; text-align: center; border-bottom: 2px solid #667eea;">Cant.</th>
-              <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Precio</th>
-              <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-        </table>
+
+        <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 20px 0;">
+          <table style="width: 100%; min-width: 520px; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f5f5f5;">
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #667eea;">Producto</th>
+                <th style="padding: 10px; text-align: center; border-bottom: 2px solid #667eea;">Cant.</th>
+                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Precio</th>
+                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #667eea;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+        </div>
 
         <div style="text-align: right; margin-top: 20px; padding: 20px; background: #f9f9f9; border-radius: 8px;">
           <p style="margin: 5px 0; font-size: 14px;">Subtotal: ${formatPrice(order.subtotal)}</p>
-          <p style="margin: 5px 0; font-size: 14px;">Envío: ${formatPrice(order.shipping_cost)}</p>
+          <p style="margin: 5px 0; font-size: 14px;">Envío: Por confirmar</p>
           <p style="margin: 15px 0 0 0; font-size: 24px; color: #667eea;"><strong>Total: ${formatPrice(order.total)}</strong></p>
         </div>
 
@@ -182,7 +166,7 @@ function getCustomerEmailTemplate(order: Order): string {
 
         <div style="text-align: center; padding: 25px; background: #667eea; border-radius: 8px; margin-top: 30px;">
           <p style="margin: 0 0 15px 0; color: white; font-size: 16px; font-weight: bold;">¿Tienes alguna duda?</p>
-          <a href="https://wa.me/51${order.customer_phone.replace(/\D/g, '')}" 
+          <a href="https://wa.me/573102994686" 
              style="display: inline-block; background: white; color: #667eea; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: bold;">
             📱 Contáctanos por WhatsApp
           </a>
@@ -263,22 +247,24 @@ function getAdminEmailTemplate(order: Order): string {
         ` : ''}
 
         <h3 style="margin-top: 25px; color: #333;">Productos:</h3>
-        <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
-          <thead>
-            <tr style="background: #f5f5f5;">
-              <th style="padding: 10px; text-align: left; border-bottom: 2px solid #f44336;">Producto</th>
-              <th style="padding: 10px; text-align: center; border-bottom: 2px solid #f44336;">Cant.</th>
-              <th style="padding: 10px; text-align: right; border-bottom: 2px solid #f44336;">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHtml}
-          </tbody>
-        </table>
+        <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 15px 0;">
+          <table style="width: 100%; min-width: 460px; border-collapse: collapse;">
+            <thead>
+              <tr style="background: #f5f5f5;">
+                <th style="padding: 10px; text-align: left; border-bottom: 2px solid #f44336;">Producto</th>
+                <th style="padding: 10px; text-align: center; border-bottom: 2px solid #f44336;">Cant.</th>
+                <th style="padding: 10px; text-align: right; border-bottom: 2px solid #f44336;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+        </div>
 
         <div style="text-align: right; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
           <p style="margin: 5px 0;">Subtotal: ${formatPrice(order.subtotal)}</p>
-          <p style="margin: 5px 0;">Envío: ${formatPrice(order.shipping_cost)}</p>
+          <p style="margin: 5px 0;">Envío: Por confirmar</p>
           <p style="margin: 10px 0 0 0; font-size: 20px; color: #f44336;"><strong>Total: ${formatPrice(order.total)}</strong></p>
         </div>
 
